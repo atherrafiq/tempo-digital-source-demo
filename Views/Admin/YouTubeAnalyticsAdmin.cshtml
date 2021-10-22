@@ -1,0 +1,1026 @@
+﻿@{
+    ViewBag.Title = "Admin-Analytics";
+    Layout = "~/Views/Shared/_LayoutPage_Admin.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+
+    <title>@ViewBag.Title</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+   
+    <style>
+        #customers {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+            #customers td, #customers th {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+
+            #customers tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            #customers tr:hover {
+                background-color: #ddd;
+            }
+
+            #customers th {
+                padding-top: 12px;
+                padding-bottom: 12px;
+                text-align: left;
+                background-color: #ff92a3;
+                color: white;
+            }
+
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border: 16px solid red;
+            padding-top: 10%;
+            width: 200px;
+            height: 200px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+    </style>
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+    <script>
+
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        var list_dates = [];
+
+        window.onload = function () {
+
+            start = new Date();
+            end = new Date();
+            start = start.setDate(start.getDate() - 7);
+            start = new Date(start);
+            startDate = start.getFullYear() + "-" + ("0" + (start.getMonth() + 1)).slice(-2) + "-" + ("0" + start.getDate()).slice(-2);
+            endDate = end.getFullYear() + "-" + ("0" + (end.getMonth() + 1)).slice(-2) + "-" + ("0" + end.getDate()).slice(-2);
+            list_dates.push(
+                {
+                    'label': '7 Days',
+                    'dates': startDate + "$" + endDate
+                }
+            );
+
+            start = new Date();
+            end = new Date();
+            start = start.setDate(start.getDate() - 28);
+            start = new Date(start);
+            startDate = start.getFullYear() + "-" + ("0" + (start.getMonth() + 1)).slice(-2) + "-" + ("0" + start.getDate()).slice(-2);
+            endDate = end.getFullYear() + "-" + ("0" + (end.getMonth() + 1)).slice(-2) + "-" + ("0" + end.getDate()).slice(-2);
+            list_dates.push(
+                {
+                    'label': '28 Days',
+                    'dates': startDate + "$" + endDate
+                }
+            );
+
+            start = new Date("2018-01-01");
+            end = new Date();
+            startDate = start.getFullYear() + "-" + ("0" + (start.getMonth() + 1)).slice(-2) + "-" + ("0" + start.getDate()).slice(-2);
+            endDate = end.getFullYear() + "-" + ("0" + (end.getMonth() + 1)).slice(-2) + "-" + ("0" + end.getDate()).slice(-2);
+            list_dates.push(
+                {
+                    'label': 'Lifetime',
+                    'dates': startDate + "$" + endDate
+                }
+            );
+
+
+            start = new Date();
+            startDate = start.getFullYear() + "-01-01";
+            endDate = start.getFullYear() + "-12-31";
+            list_dates.push(
+                {
+                    'label': start.getFullYear(),
+                    'dates': startDate + "$" + endDate
+                }
+            );
+
+
+            start = new Date();
+            start = start.setFullYear(start.getFullYear()-1);
+            start = new Date(start);
+            startDate = start.getFullYear() + "-01-01";
+            endDate = start.getFullYear() + "-12-31";
+            list_dates.push(
+                {
+                    'label': start.getFullYear(),
+                    'dates': startDate + "$" + endDate
+                }
+            );
+
+            start = new Date();
+            start = start.setMonth(start.getMonth());
+            start = new Date(start);
+            start = new Date(start.getFullYear(), start.getMonth(), 1);
+            end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+            startDate = start.getFullYear() + "-" + ("0" + (start.getMonth() + 1)).slice(-2) + "-" + ("0" + start.getDate()).slice(-2);
+            endDate = end.getFullYear() + "-" + ("0" + (end.getMonth() + 1)).slice(-2) + "-" + ("0" + end.getDate()).slice(-2);
+            list_dates.push(
+                {
+                    'label': monthNames[start.getMonth()],
+                    'dates': startDate + "$" + endDate
+                }
+            );
+
+
+
+            start = new Date();
+            start = start.setMonth(start.getMonth()-1);
+            start = new Date(start);
+            start = new Date(start.getFullYear(), start.getMonth(), 1);
+            end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+            startDate = start.getFullYear() + "-" + ("0" + (start.getMonth() + 1)).slice(-2) + "-" + ("0" + start.getDate()).slice(-2);
+            endDate = end.getFullYear() + "-" + ("0" + (end.getMonth() + 1)).slice(-2) + "-" + ("0" + end.getDate()).slice(-2);
+            list_dates.push(
+                {
+                    'label': monthNames[start.getMonth()],
+                    'dates': startDate + "$" + endDate
+                }
+            );
+
+
+            start = new Date();
+            start = start.setMonth(start.getMonth()-2);
+            start = new Date(start);
+            start = new Date(start.getFullYear(), start.getMonth(), 1);
+            end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+            startDate = start.getFullYear() + "-" + ("0" + (start.getMonth() + 1)).slice(-2) + "-" + ("0" + start.getDate()).slice(-2);
+            endDate = end.getFullYear() + "-" + ("0" + (end.getMonth() + 1)).slice(-2) + "-" + ("0" + end.getDate()).slice(-2);
+            list_dates.push(
+                {
+                    'label': monthNames[start.getMonth()],
+                    'dates': startDate + "$" + endDate
+                }
+            );
+
+            $.each(list_dates, function (i, item) {
+                $('#dataTypeDates').append(
+                    `
+                        <option value="${item.dates}">${item.label}</option>
+                    `
+                );
+            });
+
+            //dataTypeDates
+
+        }
+
+        function get_data_by_dates(val) {
+            //alert(val.value)
+            $('#endDate').val(val.value.split('$')[1]);
+            $('#startDate').val(val.value.split('$')[0]);
+
+            getDataFromAPI();
+        }
+
+        googleApiClientReady = function () {
+            setInitialDates();
+            gapi.auth.init(function () {
+                window.setTimeout(checkAuth, 1);
+            });
+        }
+
+        function checkAuth() {
+            handleAuthResult();
+        }
+
+        function handleAuthResult() {
+            loadAPIClientInterfaces();
+        }
+
+        function loadAPIClientInterfaces() {
+            gapi.client.load("https://youtubeanalytics.googleapis.com/$discovery/rest?version=v2")
+                .then(function () { console.log("GAPI client loaded for API");
+                    handleAPILoaded(); },
+                    function (err) { console.error("Error loading GAPI client for API", err); });
+        }
+
+        var token = @Html.Raw(Json.Encode(ViewBag.Token));
+        function handleAPILoaded() {
+            //alert(token);
+            gapi.client.setToken({ access_token: token });
+            getDataFromAPI();
+            //getData();
+        }
+
+        function executeEnt1(startDate, endDate) {
+            return gapi.client.youtubeAnalytics.reports.query({
+                "currency": "USD",
+                "dimensions": "day",
+                "endDate": endDate,
+                "filters": "claimedStatus==claimed",
+                "ids": "contentOwner==cwoucXAu09H80RrnqGyO9w",
+                "metrics": "estimatedRevenue,estimatedMinutesWatched,views,subscribersGained",
+                "startDate": startDate,
+                "startIndex": "1"
+            })
+                .then(function (response) {
+                    // Handle the results here (response.result has the parsed body).
+                    //console.log("Response", response.result);
+                    var date = [];
+                    var earnings = [];
+                    var watchedTime = [];
+                    var views = [];
+                    var subGained = [];
+                    $.each(response.result.rows, function (i, item) {
+                        date.push(item[0]);
+                        earnings.push(item[1]);
+                        watchedTime.push(item[2]);
+                        views.push(item[3]);
+                        subGained.push(item[4]);
+                    });
+
+
+                    estimatedEarningChart(date, earnings);
+                    estimatedMinutesChart(date, watchedTime);
+                    viewsChart(date, views);
+                    subGainedChart(date, subGained);
+
+
+                    executeEnt2(startDate, endDate);
+                },
+                    function (err) { console.error("Execute error", err); });
+        }
+
+        function executeEnt2(startDate, endDate) {
+            return gapi.client.youtubeAnalytics.reports.query({
+                "currency": "USD",
+                "dimensions": "video",
+                "endDate": endDate,
+                "filters": "claimedStatus==claimed",
+                "ids": "contentOwner==cwoucXAu09H80RrnqGyO9w",
+                "metrics": "estimatedRevenue,views,estimatedAdRevenue,estimatedRedPartnerRevenue,grossRevenue,adImpressions,cpm,playbackBasedCpm,monetizedPlaybacks",
+                "startDate": startDate,
+                "sort": "-estimatedRevenue",
+                "maxResults": "30",
+                "startIndex": "1"
+            })
+                .then(function (response) {
+                    // Handle the results here (response.result has the parsed body).
+                    //console.log("Response", response.result);
+                    drawTable(response.result);
+                    $.each(response.result.rows, function (i, item) {
+
+                    });
+                },
+                    function (err) { console.error("Execute error", err); });
+        }
+
+        function executeMusic1(startDate, endDate) {
+            return gapi.client.youtubeAnalytics.reports.query({
+                "currency": "USD",
+                "dimensions": "day",
+                "endDate": endDate,
+                "filters": "claimedStatus==claimed",
+                "ids": "contentOwner==PuL6c--O0J3ZkNaWtTV1RA",
+                "metrics": "estimatedRevenue,estimatedMinutesWatched,views,subscribersGained",
+                "startDate": startDate,
+                "startIndex": "1"
+            })
+                .then(function (response) {
+                    // Handle the results here (response.result has the parsed body).
+                    //console.log("Response", response.result);
+                    var date = [];
+                    var earnings = [];
+                    var watchedTime = [];
+                    var views = [];
+                    var subGained = [];
+                    $.each(response.result.rows, function (i, item) {
+                        date.push(item[0]);
+                        earnings.push(item[1]);
+                        watchedTime.push(item[2]);
+                        views.push(item[3]);
+                        subGained.push(item[4]);
+                    });
+                    estimatedEarningChart(date, earnings);
+                    estimatedMinutesChart(date, watchedTime);
+                    viewsChart(date, views);
+                    subGainedChart(date, subGained);
+
+                    executeMusic2(startDate, endDate);
+                },
+                    function (err) { console.error("Execute error", err); });
+        }
+
+        function executeMusic2(startDate, endDate) {
+            return gapi.client.youtubeAnalytics.reports.query({
+                "currency": "USD",
+                "dimensions": "video",
+                "endDate": endDate,
+                "filters": "claimedStatus==claimed",
+                "ids": "contentOwner==PuL6c--O0J3ZkNaWtTV1RA",
+                "metrics": "estimatedRevenue,views,estimatedAdRevenue,estimatedRedPartnerRevenue,grossRevenue,adImpressions,cpm,playbackBasedCpm,monetizedPlaybacks",
+                "startDate": startDate,
+                "sort": "-estimatedRevenue",
+                "maxResults": "30",
+                "startIndex": "1"
+            })
+                .then(function (response) {
+                    // Handle the results here (response.result has the parsed body).
+                    //console.log("Response", response.result);
+                    drawTable(response.result);
+                },
+                    function (err) { console.error("Execute error", err); });
+        }
+
+        function executePub1(startDate, endDate) {
+            return gapi.client.youtubeAnalytics.reports.query({
+                "currency": "USD",
+                "dimensions": "day",
+                "endDate": endDate,
+                "filters": "claimedStatus==claimed",
+                "ids": "contentOwner==Te1LALVDdRONfdCzpX1iVA",
+                "metrics": "estimatedRevenue,estimatedMinutesWatched,views,subscribersGained",
+                "startDate": startDate,
+                "startIndex": "1"
+            })
+                .then(function (response) {
+                    // Handle the results here (response.result has the parsed body).
+                    //console.log("Response", response.result);
+                    var date = [];
+                    var earnings = [];
+                    var watchedTime = [];
+                    var views = [];
+                    var subGained = [];
+                    $.each(response.result.rows, function (i, item) {
+                        date.push(item[0]);
+                        earnings.push(item[1]);
+                        watchedTime.push(item[2]);
+                        views.push(item[3]);
+                        subGained.push(item[4]);
+                    });
+
+
+                    estimatedEarningChart(date, earnings);
+                    estimatedMinutesChart(date, watchedTime);
+                    viewsChart(date, views);
+                    subGainedChart(date, subGained);
+
+
+                    executePub2(startDate, endDate);
+                },
+                    function (err) { console.error("Execute error", err); });
+        }
+
+        function executePub2(startDate, endDate) {
+            return gapi.client.youtubeAnalytics.reports.query({
+                "currency": "USD",
+                "dimensions": "video",
+                "endDate": endDate,
+                "filters": "claimedStatus==claimed",
+                "ids": "contentOwner==Te1LALVDdRONfdCzpX1iVA",
+                "metrics": "estimatedRevenue,views,estimatedAdRevenue,estimatedRedPartnerRevenue,grossRevenue,adImpressions,cpm,playbackBasedCpm,monetizedPlaybacks",
+                "startDate": startDate,
+                "sort": "-estimatedRevenue",
+                "maxResults": "30",
+                "startIndex": "1"
+            })
+                .then(function (response) {
+                    // Handle the results here (response.result has the parsed body).
+                    //console.log("Response", response.result);
+                    drawTable(response.result);
+                    $.each(response.result.rows, function (i, item) {
+
+                    });
+                },
+                    function (err) { console.error("Execute error", err); });
+        }
+
+        function executeMusicAll(startDate, endDate) {
+            return gapi.client.youtubeAnalytics.reports.query({
+                "currency": "USD",
+                "dimensions": "day",
+                "endDate": endDate,
+                "filters": "claimedStatus==claimed",
+                "ids": "contentOwner==PuL6c--O0J3ZkNaWtTV1RA",
+                "metrics": "estimatedRevenue,estimatedMinutesWatched,views,subscribersGained",
+                "startDate": startDate,
+                "startIndex": "1"
+            })
+                .then(function (response) {
+                    // Handle the results here (response.result has the parsed body).
+                    //console.log("Response", response.result);
+                    var date = [];
+                    var earnings = [];
+                    var watchedTime = [];
+                    var views = [];
+                    var subGained = [];
+                    $.each(response.result.rows, function (i, item) {
+                        date.push(item[0]);
+                        earnings.push(item[1]);
+                        watchedTime.push(item[2]);
+                        views.push(item[3]);
+                        subGained.push(item[4]);
+                    });
+                    //estimatedEarningChart(date, earnings);
+                    //estimatedMinutesChart(date, watchedTime);
+                    //viewsChart(date, views);
+                    //subGainedChart(date, subGained);
+
+                    executeEntAll(startDate, endDate, earnings, watchedTime, views, subGained);
+
+                    //executeMusic2(startDate, endDate);
+                },
+                    function (err) { console.error("Execute error", err); });
+        }
+
+        function executeEntAll(startDate, endDate, MusicEarnings, MusicWatchedTime, MusicViews, MusicsubGained) {
+            return gapi.client.youtubeAnalytics.reports.query({
+                "currency": "USD",
+                "dimensions": "day",
+                "endDate": endDate,
+                "filters": "claimedStatus==claimed",
+                "ids": "contentOwner==cwoucXAu09H80RrnqGyO9w",
+                "metrics": "estimatedRevenue,estimatedMinutesWatched,views,subscribersGained",
+                "startDate": startDate,
+                "startIndex": "1"
+            })
+                .then(function (response) {
+                    // Handle the results here (response.result has the parsed body).
+                    //console.log("Response", response.result);
+                    var date = [];
+                    var earnings = [];
+                    var watchedTime = [];
+                    var views = [];
+                    var subGained = [];
+                    $.each(response.result.rows, function (i, item) {
+                        date.push(item[0]);
+                        earnings.push(item[1]);
+                        watchedTime.push(item[2]);
+                        views.push(item[3]);
+                        subGained.push(item[4]);
+                    });
+
+                    for (i = 0; i < earnings.length; i++) {
+                        earnings[i] = earnings[i] + MusicEarnings[i];
+                    }
+
+                    for (i = 0; i < watchedTime.length; i++) {
+                        watchedTime[i] = watchedTime[i] + MusicWatchedTime[i];
+                    }
+
+                    for (i = 0; i < views.length; i++) {
+                        views[i] = views[i] + MusicViews[i];
+                    }
+
+                    for (i = 0; i < subGained.length; i++) {
+                        subGained[i] = subGained[i] + MusicsubGained[i];
+                    }
+
+                    estimatedEarningChart(date, earnings);
+                    estimatedMinutesChart(date, watchedTime);
+                    viewsChart(date, views);
+                    subGainedChart(date, subGained);
+
+
+                    executeEntAll2(startDate, endDate);
+                },
+                    function (err) { console.error("Execute error", err); });
+        }
+
+        function executeEntAll2(startDate, endDate) {
+            return gapi.client.youtubeAnalytics.reports.query({
+                "currency": "USD",
+                "dimensions": "video",
+                "endDate": endDate,
+                "filters": "claimedStatus==claimed",
+                "ids": "contentOwner==cwoucXAu09H80RrnqGyO9w",
+                "metrics": "estimatedRevenue,views,estimatedAdRevenue,estimatedRedPartnerRevenue,grossRevenue,adImpressions,cpm,playbackBasedCpm,monetizedPlaybacks",
+                "startDate": startDate,
+                "sort": "-estimatedRevenue",
+                "maxResults": "30",
+                "startIndex": "1"
+            })
+                .then(function (response) {
+                    // Handle the results here (response.result has the parsed body).
+                    //console.log("Response", response.result);
+                    var temp = response.result;
+                    executeMusicAll2(startDate, endDate,temp);
+
+                },
+                    function (err) { console.error("Execute error", err); });
+        }
+
+        function executeMusicAll2(startDate, endDate, entData) {
+            return gapi.client.youtubeAnalytics.reports.query({
+                "currency": "USD",
+                "dimensions": "video",
+                "endDate": endDate,
+                "filters": "claimedStatus==claimed",
+                "ids": "contentOwner==PuL6c--O0J3ZkNaWtTV1RA",
+                "metrics": "estimatedRevenue,views,estimatedAdRevenue,estimatedRedPartnerRevenue,grossRevenue,adImpressions,cpm,playbackBasedCpm,monetizedPlaybacks",
+                "startDate": startDate,
+                "sort": "-estimatedRevenue",
+                "maxResults": "30",
+                "startIndex": "1"
+            })
+                .then(function (response) {
+                    // Handle the results here (response.result has the parsed body).
+                    //console.log("1",result)
+                    //console.log("2", response.result.rows);
+                    var musicData = response.result;
+                    getMusicVideoTitles(musicData, entData);
+                },
+                function (err) {
+                    console.error("Execute error", err);
+                });
+        }
+
+        var startDate = null;
+        var endDate = null;
+        function getDataFromAPI() {
+            var start = new Date(document.getElementById("startDate").value);
+            var end = new Date(document.getElementById("endDate").value);
+            startDate = start.getFullYear() + "-" + ("0" + (start.getMonth() + 1)).slice(-2) + "-" + ("0" + start.getDate()).slice(-2);
+            endDate = end.getFullYear() + "-" + ("0" + (end.getMonth() + 1)).slice(-2) + "-" + ("0" + end.getDate()).slice(-2);
+
+            getData();
+        }
+
+        function estimatedEarningChart(dates, estimatedEarnings) {
+            var total = Math.round(estimatedEarnings.reduce((a, b) => a + b, 0) * 100) / 100;
+            $('#totalEarnings').text("$ " + total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#chartFirst').empty();
+            $('#chartFirst').append('<canvas id="myChartNEW" height="150"> </canvas>');
+            var ctx = $("#myChartNEW").get(0).getContext("2d");
+            var myNewChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: "Revenue",
+                            borderColor: "#c70007",
+                            backgroundColor: "#ff92a3",
+                            data: estimatedEarnings
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: { display: true, text: '' },
+                    legend: { position: 'bottom' },
+                    scales: {
+                        xAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }],
+                        yAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }]
+                    },
+                }
+            });
+        }
+
+        function estimatedMinutesChart(date, watchedTime) {
+            $('#totalTime').text("+ " + watchedTime.reduce((a, b) => a + b, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#chartFirst1').empty();
+            $('#chartFirst1').append('<canvas id="myChartNEW1" height="150"> </canvas>');
+            var ctx = $("#myChartNEW1").get(0).getContext("2d");
+            var myNewChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: date,
+                    datasets: [
+                        {
+                            label: "Watched Time",
+                            borderColor: "#c70007",
+                            backgroundColor: "#ff92a3",
+                            data: watchedTime
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: { display: true, text: '' },
+                    legend: { position: 'bottom' },
+                    scales: {
+                        xAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }],
+                        yAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }]
+                    },
+                }
+            });
+        }
+
+        function viewsChart(date, views) {
+            $('#totalViews').text("+ " + views.reduce((a, b) => a + b, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#chartFirst2').empty();
+            $('#chartFirst2').append('<canvas id="myChartNEW2" height="150"> </canvas>');
+            var ctx = $("#myChartNEW2").get(0).getContext("2d");
+            var myNewChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: date,
+                    datasets: [
+                        {
+                            label: "Views",
+                            borderColor: "#c70007",
+                            backgroundColor: "#ff92a3",
+                            data: views
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: { display: true, text: '' },
+                    legend: { position: 'bottom' },
+                    scales: {
+                        xAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }],
+                        yAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }]
+                    },
+                }
+            });
+        }
+
+        function subGainedChart(date, subGained) {
+            $('#subGained').text("+ " + subGained.reduce((a, b) => a + b, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#chartFirst3').empty();
+            $('#chartFirst3').append('<canvas id="myChartNEW3" height="150"> </canvas>');
+            var ctx = $("#myChartNEW3").get(0).getContext("2d");
+            var myNewChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: date,
+                    datasets: [
+                        {
+                            label: "Subcribers Gained",
+                            borderColor: "#c70007",
+                            backgroundColor: "#ff92a3",
+                            data: subGained
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: { display: true, text: '' },
+                    legend: { position: 'bottom' },
+                    scales: {
+                        xAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }],
+                        yAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }]
+                    },
+                }
+            });
+        }
+
+        var apikey = @Html.Raw(Json.Encode(ViewBag.Key));
+        function drawTable(result) {
+            $("#customers tbody").empty();
+            var id = [];
+            $.each(result.rows, function (i, item) {
+                id.push(item[0]);
+            });
+
+            var ytApiKey = apikey;
+
+            $.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + id + "&key=" + ytApiKey, function (data) {
+                //console.log(data);
+                $.each(result.rows, function (i, item) {
+                    $("#customers tbody").append(`
+                            <tr align="center">
+                                <td td align="left">${data.items[i].snippet.title}</td>
+                                <td>$${ parseFloat(Math.round(item[1] * 100) / 100)}</td>
+                                <td>${ item[2]}</td>
+                                <td>$${ parseFloat(Math.round(item[3] * 100) / 100).toFixed(2)}</td>
+                                <td>$${ parseFloat(Math.round(item[4] * 100) / 100).toFixed(2)}</td>
+                                <td>$${ parseFloat(Math.round(item[5] * 100) / 100).toFixed(2)}</td>
+                                <td>${ item[6]}</td>
+                                <td>${ parseFloat(Math.round(item[7] * 100) / 100).toFixed(2)}</td>
+                                <td>${ parseFloat(Math.round(item[8] * 100) / 100).toFixed(2)}</td>
+                                <td>${ item[9]}</td>
+                            </tr>
+                        `);
+
+                });
+            });
+        }
+
+        function drawCombinedData(Music, Ent, MusicT, EntT) {
+            $("#customers tbody").empty();
+
+            //console.log(Music);
+            //console.log(Ent);
+
+            //console.log(MusicT);
+            //console.log(EntT);
+
+            var allData = [];
+            var allTitles = [];
+
+            //combining both data Music and Ent
+            $.each(Music, function (i, item) {
+                allData.push(item);
+            });
+            $.each(Ent, function (i, item) {
+                allData.push(item);
+            });
+
+            //combining both data Music and Ent Titles
+            $.each(MusicT, function (i, item) {
+                allTitles.push(item);
+            });
+            $.each(EntT, function (i, item) {
+                allTitles.push(item);
+            });
+
+            //console.log(allData);
+            //console.log(allTitles);
+
+            ////sorting data
+            var arr = [];
+            $.each(allData, function (i, item) {
+                arr.push(item[1]);
+            });
+            arr.sort(function (a, b) { return b - a; });
+
+           // console.log(arr);
+
+            var sortedData = [];
+            var sortedTitles = [];
+            $.each(arr, function (j, item1) {
+                $.each(allData, function (i, item) {
+                    if (parseFloat(item[1]) == parseFloat(item1)) {
+                        sortedData.push(item);
+                        sortedTitles.push(allTitles[i]);
+                    }
+                });
+            });
+
+            //console.log(sortedData);
+            //console.log(sortedTitles);
+
+            $.each(sortedData, function (i, item) {
+                $("#customers tbody").append(`
+                    <tr align="center">
+                        <td td align="left">${sortedTitles[i]}</td>
+                        <td>$${ parseFloat(Math.round(item[1] * 100) / 100)}</td>
+                        <td>${ item[2]}</td>
+                        <td>$${ parseFloat(Math.round(item[3] * 100) / 100).toFixed(2)}</td>
+                        <td>$${ parseFloat(Math.round(item[4] * 100) / 100).toFixed(2)}</td>
+                        <td>$${ parseFloat(Math.round(item[5] * 100) / 100).toFixed(2)}</td>
+                        <td>${ item[6]}</td>
+                        <td>${ parseFloat(Math.round(item[7] * 100) / 100).toFixed(2)}</td>
+                        <td>${ parseFloat(Math.round(item[8] * 100) / 100).toFixed(2)}</td>
+                        <td>${ item[9]}</td>
+                    </tr>
+                `);
+            });
+        }
+
+        function getMusicVideoTitles(musicData, entData) {
+            var id = [];
+            $.each(musicData.rows, function (i, item) {
+                id.push(item[0]);
+            });
+
+            var ytApiKey = apikey;
+            //getting music videos titles
+            var musicTitles = [];
+
+            var yt_api_key = apikey,
+                yt_video_id = id,
+                yt_snippet_endpoint = "https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + yt_video_id + "&key=" + yt_api_key;
+
+            var jqxhr = $.getJSON(yt_snippet_endpoint)
+                .done(function (data) {
+                    //console.log("second success callback");
+                    $.each(data.items, function (i, item) {
+                        musicTitles.push(item.snippet.title.toString());
+                    });
+
+                    getEntVideoTitles(musicData, entData, musicTitles);
+                })
+                .fail(function () {
+                    //console.log("error, see network tab for response details");
+                });
+        }
+
+        function getEntVideoTitles(musicData, entData, musicTitles) {
+            var id = [];
+            $.each(entData.rows, function (i, item) {
+                id.push(item[0]);
+            });
+            //getting ent videos titles
+            var entTitles = [];
+
+            var yt_api_key = apikey,
+                yt_video_id = id,
+                yt_snippet_endpoint = "https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + yt_video_id + "&key=" + yt_api_key;
+
+            var jqxhr = $.getJSON(yt_snippet_endpoint)
+                .done(function (data) {
+                    //console.log("second success callback");
+                    $.each(data.items, function (i, item) {
+                        entTitles.push(item.snippet.title.toString());
+                    });
+
+                    drawCombinedData(musicData.rows, entData.rows, musicTitles, entTitles);
+                })
+                .fail(function () {
+                    //console.log("error, see network tab for response details");
+                });
+        }
+
+        function getData() {
+            if ($('#dataType').val() == "All") {
+                executeMusicAll(startDate, endDate);
+            }
+            else if ($('#dataType').val() == "Music") {
+                executeMusic1(startDate, endDate);
+            }
+            else if ($('#dataType').val() == "Ent") {
+                executeEnt1(startDate, endDate);
+            }
+            else if ($('#dataType').val() == "Pub") {
+                executePub1(startDate, endDate);
+            }
+        }
+
+        function setInitialDates() {
+            var now = new Date();
+            var day = ("0" + now.getDate()).slice(-2);
+            var month = ("0" + (now.getMonth() + 1)).slice(-2);
+            var today = now.getFullYear() + "-" + (month) + "-" + (day);
+            $('#endDate').val(today);
+
+            now.setDate(now.getDate() - 7);
+            day = ("0" + now.getDate()).slice(-2);
+            month = ("0" + (now.getMonth() + 1)).slice(-2);
+            today = now.getFullYear() + "-" + (month) + "-" + (day);
+            $('#startDate').val(today);
+
+            document.getElementById("startDate").setAttribute("max", new Date().toISOString().split("T")[0]);
+            document.getElementById("endDate").setAttribute("max", new Date().toISOString().split("T")[0]);
+            document.getElementById("endDate").setAttribute("min", today);
+        }
+        function setDates() {
+            document.getElementById("endDate").setAttribute("min", document.getElementById("startDate").value);
+        }
+    </script>
+
+    <script src="https://apis.google.com/js/client.js?onload=googleApiClientReady"></script>
+</head>
+
+<body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
+    <div class="wrapper">
+        <div class="main-panel">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div class="row match-height">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px">
+                                        <div class="row match-height">
+                                            @*<form method="GET" class="col-xl-12 col-lg-12">  *@
+                                            <div class="col-xl-2 col-lg-12">
+                                                <select id="dataType" class="form-control" onchange="getData();">
+                                                    <option selected value="All">All Networks</option>
+                                                    <option value="Music">Youtube Music</option>
+                                                    <option value="Ent">Youtube Entertainment</option>
+                                                    <option value="Pub">Youtube Publishing</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-12">
+                                                <select id="dataTypeDates" class="form-control" onchange="get_data_by_dates(this)">
+                                                   
+                                                </select>
+                                            </div>
+                                            <div class="col-xl-3 col-lg-12">
+                                                <input id="startDate" onblur="setDates()" class="form-control" type='date' />
+                                            </div>
+                                            <div class="col-xl-3 col-lg-12">
+                                                <input id="endDate" class="form-control" type='date' />
+                                            </div>
+                                            <div class="col-xl-2 col-lg-12">
+                                                <button onclick="getDataFromAPI()" style="width:100%;" class="btn btn-danger">Get data</button>
+                                            </div>
+                                            @*</form>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row match-height">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px">
+                                        <div class="row match-height">
+
+                                            <div class="col-lg-12" style="margin-top:50px;">
+                                                <div class="col-sm-2">
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <center><label id="totalEarnings" style="font-family:'Century Gothic'; font-size:20px;" title="Total Earnings">Total Earnings</label></center>
+                                                    <div class="col-sm-12" id="chartFirst">
+                                                        <center><div class="loader" id="LoadingChartFirst">Loading Chart Data...</div></center>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <center><label id="totalTime" style="font-family:'Century Gothic'; font-size:20px;" title="Total Watched Views">Total Time</label></center>
+                                                    <div class="col-sm-12" style="height:220px;" id="chartFirst1">
+                                                        <center><div class="loader" id="LoadingChartFirst1">Loading Chart Data...</div></center>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12" style="margin-top:20px;">
+                                                <div class="col-sm-2">
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="col-sm-12">
+                                                        <center><label id="totalViews" style="font-family:'Century Gothic'; font-size:20px; " title="Total Views">Total Views</label></center>
+                                                    </div>
+
+                                                    <div class="col-sm-12" id="chartFirst2">
+                                                        <center><div class="loader" id="LoadingChartFirst2">Loading Chart Data...</div></center>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="col-sm-12">
+                                                        <center><label id="subGained" style="font-family:'Century Gothic'; font-size:20px;" title="Subcriber' Gained">Subcriber' Gained</label></center>
+                                                    </div>
+
+                                                    <div class="col-sm-12" id="chartFirst3">
+                                                        <center><div class="loader" id="LoadingChartFirst3">Loading Chart Data...</div></center>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12" style="margin-top: 50px;">
+                                                <div class="row">
+                                                    <div class="col-lg-2">
+
+                                                    </div>
+                                                    <div class="col-lg-12" overflow-y:scroll;">
+                                                        <div class="card-content">
+                                                            <div class="card-body">
+                                                                <table id="customers">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Video</th>
+                                                                            <th>Revenue</th>
+                                                                            <th>Views</th>
+                                                                            <th>Ad Revenue</th>
+                                                                            <th>Red Partner Revenue</th>
+                                                                            <th>Gross Revenue</th>
+                                                                            <th>Ad Impressions</th>
+                                                                            <th>CPM</th>
+                                                                            <th>Playback CPM</th>
+                                                                            <th>Monetized Playbacks</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
+
+
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-2">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

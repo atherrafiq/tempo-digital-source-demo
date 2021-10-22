@@ -1,0 +1,296 @@
+﻿@using Microsoft.AspNet.Identity
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Distribute and Sell Your Music</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")
+    @Styles.Render("~/Content/smart_wizard.min.css")
+    @Styles.Render("~/Content/smart_wizard_theme_circles.css")
+    @Styles.Render("~/Content/Custom.css")
+    @Styles.Render("~/Content/Cards.css")
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    @*<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">*@
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TempoDigital - Music Distribution Services">
+    <meta name="keywords" content="TempoDigital - Music Distribution Services">
+    <meta name="author" content="PIXINVENT">
+    <title>TempoDigital - Music Distribution Services</title>
+    <link rel="apple-touch-icon" sizes="60x60" href="~/Content/app-assets/img/ico/apple-icon-60.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/Content/app-assets/img/ico/apple-icon-76.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="~/Content/app-assets/img/ico/apple-icon-120.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="~/Content/app-assets/img/ico/apple-icon-152.png">
+    <link rel="shortcut icon" type="image/x-icon" href="~/Content/app-assets/img/ico/favicon.ico">
+    <link rel="shortcut icon" type="image/png" href="~/Content/app-assets/img/ico/favicon-32.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900|Montserrat:300,400,500,600,700,800,900" rel="stylesheet">
+    <!-- BEGIN VENDOR CSS-->
+    <!-- font icons-->
+    @Styles.Render("~/Content/app-assets/fonts/feather/style.min.css")
+    @Styles.Render("~/Content/app-assets/fonts/simple-line-icons/style.css")
+    @Styles.Render("~/Content/app-assets/fonts/font-awesome/css/font-awesome.min.css")
+    @Styles.Render("~/Content/app-assets/vendors/css/perfect-scrollbar.min.css")
+    @*@Styles.Render("~/Content/app-assets/css/bootstrap.css")
+    @Styles.Render("~/Content/app-assets/css/bootstrap-extended.css")*@
+    @Styles.Render("~/Content/app-assets/css/colors.css")
+    @*@Styles.Render("~/Content/app-assets/css/components.css")*@
+    @Styles.Render("~/Content/app-assets/css/pages/dashboard2.css")
+    @Styles.Render("~/Content/app-assets/fonts/weathericons/css/weather-icons.css")
+    @Styles.Render("~/Content/app-assets/fonts/weathericons/css/weather-icons-wind.css")
+    @*<link rel="stylesheet" type="text/css" href="~/Content/app-assets/fonts/feather/style.min.css">
+        <link rel="stylesheet" type="text/css" href="~/Content/app-assets/fonts/simple-line-icons/style.css">
+        <link rel="stylesheet" type="text/css" href="~/Content/app-assets/fonts/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="~/Content/app-assets/vendors/css/perfect-scrollbar.min.css">*@
+
+    @Styles.Render("~/Content/app-assets/vendors/css/prism.min.css")
+    @*@Styles.Render("~/Content/app-assets/vendors/css/chartist.min.css")*@
+    @*<link rel="stylesheet" type="text/css" href="~/Content/app-assets/vendors/css/prism.min.css">
+        <link rel="stylesheet" type="text/css" href="~/Content/app-assets/vendors/css/chartist.min.css">*@
+    <!-- END VENDOR CSS-->
+    <!-- BEGIN APEX CSS-->
+    @Styles.Render("~/Content/app-assets/css/app.css")
+    @*<link rel="stylesheet" type="text/css" href="~/Content/app-assets/css/app.css">*@
+    <!-- END APEX CSS-->
+    <!-- BEGIN Page Level CSS-->
+    <!-- END Page Level CSS-->
+    <!-- MATERIAL DESIGN ICONIC FONT -->
+    @*@Styles.Render("~/Content/NewTemplate/fonts/material-design-iconic-font/css/material-design-iconic-font.min.css")*@
+    @*<link href="~/Content/NewTemplate/fonts/material-design-iconic-font/css/material-design-iconic-font.min.css" rel="stylesheet" />*@
+
+    <!-- STYLE CSS -->
+    @*@Styles.Render("~/Content/NewTemplate/css/style.css")*@
+    @*<link href="~/Content/NewTemplate/css/style.css" rel="stylesheet" />*@
+    <style>
+        .last-news > article > caption:hover a img {
+            -webkit-transform: translateX(-15px), translateY(13px) scale(1.1);
+            -moz-transform: translateX(-15px), translateY(13px) scale(1.1);
+            -o-transform: translateX(-15px), translateY(13px) scale(1.1);
+            -ms-transform: translateX(-15px), translateY(13px) scale(1.1);
+            transform: translateX(-15px), translateY(13px) scale(1.1);
+        }
+
+        .popover {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 80% !important;
+        }
+
+            .popover .arrow {
+                display: none;
+            }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+            //$(document).ready(function () {
+            //    $('.navbar-toggle').toggle(
+            //        function () {
+            //            $('.sidebar-content').css('left', '0')
+            //        }, function () {
+            //            $('.sidebar-content').css('left', '250px')
+            //        });
+            //});
+
+    </script>
+
+</head>
+
+<body data-col="2-columns" class="2-columns">
+
+    <!-- ////////////////////////////////////////////////////////////////////////////-->
+    <div class="wrapper">
+
+        <!-- main menu-->
+        <!--.main-menu(class="#{menuColor} #{menuOpenType}", class=(menuShadow == true ? 'menu-shadow' : ''))-->
+        <div data-active-color="white" data-background-color="black" data-image="/Content/app-assets/img/01.jpg" style="background-image: url(/Content/app-assets/img/01.jpg); background-size: cover;" class="app-sidebar">
+            <div style="background-color: rgba(0, 0, 0, 0.8);position: absolute;top: 0;left: 0; width: 100%; height: 100%;">
+                <!-- main menu header-->
+                <!-- Sidebar Header starts-->
+                <!-- Sidebar Header Ends-->
+                <!-- / main menu header-->
+                <!-- main menu content-->
+                <div class="sidebar-content">
+                    <div class="sidebar-header">
+                        <div class="logo clearfix">
+                            @if (Request.IsAuthenticated)
+                            {
+                                <a href="#" class="logo-text float-left">
+                                    <div class="logo-img" style="height:100px; width:300px;"><img src="~/Content/app-assets/img/tempodigital-logo.png" /></div><span class="text align-middle"></span>
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="#" class="logo-text float-left">
+                                    <div class="logo-img"><img src="~/Content/app-assets/img/tempodigital-logo.png" /></div><span class="text align-middle"></span>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                    <div class="nav-container">
+                        @{
+                            if (Request.IsAuthenticated)
+                            {
+                                                <ul id="main-menu-navigation" data-menu="menu-navigation" class="navigation navigation-main">
+                                                    <li class=" nav-item">
+                                                        <span data-i18n="" class="menu-title">
+                                                            <center> @Html.ActionLink(User.Identity.GetUserName(), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })</center>
+
+                                                        </span>
+                                                    </li>
+
+                                                    <li class="nav-item">
+                                                        <a href="~/Home/Index"><i class="ft-bar-chart"></i><span data-i18n="" class="menu-title">Dashboard</span></a>
+                                                    </li>
+
+                                                    @*<li class="nav-item">
+            <a href="~/MusicReleases/create"><i class="ft-plus-circle"></i><span data-i18n="" class="menu-title">Create New Release</span></a>
+        </li>*@
+
+                                                    <li class="has-sub nav-item">
+                                                        <a><i class="ft-music"></i><span data-i18n="" class="menu-title">Distributions</span></a>
+                                                        <ul class="menu-content">
+                                                            <li>
+                                                                <a href="~/MusicReleases/create" class="menu-item">Create New Release</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="~/MusicReleases/index" class="menu-item">View Discography</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="~/Home/Analytics_Releases" class="menu-item">Analytics</a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <li class="has-sub nav-item">
+                                                        <a><i class="ft-video"></i><span data-i18n="" class="menu-title">Youtube Music</span></a>
+                                                        <ul class="menu-content">
+                                                            <li>
+                                                                <a href="~/YoutubeAnalytics/index" class="menu-item">Youtube Payments</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="~/YoutubeAnalytics/YoutubeAnalytics" class="menu-item">Youtube Analytics</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="~/YoutubeChannel/index" class="menu-item">Add New Channel</a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+
+                                                    <li class="has-sub nav-item">
+                                                        <a href="#"><i class="ft-video"></i><span data-i18n="" class="menu-title">Youtube Entertainment</span></a>
+                                                        <ul class="menu-content">
+                                                            <li>
+                                                                <a href="~/YoutubeEntAnalytics/index" class="menu-item">Youtube Payments</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="~/YoutubeEntAnalytics/YoutubeEntAnalytics" class="menu-item">Youtube Ent Analytics</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="~/YoutubeEntChannel/index" class="menu-item">Add New Channel</a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+
+                                                    <li class="has-sub nav-item">
+                                                        <a href="#"><i class="ft-help-circle"></i><span data-i18n="" class="menu-title">Tutorials</span></a>
+                                                        <ul class="menu-content">
+                                                            <li>
+                                                                <a href="~/Home/HelpDistribution" class="menu-item">Distribution</a>
+                                                            </li>
+                                                            @*<li>
+                                                                <a href="#" class="menu-item">YouTube</a>
+                                                            </li>*@
+                                                            <li class=" nav-item">
+                                                                <a href="~/Home/FAQ" class="menu-item">FAQ</a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+
+                                                    <li class=" nav-item">
+                                                        <a href="~/Manage/Index"><i class="fa fa-user"></i><span data-i18n="" class="menu-title">My Account</span></a>
+                                                    </li>
+                                                    <li class=" nav-item">
+                                                        <a href="~/Account/LogOff"><i class="fa fa-sign-out"></i><span data-i18n="" class="menu-title">Logout</span></a>
+                                                    </li>
+
+                                                    @*<li class=" nav-item">
+            <a href="~/MusicReleases/create"><i class="ft-music"></i><span data-i18n="" class="menu-title">Create New Release</span></a>
+        </li>
+
+        <li class=" nav-item">
+            <a href="~/MusicReleases/index"><i class="ft-eye"></i><span data-i18n="" class="menu-title">View Discography</span></a>
+        </li>*@
+
+                                                    @if (Request.IsAuthenticated)
+                                                    {
+                                                        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+                                                        {
+                                                            @Html.AntiForgeryToken()
+                                                        }
+                                                    }
+
+                                                </ul>
+                            }
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- Navbar (Header) Starts-->
+        <nav class="navbar navbar-expand-lg navbar-light  header-navbar">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" data-toggle="collapse" class="navbar-toggle d-lg-none float-right">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        @RenderBody()
+
+    </div>
+
+
+
+    <!-- ////////////////////////////////////////////////////////////////////////////-->
+    <!-- BEGIN VENDOR JS-->
+    @Scripts.Render("~/Content/app-assets/vendors/js/core/jquery-3.2.1.min.js")
+    @Scripts.Render("~/Content/app-assets/vendors/js/core/popper.min.js")
+    @Scripts.Render("~/Content/app-assets/vendors/js/core/bootstrap.min.js")
+    @Scripts.Render("~/Content/app-assets/vendors/js/perfect-scrollbar.jquery.min.js")
+    @Scripts.Render("~/Content/app-assets/vendors/js/prism.min.js")
+    @Scripts.Render("~/Content/app-assets/vendors/js/jquery.matchHeight-min.js")
+    @Scripts.Render("~/Content/app-assets/vendors/js/screenfull.min.js")
+    @Scripts.Render("~/Content/app-assets/vendors/js/pace/pace.min.js")
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.7/js/min/perfect-scrollbar.jquery.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+    <script type="text/javascript" src="//cdn.datatables.net/plug-ins/1.10.22/sorting/datetime-moment.js"></script>
+    <!-- BEGIN PAGE VENDOR JS-->
+    @*@Scripts.Render("~/Content/app-assets/vendors/js/chartist.min.js")*@
+
+    <!-- BEGIN APEX JS-->
+    @Scripts.Render("~/Content/app-assets/js/app-sidebar.js")
+    @Scripts.Render("~/Content/app-assets/js/notification-sidebar.js")
+    @Scripts.Render("~/Content/app-assets/js/customizer.js")
+
+    <!-- BEGIN PAGE LEVEL JS-->
+    @*@Scripts.Render("~/Content/app-assets/js/dashboard1.js")*@
+
+    <!-- END PAGE LEVEL JS-->
+    @*@Scripts.Render("~/bundles/jquery")*@
+    @Scripts.Render("~/bundles/bootstrap")
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

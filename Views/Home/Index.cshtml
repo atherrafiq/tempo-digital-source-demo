@@ -1,0 +1,527 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .cards-list {
+            z-index: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            margin: 30px auto;
+            width: 100%;
+            height: 100%;
+            border-radius: 40px;
+            box-shadow: 5px 5px 30px 7px rgba(0,0,0,0.25), -5px -5px 30px 7px rgba(0,0,0,0.22);
+            cursor: pointer;
+            transition: 0.4s;
+        }
+
+            .card .card_image {
+                width: inherit;
+                height: inherit;
+                border-radius: 40px;
+            }
+
+                .card .card_image img {
+                    width: inherit;
+                    height: inherit;
+                    border-radius: 40px;
+                    object-fit: cover;
+                }
+
+            .card .card_title {
+                text-align: center;
+                border-radius: 0px 0px 40px 40px;
+                font-family: sans-serif;
+                font-weight: bold;
+                font-size: 30px;
+                margin-top: -80px;
+                height: 40px;
+            }
+
+            .card:hover {
+                transform: scale(0.9, 0.9);
+                box-shadow: 5px 5px 30px 15px rgba(0,0,0,0.25), -5px -5px 30px 15px rgba(0,0,0,0.22);
+            }
+
+        .title-white {
+            color: white;
+        }
+
+        .title-black {
+            color: black;
+        }
+
+        media all and (max-width: 500px) {
+            .card-list
+
+        {
+            /* On small screens, we are no longer using row direction but column */
+            flex-direction: column;
+        }
+
+        }
+
+
+        /*
+        .card {
+          margin: 30px auto;
+          width: 300px;
+          height: 300px;
+          border-radius: 40px;
+          background-image: url('https://i.redd.it/b3esnz5ra34y.jpg');
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-position: center;
+          background-repeat: no-repeat;
+        box-shadow: 5px 5px 30px 7px rgba(0,0,0,0.25), -5px -5px 30px 7px rgba(0,0,0,0.22);
+          transition: 0.4s;
+        }
+        */
+
+    </style>
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+    <script>
+
+        googleApiClientReady = function () {
+            setInitialDates();
+            gapi.auth.init(function () {
+                window.setTimeout(checkAuth, 1);
+            });
+        }
+
+        function checkAuth() {
+            handleAuthResult();
+        }
+
+        function handleAuthResult() {
+            loadAPIClientInterfaces();
+        }
+
+        function loadAPIClientInterfaces() {
+            gapi.client.load("https://youtubeanalytics.googleapis.com/$discovery/rest?version=v2")
+                .then(function () { console.log("GAPI client loaded for API");
+                    handleAPILoaded(); },
+                    function (err) { console.error("Error loading GAPI client for API", err); });
+        }
+
+        var token = @Html.Raw(Json.Encode(ViewBag.Token));
+        function handleAPILoaded() {
+            //alert(token);
+            gapi.client.setToken({ access_token: token });
+            getDataFromAPI();
+        }
+
+        var channelCount = @Html.Raw(Json.Encode(ViewBag.ChannelCount));
+        var channelCountEnt = @Html.Raw(Json.Encode(ViewBag.ChannelCountEnt));
+
+        var accessEnt = false;
+        if (parseInt(channelCount) == 0 && parseInt(channelCountEnt) > 0) {
+            var jsList = @Html.Raw(Json.Encode(ViewBag.ChannelsEnt));
+            var jsList1 = @Html.Raw(Json.Encode(ViewBag.ChannelsNameEnt));
+            var accountTypeAccess = 'cwoucXAu09H80RrnqGyO9w';
+            accessEnt = true;
+        }
+        else {
+             var jsList = @Html.Raw(Json.Encode(ViewBag.Channels));
+             var jsList1 = @Html.Raw(Json.Encode(ViewBag.ChannelsName));
+             var accountTypeAccess = 'PuL6c--O0J3ZkNaWtTV1RA';
+        }
+
+
+        function execute(startDate, endDate, channelList) {
+            return gapi.client.youtubeAnalytics.reports.query({
+             "access_token": token,
+            "currency": "USD",
+            "dimensions": "day",
+            "endDate": endDate,
+            "filters": "channel==" + channelList,
+            "ids": "contentOwner=="+accountTypeAccess,
+            "metrics": "estimatedRevenue,estimatedMinutesWatched,views,subscribersGained,comments,likes",
+            "startDate": startDate,
+            "startIndex": "1"
+        })
+            .then(function (response) {
+            // Handle the results here (response.result has the parsed body).
+                //console.log("Response", response.result);
+                var date = [];
+                var earnings = [];
+                $.each(response.result.rows, function (i, item) {
+                    date.push(item[0]);
+                    earnings.push(item[1]);
+                });
+                estimatedEarningChart(date, earnings);
+                execute1(startDate, endDate, channelList);
+         },
+            function (err) {console.error("Execute error", err); });
+         }
+
+        function execute1(startDate, endDate, channelList) {
+            return gapi.client.youtubeAnalytics.reports.query({
+                "Access_token": token,
+                "currency": "USD",
+                "dimensions": "channel",
+                "endDate": endDate,
+                "filters": "channel==" + channelList,
+                "ids": "contentOwner=="+accountTypeAccess,
+                "metrics": "estimatedRevenue,estimatedMinutesWatched,views,subscribersGained,comments,likes",
+                "startDate": startDate,
+                "startIndex": "1"
+            })
+                .then(function (response) {
+                    // Handle the results here (response.result has the parsed body).
+                    //console.log("Response", response.result);
+                    var channelID = [];
+                    var earnings = [];
+                    var watchedTime = [];
+                    var views = [];
+                    var subGained = [];
+                    var comments = [];
+                    var likes = [];
+                    $.each(response.result.rows, function (i, item) {
+                        channelID.push(item[0]);
+                        earnings.push(item[1]);
+                        watchedTime.push(item[2]);
+                        views.push(item[3]);
+                        subGained.push(item[4]);
+                        comments.push(item[5]);
+                        likes.push(item[6]);
+                    });
+
+                    if (accessEnt == true) {
+                        plotChannelEntList(channelID, earnings, watchedTime, views, subGained, comments, likes);
+                    }
+                    else {
+                        plotChannelList(channelID, earnings, watchedTime, views, subGained, comments, likes);
+                    }
+
+                },
+                    function (err) { console.error("Execute error", err); });
+        }
+
+        function setInitialDates() {
+            var now = new Date();
+            var day = ("0" + now.getDate()).slice(-2);
+            var month = ("0" + (now.getMonth() + 1)).slice(-2);
+            var today = now.getFullYear() + "-" + (month) + "-" + (day);
+            $('#endDate').val(today);
+
+            now.setDate(now.getDate() - 20);
+            day = ("0" + now.getDate()).slice(-2);
+            month = ("0" + (now.getMonth() + 1)).slice(-2);
+            today = now.getFullYear() + "-" + (month) + "-" + (day);
+            $('#startDate').val(today);
+
+            document.getElementById("startDate").setAttribute("max", new Date().toISOString().split("T")[0]);
+            document.getElementById("endDate").setAttribute("max", new Date().toISOString().split("T")[0]);
+            document.getElementById("endDate").setAttribute("min", today);
+        }
+        function setDates() {
+            document.getElementById("endDate").setAttribute("min", document.getElementById("startDate").value);
+        }
+
+        var channelNamesList = [];
+        var channelList = [];
+        var startDate = null;
+        var endDate = null;
+
+
+        function getDataFromAPI() {
+            var start = new Date(document.getElementById("startDate").value);
+            var end = new Date(document.getElementById("endDate").value);
+            startDate = start.getFullYear() + "-" + ("0" + (start.getMonth() + 1)).slice(-2) + "-" + ("0" + start.getDate()).slice(-2);
+            endDate = end.getFullYear() + "-" + ("0" + (end.getMonth() + 1)).slice(-2) + "-" + ("0" + end.getDate()).slice(-2);
+
+            $.each(jsList, function (value) {
+                if (jsList[value].length == 24) {
+                    channelList.push(jsList[value]);
+                    channelNamesList.push(jsList1[value]);
+                }
+            })
+            execute(startDate, endDate, channelList);
+        }
+
+        function estimatedEarningChart(dates, estimatedEarnings) {
+            $('#totalEarnings').text("$" + Math.round(estimatedEarnings.reduce((a, b) => a + b, 0) * 100) / 100);
+            $('#myChartNEW').remove();
+            $('#chartFirst').append('<canvas id="myChartNEW" height="80"> </canvas>');
+            var ctx = $("#myChartNEW").get(0).getContext("2d");
+            var myNewChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: "Estimated Earnings",
+                            borderColor: "#ff0c00",
+                            backgroundColor: "#f95f59",
+                            data: estimatedEarnings
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: { display: true, text: '' },
+                    legend: { position: 'bottom' },
+                    scales: {
+                        xAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }],
+                        yAxes: [{ gridLines: { display: false }, display: false, scaleLabel: { display: false, labelString: '' } }]
+                    },
+                }
+            });
+        }
+
+        function plotChannelList(channelID, earnings, watchedTime, views, subGained, comments, likes) {
+            $(".UserChannelsList").empty();
+            for (i = 0; i < channelID.length; i++) {
+
+                $(".UserChannelsList").append(`
+                <div class="col-lg-12" style="margin-bottom:40px;">
+                    <div class="row">
+                        <div class="col-lg-1" style="margin-left:5%; margin-top:2%;">
+                            <div style="width=100%;">
+                                <img style="float:right;" src="https://tpdigital.blob.core.windows.net/logo/youtube.png" alt="" width="70" height="70">
+                            </div>
+                        </div>
+                        <div class="col-lg-2" style="margin-top:3%; float: left;">
+                            <div class="col-lg-12">
+                                <a href='@Url.Action("AnalyticsChannelDetails", "YoutubeAnalytics")?channelID=${channelID[i]}&name=${channelNamesList[channelList.indexOf(channelID[i])]}' })}'><h6 style="float:left;"><b>${channelNamesList[channelList.indexOf(channelID[i])]}</b></h6></a><br />
+                                <h6 style="float:left;">Youtube Channel</h6>
+                            </div>
+                        </div>
+                        <div class="col-lg-2" style="margin-top:1%; float: left;">
+                            <div class="col-lg-12">
+                                <h6 style="float:left;"><b>${views[i]}</b></h6><br />
+                                <h6 style="float:left;">Views</h6><br /><br />
+                                <h6 style="float:left;"><b>${watchedTime[i]}</b></h6><br />
+                                <h6 style="float:left;">Estimated Min. Watched</h6>
+                            </div>
+                        </div>
+                        <div class="col-lg-2" style="margin-top:1%; float: left;">
+                            <div class="col-lg-12">
+                                <h6 style="float:left;"><b>${likes[i]}</b></h6><br />
+                                <h6 style="float:left;">Likes</h6><br /><br />
+                                <h6 style="float:left;"><b>${comments[i]}</b></h6><br />
+                                <h6 style="float:left;">Comments</h6>
+                            </div>
+                        </div>
+                        <div class="col-lg-3" style="margin-top:1%; float: left;">
+                            <div class="col-lg-12">
+                                <h6 style="float:left;"><b>${subGained[i]}</b></h6><br />
+                                <h6 style="float:left;">Subcribers Gained</h6><br /><br />
+                                <h6 style="float:left;"><b>$${Math.round(earnings[i] * 100) / 100}</b></h6><br />
+                                <h6 style="float:left;">Estimated Revenue</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `);
+            }
+        }
+
+        function plotChannelEntList(channelID, earnings, watchedTime, views, subGained, comments, likes) {
+            $(".UserChannelsList").empty();
+            for (i = 0; i < channelID.length; i++) {
+                $(".UserChannelsList").append(`
+                <div class="col-lg-12" style="margin-bottom:40px;">
+                    <div class="row">
+                        <div class="col-lg-1" style="margin-left:5%; margin-top:2%;">
+                            <div style="width=100%;">
+                                <img style="float:right;" src="https://tpdigital.blob.core.windows.net/logo/youtube.png" alt="" width="70" height="70">
+                            </div>
+                        </div>
+                        <div class="col-lg-2" style="margin-top:3%; float: left;">
+                            <div class="col-lg-12">
+                                <a href='@Url.Action("AnalyticsEntChannelDetails", "YoutubeEntAnalytics")?channelID=${channelID[i]}&name=${channelNamesList[channelList.indexOf(channelID[i])]}' })}'><h6 style="float:left;"><b>${channelNamesList[channelList.indexOf(channelID[i])]}</b></h6></a><br />
+                                <h6 style="float:left;">Youtube Channel</h6>
+                            </div>
+                        </div>
+                        <div class="col-lg-2" style="margin-top:1%; float: left;">
+                            <div class="col-lg-12">
+                                <h6 style="float:left;"><b>${views[i]}</b></h6><br />
+                                <h6 style="float:left;">Views</h6><br /><br />
+                                <h6 style="float:left;"><b>${watchedTime[i]}</b></h6><br />
+                                <h6 style="float:left;">Estimated Min. Watched</h6>
+                            </div>
+                        </div>
+                        <div class="col-lg-2" style="margin-top:1%; float: left;">
+                            <div class="col-lg-12">
+                                <h6 style="float:left;"><b>${likes[i]}</b></h6><br />
+                                <h6 style="float:left;">Likes</h6><br /><br />
+                                <h6 style="float:left;"><b>${comments[i]}</b></h6><br />
+                                <h6 style="float:left;">Comments</h6>
+                            </div>
+                        </div>
+                        <div class="col-lg-3" style="margin-top:1%; float: left;">
+                            <div class="col-lg-12">
+                                <h6 style="float:left;"><b>${subGained[i]}</b></h6><br />
+                                <h6 style="float:left;">Subcribers Gained</h6><br /><br />
+                                <h6 style="float:left;"><b>$${Math.round(earnings[i] * 100) / 100}</b></h6><br />
+                                <h6 style="float:left;">Estimated Revenue</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `);
+            }
+        }
+    </script>
+    <script src="https://apis.google.com/js/client.js?onload=googleApiClientReady"></script>
+</head>
+<body>
+
+    <!-- main menu-->
+    <!--.main-menu(class="#{menuColor} #{menuOpenType}", class=(menuShadow == true ? 'menu-shadow' : ''))-->
+    <!-- Navbar (Header) Ends-->
+    <div class="main-panel">
+        <div class="main-content">
+            <div class="content-wrapper">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <center>
+                            <label style="font-size:30px; margin-bottom: 30px;">
+                                <p style="font-size:40px; font-weight:bold"> Welcome to Tempo Digital</p><br />
+                                <p style="font-size:32px; font-weight:bold">Distribute your music worldwide and make money on YouTube</p>
+                            </label>
+                        </center>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <a href="@Url.Action("Create", "MusicReleases")">
+                            <div class="card 1">
+                                <div class="card_image"> <img src="../assets/img/card-back.jpg" /> </div>
+                                <div class="card_title title-white">
+                                    <p>Create New Release</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="@Url.Action("Analytics", "Home")">
+                            <div class="card 1">
+                                <div class="card_image"> <img src="../assets/img/card-back.jpg" /> </div>
+                                <div class="card_title title-white">
+                                    <p>Distribution Analytics</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-md-3">
+                        <a href="@Url.Action("YoutubeAnalytics", "YoutubeAnalytics")">
+                            <div class="card 1">
+                                <div class="card_image"> <img src="../assets/img/card-back.jpg" /> </div>
+                                <div class="card_title title-white">
+                                    <p>Youtube Analytics</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="@Url.Action("Index", "YoutubeAnalytics")">
+                            <div class="card 1">
+                                <div class="card_image"> <img src="../assets/img/card-back.jpg" /> </div>
+                                <div class="card_title title-white">
+                                    <p>Youtube Payments</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                @*@if (ViewBag.ChannelCount > 0)
+                    {*@
+                <div class="col-lg-12 row" style="margin-top: 100px;">
+                    <div class="col-md-3">
+                    </div>
+                    <div class="col-md-3">
+                        <center>Start Date</center>
+                        <input id="startDate" onblur="setDates()" class="form-control" type='date' />
+                    </div>
+                    <div class="col-md-3">
+                        <center>End Date</center>
+                        <input id="endDate" class="form-control" type='date' />
+                    </div>
+                    <div class="col-md-3">
+
+                    </div>
+                </div>
+
+
+                <div class="col-lg-12" style="margin-top:10px;">
+                    <center>
+                        <button onclick="getDataFromAPI()" style="width:30%;" class="btn btn-danger">Get Data</button>
+                    </center>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-2">
+                        <div class="col-lg-12">
+                            <h5><b>Estimated Earnings</b></h5>
+                        </div>
+                        <div class="col-lg-12">
+                            <center><label id="totalEarnings" style="margin-top:50px; font-family:'Century Gothic'; font-size:30px;" title="Total Earnings">Total</label></center>
+                        </div>
+                    </div>
+                    <div class="col-lg-10">
+                        <div id="chartFirst">
+                            <canvas id="myChartNEW" height="80"> </canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <h5><b>Your Channels</b></h5>
+                </div>
+
+                <div class="col-lg-12 UserChannelsList">
+
+                </div>
+
+                @* } *@
+
+            </div>
+
+        </div>
+    </div>
+    <!-- ////////////////////////////////////////////////////////////////////////////-->
+    <!-- START Notification Sidebar-->
+    <!-- END Notification Sidebar-->
+    <!-- Theme customizer Starts-->
+    <!-- Theme customizer Ends-->
+    <!-- BEGIN VENDOR JS-->
+    <script src="~/Content/app-assets/vendors/js/core/jquery-3.2.1.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/core/popper.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/core/bootstrap.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/perfect-scrollbar.jquery.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/prism.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/jquery.matchHeight-min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/screenfull.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/pace/pace.min.js" type="text/javascript"></script>
+    <!-- BEGIN VENDOR JS-->
+    <!-- BEGIN PAGE VENDOR JS-->
+    @*<script src="~/Content/app-assets/vendors/js/chartist.min.js" type="text/javascript"></script>*@
+
+    <!-- END APEX JS-->
+    <!-- BEGIN PAGE LEVEL JS-->
+    @*<script src="~/Content/app-assets/js/dashboard1.js" type="text/javascript"></script>*@
+    <!-- END PAGE LEVEL JS-->
+    @*@Scripts.Render("~/bundles/jquery")*@
+</body>
+</html>

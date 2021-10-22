@@ -1,0 +1,482 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <style>
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border: 16px solid red;
+            padding-top: 10%;
+            width: 200px;
+            height: 200px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+    </style>
+</head>
+
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<script>
+    //other functions
+    var checkLabel = 0;
+    window.onload = function () {
+
+        $.getJSON("/YoutubeAnalytics/GetChannelNames", function (data) {
+            $("#op option").remove();
+            $("#year option").remove();
+            document.getElementById('downloadReport').disabled = true;
+            document.getElementById('downloadReportHTML').disabled = true;
+            $("#month option").remove();
+            if (data) {
+                $("#op").append('<option>-Select Channel-</option>');
+                $.each(data, function (i, item) {
+                    if (item.ChannelName == '-Label Name-')
+                        checkLabel = i;
+                    $("#op").append('<option value=' + item.ChannelID + '>' + item.ChannelName + '</option>');
+                });
+            }
+        });
+
+        //$.getJSON("/YoutubeAnalytics/GetAllMY", function (data) {
+        //    $("#yearAll option").remove();
+        //    $("#monthAll option").remove();
+        //    if (data) {
+        //        $("#yearAll").append('<option value="">-Select Year-</option>');
+        //        $("#monthAll").append('<option value="">-Select Month-</option>');
+        //        $.each(data.year, function (i, item) {
+        //            $("#yearAll").append('<option value=' + item + '>' + item + '</option>');
+        //        });
+        //        $.each(data.month, function (i, item) {
+        //            $("#monthAll").append('<option value=' + item + '>' + item + '</option>');
+        //        });
+        //    }
+        //});
+
+        $.ajax({
+            type: "POST",
+            url: "/YoutubeAnalytics/NewChart",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (chData) {
+                var aData = chData;
+                var aLabels = aData[0];
+                var aDatasets1 = aData[1];
+                //alert(aDatasets1);
+                var dataT = {
+                    labels: aLabels,
+                    datasets: [{
+                        label: "",
+                        data: aDatasets1,
+                        fill: false,
+                        backgroundColor: ["#f4322c", "#f4322c", "#f4322c", "#f4322c", "#f4322c", "#f4322c", "#f4322c", "#f4322c", "#f4322c", "#f4322c", "#f4322c", "#f4322c"],
+                        borderColor: ["#ff0c00", "#ff0c00", "#ff0c00", "#ff0c00", "#ff0c00", "#ff0c00", "#ff0c00", "#ff0c00", "#ff0c00", "#ff0c00", "#ff0c00", "#ff0c00"],
+                        borderWidth: 1
+                    }]
+                };
+                $('#LoadingChartFirst').remove();
+                $('#chartFirst').append('<canvas id="myChart"> </canvas>');
+                var ctx = $("#myChart").get(0).getContext("2d");
+                var myNewChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: dataT,
+                    options: {
+                        responsive: true,
+                        title: { display: true, text: 'CHANNELS REVENUE / MONTH' },
+                        legend: { position: 'bottom' },
+                        scales: {
+                            xAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }],
+                            yAxes: [{
+                                gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' },
+                                ticks: {
+                                    beginAtZero: true,
+                                    userCallback: function (label, index, labels) {
+                                        // when the floored value is the same as the value we have a whole number
+                                        if (Math.floor(label) === label) {
+                                            return label;
+                                        }
+
+                                    },
+                                }
+                            }]
+                        },
+                    }
+                });
+            }
+        });
+
+    }
+
+    function downloadReportHTMLAllCh() {
+        //alert($('#yearAll').val());
+        //alert($('#monthAll').val());
+        if ($('#yearAll').val() == "") {
+            alert('Select Year First.');
+        }
+        else if ($('#monthAll').val() == "") {
+            alert('Select Year First.');
+        }
+        else {
+            $("#HTMLALL").attr("href", "HTMLReportAllCH?M=" + $('#monthAll').val() + "&Y=" + $('#yearAll').val());
+        }
+    }
+
+    function downloadReportPDFAllCh() {
+        if ($('#yearAll').val() == "") {
+            alert('Select Year First.');
+        }
+        else if ($('#monthAll').val() == "") {
+            alert('Select Year First.');
+        }
+        else {
+            $("#PDFALL").attr("href", "PDFReportAllCH?M=" + $('#monthAll').val() + "&Y=" + $('#yearAll').val());
+        }
+    }
+
+    function getYears() {
+        var selector = document.getElementById('op');
+        var value = selector[selector.selectedIndex].value;
+        if (selector.selectedIndex > checkLabel + 1) {
+            value = "LABEL" + selector[selector.selectedIndex].text;
+        }
+        //alert(value);
+        if (value != "-Select Channel-" && value != "") {
+            $.getJSON("/YoutubeAnalytics/GetYears?channelId=" + value, function (data) {
+                $("#year option").remove();
+                document.getElementById('downloadReport').disabled = true;
+                document.getElementById('downloadReportHTML').disabled = true;
+                $("#month option").remove();
+                if (data) {
+                    $("#year").append('<option>-Select Year-</option>');
+                    $.each(data, function (i, item) {
+                        $("#year").append('<option value=' + item + '>' + item + '</option>');
+                    });
+                }
+                else {
+                    alert('sdf');
+                    $("#year option").remove();
+                    $("#month option").remove();
+                }
+            });
+        }
+    }
+
+    function getMonths() {
+        var selector = document.getElementById('year');
+        var value = selector[selector.selectedIndex].value;
+
+        var selector = document.getElementById('op');
+        var value1 = selector[selector.selectedIndex].value;
+        if (selector.selectedIndex > checkLabel + 1) {
+            value1 = "LABEL" + selector[selector.selectedIndex].text;
+        }
+
+        if (value != "-Select Year-") {
+            $.getJSON("/YoutubeAnalytics/GetMonths?channelId=" + value1, function (data) {
+                $("#month option").remove();
+                document.getElementById('downloadReport').disabled = true;
+                document.getElementById('downloadReportHTML').disabled = true;
+                if (data) {
+
+                    $("#month").append('<option>-Select Month-</option>');
+                    $.each(data, function (i, item) {
+                        $("#month").append('<option value=' + item + '>' + item + '</option>');
+                    });
+                }
+            });
+        }
+    }
+
+    function getAllData() {
+
+        var selector = document.getElementById('op');
+        var channelId = selector[selector.selectedIndex].value;
+        if (selector.selectedIndex > checkLabel + 1) {
+            channelId = "LABEL" + selector[selector.selectedIndex].text;
+        }
+
+        var selector = document.getElementById('month');
+        var month = selector[selector.selectedIndex].value;
+
+        var selector = document.getElementById('year');
+        var year = selector[selector.selectedIndex].value;
+
+
+        if (channelId != "-Select Channel-" && month != "-Select Month-" && year != "-Select Year-") {
+            $.getJSON("/YoutubeAnalytics/GetChannelData?channelId=" + channelId + "&year=" + year + "&month=" + month, function (data) {
+                if (data) {
+                    document.getElementById('downloadReport').disabled = false;
+                    document.getElementById('downloadReportHTML').disabled = false;
+                    $('#IDLink').attr("href", 'https://youtube.com/channel/' + data.ChannelId1);
+                    $('#channelId').text(data.ChannelId1);
+                    $('#channelName').text(data.ChannelName1);
+                    $('#views').text(data.Views);
+                    $('#revenue').text("$" + data.Revenue);
+                    $('#top1v').text(data.Top1V);
+                    $('#top2v').text(data.Top2V);
+                    $('#top3v').text(data.Top3V);
+                    $('#top4v').text(data.Top4V);
+                    $('#top5v').text(data.Top5V);
+                    $('#top1').text(data.Top1);
+                    $('#top2').text(data.Top2);
+                    $('#top3').text(data.Top3);
+                    $('#top4').text(data.Top4);
+                    $('#top5').text(data.Top5);
+                    $('#mon').text(data.Month + "/" + data.Year);
+                    var share = (data.Revenue / 100) * $('#userShare').val();
+                    $('#share').text("$" + share.toFixed(2));
+                }
+
+            });
+        }
+    }
+
+    function downloadReport() {
+        var mon = $('#mon').html();
+
+        var selector = document.getElementById('op');
+        var ID = selector[selector.selectedIndex].value;
+        if (selector.selectedIndex > checkLabel + 1) {
+            ID = "LABEL" + selector[selector.selectedIndex].text;
+        }
+        //alert(mon);
+        $("#link").attr("href", "DownloadReport?MN=" + mon + "&ID=" + ID);
+        //window.location.href = "~/YoutubeAnalytics/DownloadReport?MN=" + mon ;
+    }
+
+    function downloadReportHTML() {
+        var mon = $('#mon').html();
+        var selector = document.getElementById('op');
+        var ID = selector[selector.selectedIndex].value;
+        if (selector.selectedIndex > checkLabel + 1) {
+            ID = "LABEL" + selector[selector.selectedIndex].text;
+        }
+        //alert(mon);
+        $("#link1").attr("href", "DownloadReportHTML?MN=" + mon + "&ID=" + ID);
+        //window.location.href = "~/YoutubeAnalytics/DownloadReport?MN=" + mon ;
+    }
+
+</script>
+
+
+<div class="main-panel">
+    <div class="main-content">
+        @if (ViewBag.ChannelCount > 0)
+        {
+            <div style="display:none">
+                <input value="@ViewBag.Share" id="userShare" />
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="col-xl-12 col-lg-6 col-md-6 col-12">
+                        <h4><b>Youtube Music Network</b></h4>
+                    </div>
+                    <div style="margin-top:5%;" class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <h5 style="width:80%;"><b>Channel ID:  </b></h5>
+                    </div>
+                    <div style="margin-top:5%;" class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <a target="_blank" id="IDLink"><h5 style="width:100%;" class="card-title mb-0" id="channelId">Channel Id</h5></a>
+                    </div>
+                    <div style="margin-top:2%;" class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <h5 style="width:80%;"><b>Channel Name:  </b></h5>
+                    </div>
+                    <div style="margin-top:2%;" class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <h5 style="width:80%;" class="card-title mb-0" id="channelName">Channel Name</h5>
+                    </div>
+                    <div style="margin-top:2%;" class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <h5 style="width:80%;"><b>Month/Year:  </b></h5>
+                    </div>
+                    <div style="margin-top:2%;" class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <h5 style="width:80%;" class="card-title mb-0" id="mon">month/year </h5>
+                    </div>
+                    <div class="col-xl-12 col-lg-6 col-md-6 col-12" style="margin-top:5%;">
+                        <p>Analytics by selected channel</p>
+                    </div>
+
+                    <div style="margin-top:2%;" class="col-xl-4 col-lg-6 col-md-6 col-12">
+                        <select id="op" class="form-control " onchange="getYears()"></select>
+                    </div>
+                    <div style="margin-top:2%;" class="col-xl-4 col-lg-6 col-md-6 col-12">
+                        <select id="year" class="form-control " onchange="getMonths()"></select>
+                    </div>
+                    <div style="margin-top:2%;" class="col-xl-4 col-lg-6 col-md-6 col-12">
+                        <select id="month" class="form-control" onchange="getAllData()"></select>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <a id="link" onclick="downloadReport()" href=""><button type="button" style="width:80%;" disabled id="downloadReport" class="btn btn-danger">Channel Report PDF</button></a>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <a id="link1" onclick="downloadReportHTML()" href=""><button type="button" style="width:80%;" disabled id="downloadReportHTML" class="btn btn-danger">Channel Report HTML</button></a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="col-xl-12 col-lg-6 col-md-6 col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-block">
+                                    <h6 class="card-title">Top 5 Asset Titles Views</h6>
+                                </div>
+
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+
+                                        <span class="badge bg-danger float-right" id="top1v">Views</span><p id="top1">AssetTitle </p>
+                                    </li>
+                                    <li class="list-group-item">
+
+                                        <span class="badge bg-danger float-right" id="top2v">Views</span><p id="top2">AssetTitle</p>
+                                    </li>
+                                    <li class="list-group-item">
+
+                                        <span class="badge bg-danger float-right" id="top3v">Views</span><p id="top3">AssetTitle</p>
+                                    </li>
+                                    <li class="list-group-item">
+
+                                        <span class="badge bg-danger float-right" id="top4v">Views</span> <p id="top4">AssetTitle</p>
+                                    </li>
+                                    <li class="list-group-item">
+
+                                        <span class="badge bg-danger float-right" id="top5v">Views</span><p id="top5">AssetTitle</p>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-lg-6">
+                    <hr />
+                    <div class="col-lg-12">
+                        <div class="col-xl-12 col-lg-6 col-md-6 col-12">
+                            <p>Analytics for All Channels</p>
+                        </div>
+                        <div style="margin-top:2%;" class="col-xl-6 col-lg-6 col-md-6 col-12">
+                            <select id="yearAll" class="form-control">
+                                <option value="">-Select Year-</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                            </select>
+                        </div>
+                        <div style="margin-top:2%;" class="col-xl-6 col-lg-6 col-md-6 col-12">
+                            <select id="monthAll" class="form-control">
+                                <option value="">-Select Month-</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                            <a id="PDFALL" onclick="downloadReportPDFAllCh()" href=""><button style="width:80%;" type="button" id="downloadReportAllPDF" class="btn btn-danger">All Channels Report PDF</button></a>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                            <a id="HTMLALL" onclick="downloadReportHTMLAllCh()" href=""><button style="width:80%;" type="button" id="downloadReportAllHTML" class="btn btn-danger">All Channels Report HTML</button></a>
+                        </div>
+
+                    </div>
+
+                    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
+                        <hr />
+                        <div class="card">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="px-3 py-3">
+                                        <div class="media">
+                                            <div class="media-body text-left">
+                                                <h2 class="mb-1 danger" style="font-size:20px; color:red; font-weight:bolder" id="views">00</h2>
+                                                <h5>Total Views</h5>
+                                            </div>
+                                            <div class="media-right align-self-center">
+                                                <img src="https://tpdigital.blob.core.windows.net/logo/youtube.png" alt="" width="70" height="70">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
+                        <hr />
+                        <div class="card">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="px-3 py-3">
+                                        <div class="media">
+                                            <div class="media-body text-left">
+                                                <h2 class="mb-1 danger" style="font-size:20px; color:red; font-weight:bolder" id="revenue">$0.00</h2>
+                                                <h5>Revenue/Channel</h5>
+                                            </div>
+                                            <div class="media-right align-self-center">
+                                                <img src="https://tpdigital.blob.core.windows.net/logo/youtube.png" alt="" width="70" height="70">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
+                        <hr />
+                        <div class="card">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="px-3 py-3">
+                                        <div class="media">
+                                            <div class="media-body text-left">
+                                                <h2 class="mb-1 danger" style="font-size:20px; color:red; font-weight:bolder" id="share">$0.00</h2>
+                                                <h5>User Share</h5>
+                                            </div>
+                                            <div class="media-right align-self-center">
+                                                <img src="https://tpdigital.blob.core.windows.net/logo/youtube.png" alt="" width="70" height="70">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="col-xl-12 col-lg-6 col-md-6 col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div style="width:100%;height:335px;">
+                                    <div style="width:100%;height:330px;" id="chartFirst">
+                                        <center><div class="loader" id="LoadingChartFirst">Loading Chart Data...</div></center>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            @Html.Partial("_NoChannelPartial")
+        }
+
+
+    </div>
+</div>
+
+

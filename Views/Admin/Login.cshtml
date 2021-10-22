@@ -1,0 +1,50 @@
+﻿@using TempoDigitalApex3.Models
+@model LoginViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- MATERIAL DESIGN ICONIC FONT -->
+    <link rel="stylesheet" href="~/Content/NewTemplate/fonts/material-design-iconic-font/css/material-design-iconic-font.min.css">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.3.min.js"></script>
+
+    <!-- STYLE CSS -->
+    <link rel="stylesheet" href="~/Content/NewTemplate/css/style.css">
+
+</head>
+
+<body background='~/Content/NewTemplate/images/bg-registration-form-2.jpg' style="background-repeat:no-repeat;  background-size:100% 100%;">
+
+    <div class="wrapper">
+        <div class="inner">
+            @using (Html.BeginForm("Login", "Admin", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <h3>Admin Login Form</h3>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-wrapper">
+                    @Html.LabelFor(m => m.Email, new {  })
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", name="email" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-wrapper">
+                    @Html.LabelFor(m => m.Password, new {  })
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger", name="password" })
+                </div>
+                <button type="submit">Login</button>
+                <br />
+               
+            }
+            @section Scripts {
+                @Scripts.Render("~/bundles/jqueryval")
+            }
+        </div>
+    </div>
+
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</html>

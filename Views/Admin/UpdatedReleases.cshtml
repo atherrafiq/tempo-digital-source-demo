@@ -1,0 +1,71 @@
+﻿@{
+    ViewBag.Title = "Deleted Releases";
+    Layout = "~/Views/Shared/_LayoutPage_Admin.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script>
+        $(document).ready(function () {
+            $.fn.dataTable.moment('MM/DD/YYYY HH:mm:ss A');
+            $('#deleted_releases').DataTable({
+                "scrollX": true
+            });
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+</head>
+<body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
+    <div class="wrapper">
+        <div class="main-panel">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div class="row match-height">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px;">
+                                        <h5>Updated Releases</h5>
+                                        <p>add cover at first column (width 100px)</p>
+                                        <p>fix sorting by date</p> 
+                                        <p>Add popup approvement on delete all metadata</p>
+                                        <table data-page-length='30' id="deleted_releases" style="width:100%;" class="table table-striped table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>UPC</th>
+                                                    <th>Label Name</th>
+                                                    <th>Copyright Year</th>
+                                                    <th>Copyright Holder</th>
+                                                    <th>Update Time</th>
+                                                    @*<th>Action</th>*@
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var release in ViewBag.DeleteReleaseList)
+                                                {
+                                                    <tr>
+                                                        <td>@release.ReleaseName</td>
+                                                        <td>@release.UPCEAN</td>
+                                                        <td>@release.LabelName</td>
+                                                        <td>@release.CopyrightYear</td>
+                                                        <td>@release.CopyryghtHolder</td>
+                                                        <td>@release.DeletionDate</td>
+                                                        @*<td>@Html.ActionLink("Delete all metadata", "DeleteRelease", "Admin", new { id = release.MusicReleaseId }, null)</td>*@
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

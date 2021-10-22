@@ -1,0 +1,314 @@
+﻿@model TempoDigitalApex3.Models.ApplicationUser
+@{
+    ViewBag.Title = "My Account";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+
+
+</head>
+<p class="text-success">@ViewBag.StatusMessage</p>
+<div class="main-panel">
+    <div class="main-content">
+        <div class="content-wrapper">
+
+            @if (ViewBag.profileUpdateMessage != null)
+            {
+                <div class="alert alert-info alert-dismissable">
+                    <a class="panel-close close" data-dismiss="alert">×</a>
+                    <strong>Alert...!</strong>  @ViewBag.profileUpdateMessage
+                </div>
+            }
+            @using (Html.BeginForm("Index", "Manage", FormMethod.Post, new { enctype = "multipart/form-data", @class = "col-md-12" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="col-md-12 row">
+                    <div class="form col-md-4">
+                        <div class="col-md-12">
+                            <h2 style="padding-top:50px;">Edit Profile</h2>
+                            <p> [@Html.ActionLink("Change your password", "ChangePassword")]</p>
+                            <hr />
+                            <div class="col-md-12" style="margin-top:10px; ">
+                                <label class="control-label">First Name</label>
+                                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger", name = "firstName" })
+                            </div>
+                            <div class="col-md-12" style="margin-top:10px; ">
+                                <label class="control-label">Last Name</label>
+                                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger", name = "lastName" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form col-md-4">
+                        <div class="col-md-12">
+                            <h2 style="padding-top:50px;">Bank Details</h2>
+                            <hr />
+                            <div class="col-md-12" style="margin-top:10px; ">
+                                <label class="control-label">Bank Name</label>
+                                @Html.EditorFor(model => model.BankName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.BankName, "", new { @class = "text-danger", name = "BankName" })
+                            </div>
+                            <div class="col-md-12" style="margin-top:10px; ">
+                                <label class="control-label">Bank Address</label>
+                                @Html.EditorFor(model => model.BankAddress, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.BankAddress, "", new { @class = "text-danger", name = "BankAddress" })
+                            </div>
+                            <div class="col-md-12" style="margin-top:10px; ">
+                                <label class="control-label">Bank IBAN</label>
+                                @Html.EditorFor(model => model.BankIBAN, new { htmlAttributes = new { @class = "form-control", type = "numbers" } })
+                                @Html.ValidationMessageFor(model => model.BankIBAN, "", new { @class = "text-danger", name = "BankIBAN" })
+                            </div>
+                            <div class="col-md-12" style="margin-top:10px; ">
+                                <label class="control-label">Bank Details (Other)</label>
+                                <textarea class="form-control" rows="3" name="bank">@Model.Bank</textarea>
+                                @*@Html.EditorFor(model => model.Bank, new { htmlAttributes = new { @class = "form-control" } })*@
+                                @Html.ValidationMessageFor(model => model.Bank, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form col-md-4">
+                        <div class="col-md-12">
+                            <h2 style="padding-top:50px;">Paypal Details</h2>
+                            <hr />
+                            <div class="col-md-12" style="margin-top:10px; ">
+                                <label class="control-label">Paypal Details</label>
+                                @Html.EditorFor(model => model.Paypal, new { htmlAttributes = new { @class = "form-control", name = "paypal" } })
+                                @Html.ValidationMessageFor(model => model.Paypal, "", new { @class = "text-danger" })
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12" style="margin-top: 20px;">
+                    <center><button type="submit" class="btn btn-danger" style="width:50%;">Save Changes</button></center>
+                </div>
+            }
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <center>
+                        @if (ViewBag.ApprovedChannelsList.Count > 0)
+                        {
+                            <h3 style="margin-top:50px;">Approved Youtube Music Channels</h3>
+                            <table style="width:60%; margin-top:10px; margin-bottom:30px;">
+                                <tr>
+                                    <th>Channel Name</th>
+                                    <th>Channel ID</th>
+                                    <th>Description</th>
+                                    <th>Label</th>
+                                    <th>Status</th>
+                                </tr>
+                                @foreach (var channel in ViewBag.ApprovedChannelsList)
+                                {
+                                    if (channel.YT_Label_Name == null)
+                                    {
+                                        <tr>
+                                            <td><a href="https://www.youtube.com/channel/@channel.ChannelID">@channel.ChannelName</a></td>
+                                            <td>@channel.ChannelID</td>
+                                            <td>@channel.Description</td>
+                                            <td>@channel.YT_Label_Name</td>
+                                            <td>Approved</td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>@channel.ChannelName</td>
+                                            <td>@channel.ChannelID</td>
+                                            <td>@channel.Description</td>
+                                            <td>@channel.YT_Label_Name</td>
+                                            <td>Approved</td>
+                                        </tr>
+                                    }
+                                }
+                            </table>
+                        }
+                    </center>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <center>
+                        @if (ViewBag.ApprovedEntChannelsList.Count > 0)
+                        {
+                            <h3 style="margin-top:50px;">Approved Youtube Entertainment Channels</h3>
+                            <table style="width:60%; margin-top:10px; margin-bottom:30px;">
+                                <tr>
+                                    <th>Channel Name</th>
+                                    <th>Channel ID</th>
+                                    <th>Description</th>
+                                    <th>Label</th>
+                                    <th>Status</th>
+                                </tr>
+                                @foreach (var channel in ViewBag.ApprovedEntChannelsList)
+                                {
+                                    if (channel.YT_Label_Name == null)
+                                    {
+                                        <tr>
+                                            <td><a href="https://www.youtube.com/channel/@channel.ChannelID">@channel.ChannelName</a></td>
+                                            <td>@channel.ChannelID</td>
+                                            <td>@channel.Description</td>
+                                            <td>@channel.YT_Label_Name</td>
+                                            <td>Approved</td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>@channel.ChannelName</td>
+                                            <td>@channel.ChannelID</td>
+                                            <td>@channel.Description</td>
+                                            <td>@channel.YT_Label_Name</td>
+                                            <td>Approved</td>
+                                        </tr>
+                                    }
+                                }
+                            </table>
+                        }
+                    </center>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <center>
+                        @if (ViewBag.Files != null )
+                        {
+                            <h3 style="margin-top:50px;">User's Files</h3>
+                            <table style="width:60%; margin-top:10px; margin-bottom:30px;">
+                                <tr>
+                                    <th>File Name</th>
+                                    <th>Date/Time</th>
+                                    <th>Get File</th>
+                                    @*<th>Remove File</th>*@
+                                </tr>
+                                @foreach (var channel in ViewBag.Files)
+                                {
+                                    
+                                    <tr>
+                                        <td>@channel.FileName</td>
+                                        <td>@channel.DateTime</td>
+                                        <td><a download="download" href="@channel.FileLink">Get File</a></td>
+                                        @*<td><a href="DeleteFile?fileName=@channel.FileName&email=@ViewBag.Email">Delete File</a></td>*@
+                                    </tr>
+                                   
+                                }
+                            </table>
+                        }
+                    </center>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.7/js/min/perfect-scrollbar.jquery.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+
+@*
+    <h4>Update your Account </h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>Password:</dt>
+        <dd>
+            [
+            @if (Model.HasPassword)
+            {
+                @Html.ActionLink("Change your password", "ChangePassword")
+            }
+            else
+            {
+                @Html.ActionLink("Create", "SetPassword")
+            }
+            ]
+        </dd>
+
+                <dt>External Logins:</dt>
+                <dd>
+                    @Model.Logins.Count [
+                    @Html.ActionLink("Manage", "ManageLogins") ]
+                </dd>
+
+            Phone Numbers can used as a second factor of verification in a two-factor authentication system.
+
+                See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
+                for details on setting up this ASP.NET application to support two-factor authentication using SMS.
+
+                Uncomment the following block after you have set up two-factor authentication
+*@
+@*
+            <dt>Phone Number:</dt>
+            <dd>
+                @(Model.PhoneNumber ?? "None")
+                @if (Model.PhoneNumber != null)
+                {
+                    <br />
+                    <text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
+                    using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <text>[<input type="submit" value="Remove" class="btn-link" />]</text>
+                    }
+                }
+                else
+                {
+                    <text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
+                }
+            </dd>
+
+                    <dt>Two-Factor Authentication:</dt>
+                    <dd>
+                        <p>
+                            There are no two-factor authentication providers configured. See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
+                            for details on setting up this ASP.NET application to support two-factor authentication.
+                        </p>
+                        @if (Model.TwoFactor)
+                {
+                    using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <text>Enabled
+                        <input type="submit" value="Disable" class="btn btn-link" />
+                        </text>
+                    }
+                }
+                else
+                {
+                    using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <text>Disabled
+                        <input type="submit" value="Enable" class="btn btn-link" />
+                        </text>
+                    }
+                }
+        </dd>
+        </dl>
+    </div>
+    </div>
+
+*@

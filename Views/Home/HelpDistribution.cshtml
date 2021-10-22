@@ -1,0 +1,242 @@
+﻿
+@{
+    ViewBag.Title = "Distribution Help";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+    @*<link href="~/Content/app-assets/reset.css" rel="stylesheet" />
+        <link href="~/Content/app-assets/style.css" rel="stylesheet" />*@
+    <script src="~/Content/app-assets/modernizr.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $('.faq_question').click(function () {
+
+                if ($(this).parent().is('.open')) {
+                    $(this).closest('.faq').find('.faq_answer_container').animate({ 'height': '0' }, 500);
+                    $(this).closest('.faq').removeClass('open');
+
+                } else {
+                    var newHeight = $(this).closest('.faq').find('.faq_answer').height() + 'px';
+                    $(this).closest('.faq').find('.faq_answer_container').animate({ 'height': newHeight }, 500);
+                    $(this).closest('.faq').addClass('open');
+                }
+
+            });
+
+        });
+    </script>
+    <style>
+        /*FAQS*/
+        .faq_question {
+            margin: 0px;
+            padding: 0px 0px 5px 0px;
+            display: inline-block;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .faq_answer_container {
+            height: 0px;
+            overflow: hidden;
+            padding: 0px;
+        }
+    </style>
+</head>
+
+<body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
+    <div class="wrapper">
+        <div class="main-panel">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div class="row match-height">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                            <center><label style="font-size:30px; margin-bottom:20px;">Music Distribution Help</label></center>
+                        </div>
+                    </div>
+
+                    <h5 class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">Create new release</h5>
+
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                        <div class="faq_container">
+                            <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">Release Info</div>
+                                <div class="faq_answer_container">
+                                    <div class="faq_answer">
+                                        <p>The first step of the Create New Release Editor is where you will input the basic metadata for the product. Please make note of the following key fields:</p>
+                                        <h6>Release Format:</h6>
+                                        <ul>
+                                            <li>Single
+                                                <ul>
+                                                    <li>Singles must have matching product and track titles.</li>
+                                                    <li>If a product contains a single track, it must be specified as product type Single.</li>
+                                                    <li>If a product contains 3 tracks or less, and has a total duration of 30 minutes or less, it must be specified as product type Single, unless the artist or label intend to release it as an EP, in which case it must be specified as EP.</li>
+                                                    <li>If a product contains the same track with different track versions must be specified as Single, unless the artist or label explicitly call it an EP, in which case it should be specified as EP.</li>
+                                                </ul>
+                                            </li>
+                                            <li>EP
+                                                <ul>
+                                                    <li>If a product contains 4 to 6 tracks, and has a total duration of 30 minutes or less, it must be specified as product type EP, unless the artist or label intend to release it as a Single, in which case it must be specified as Single.</li>
+                                                    <li>If a product contains the same track with different track versions must be specified as Single, unless the artist or label explicitly call it an EP, in which case it should be specified as EP.</li>                                                  
+                                                </ul>
+                                            </li>                                            
+                                            <li>Album
+                                                <ul>
+                                                    <li>If a product contains 6 or more tracks, and has a total duration of 30 minutes or more, it must be specified as product type Album, unless the artist or label intend to release it as a EP, in which case it must be specified as EP.</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                        <div class="faq_container">
+                            <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">Participants</div>
+                                <div class="faq_answer_container">
+                                    <div class="faq_answer">
+                                        <p>Tempo Digital Participants Editor enables users to add as many participants at the release and track levels as required. The role fields allow for free text entry, but Tempo Digital also supports the following list of standard Participant Roles:</p>
+                                        <ul>
+                                            <li>Main Artist - one required at the release and track levels</li>
+                                            <li>Featured Artist - only include at the release level if the Featured Artist is present on each track</li>
+                                            <li>Vocalist</li>
+                                            <li>Producer</li>
+                                            <li>Remixer</li>
+                                            <li>Mixer</li>
+                                            <li>Composer</li>
+                                            <li>Conductor</li>
+                                            <li>Soloist</li>
+                                            <li>Performer</li>
+                                            <li>Arranger</li>
+                                            <li>Song Writer</li>
+                                            <li>Engineer</li>
+                                            <li>Choir</li>
+                                            <li>Orchestra</li>
+                                            <li>Ensemble</li>
+                                            <li>Lyricist</li>
+                                            <li>Publisher</li>
+                                            <li>Other</li>
+                                        </ul>
+                                        <strong>Instructions for Compound Artists</strong>
+                                        <p>A Compound Artist occurs when two or more artists are listed in a single metadata field. This will incur errors on most DSPs. To prevent this, please list each artist name individually with their own Participant Role assignment.</p>
+                                        <p>If a track/release is a collaboration with multiple artists, each artist much be individually credited and assigned the Main Artist, Featured Artist, or Remixer roles. The Display Artist field should include the full Compound Artist name. Please see the example below for correct notation in Tempo Digital:</p>
+                                        <i>Display Artist: JAY-Z & Kanye West feat. Frank Ocean</i><br />
+                                        <i>Main Artist: JAY-Z</i><br />
+                                        <i>Main Artist: Kanye West</i><br />
+                                        <i>Featured Artist: Frank Ocean</i><br />
+                                        <p>*** Any release with five (5) or more Main Artists at the release level in Tempo Digital must be marked as a 'Various Artists' compilation on DSPs.</p> <br />
+                                        <strong>Featured Artist Representation on Spotify</strong>
+                                        <p>As per the Spotify Style Guide, names of Featured Artist should not be listed in release/track titles or title versions. Please do not include parenthetical concatenations of Featured Artists in release/track titles in Tempo Digital. All Featured Artists should be properly credited and assigned the correct role within the Participants Editor.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                        <div class="faq_container">
+                            <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">Various Artists</div>
+                                <div class="faq_answer_container">
+                                    <div class="faq_answer">
+                                        <strong>Album / EP (Release with more than one track)</strong>
+                                        <p>If there are five or more Main artists throughout all the tracks of the release, the release-level Main artist should be listed as Various Artists, with no other participants included. Various Artists must also be listed within the "Display Artist" section of the release level.</p>
+                                        <p>The participants must be listed out on the track level, with the main artists present within the "Display Artist" section. </p>
+                                        <p>Do not insert "Various Artists" as participants on the track level.</p>
+                                        <p>Do not use variations or abbreviations of "Various Artists" (for example, “V/A,” “V.A.,” “Various,” “Various Artist,” or “Varios”).</p>
+                                        <p>Translated versions of "Various Artists" are acceptable as long as they are consistent with the content’s language.</p>
+
+                                        <strong>Single (Release with one track)</strong>
+                                        <p>If a release has only one track, the main artists must all be listed out on the release level, regardless of the amount. This information needs to be copied to the track level with the exact same listing.</p>
+                                        <p>Please do not put "Various Artists" as the display artist if the release has only one track. If a release has 5 or more main artists, the display artist should be stylized as follows:</p>
+                                        <i>Kanye West, Jay-Z, Mos Def, Talib Kweli & Vado.</i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                        <div class="faq_container">
+                            <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">Rights Info</div>
+                                <div class="faq_answer_container">
+                                    <div class="faq_answer">
+                                        <strong>Overview</strong>
+                                        <p>Inclusion of the (C) Info, (P) Info and Rights Holders are necessary to include for any given release in order to be distributed. This information can be found in the "Rights Info" tab of a release.</p>
+                                        <p>Input the (C) and (P) line information in the respective fields along with the Rights Holders of the release. If the corresponding information is consistent across all of the release's tracks, select the Common Rights Info box. </p>
+                                        <p>Uncheck this box when the rights information varies per track -- the (C), (P) and Rights Holders info can then be edited at the track level.</p>
+                                        
+                                        <strong>(C) Info</strong>
+                                        <p>The (C) Info, marked with a ©, is the copyright of the music but not the sound recording itself. The C Line signifies the copyright owner of the music but not recordings of it.</p>
+
+                                        <strong>(P) Info</strong>
+                                        <p>The (P) Info, marked with a ℗, identifies the owner to the rights of a sound recording. Whatever follows the P Line should identify who is the owner of those rights.</p>
+
+                                        <strong>Rights Holders</strong>
+                                        <p>Music Rights Holder means any record label, music publisher, songwriter, artist, photographer, or any other holder of any rights in any sound recording, musical composition, artwork (including album art, liner notes, and other collateral works), chart, music database or other Copyright.</p>
+
+                                        <strong>Representation on the DSPs</strong>
+                                        <p>On most major DSPs, only the P-Line and C-Line information are represented within a release. For example, while Spotify shows both the P & C-Line information, Apple Music / iTunes only show the P-Line information.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                        <div class="faq_container">
+                            <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">Tracks (Songs)</div>
+                                <div class="faq_answer_container">
+                                    <div class="faq_answer">
+                                        <strong>Overview</strong>
+                                        <p>Upload WAV file - Lossless 16-bit, 44.1 kHz audio. This is the recommended file type for import. All other 16-bit file types transcode from this version.</p>
+                                        <ul>
+                                            <li>Track title and Main Artist Name</li>
+                                            <li>ISRC and ISWC (optional) code. Tempo Digital can generate ISRC code for you, if you select "I need ISRC code" checkbox.</li>
+                                            <li>Track version like Remix, Normal...</li>
+                                            <li>Track Copyright Informations - P&C Info - Add sound recording copyright info for each track. This info will be inherited from the release level if the checkbox is selected in the first step Release Info tab. This apply only if you select "SET RIGHTS TO ALL TRACKS. UNCHECK TO SET RIGHTS TO EVERY TRACK SEPARATELY."</li>  
+                                        </ul>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                        <div class="faq_container">
+                            <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">Image (Artwork)</div>
+                                <div class="faq_answer_container">
+                                    <div class="faq_answer">
+                                        <p>Use the Image tab to manually upload and access the release's artwork.</p>
+                                        <strong>Image Specifications</strong>
+                                        <p>Tempo Digital recognizes JPG and PNG files. Please note, image specifications vary from DSP to DSP — for example, iTunes will accept JPEG and PNG file formats in the RGB color space with a minimum size of 1400x1400 pixels (72dpi) and 3000x3000 pixels (72dpi) for the front cover art. Many DSPs, however, require cover art to be 3000x3000 pixels (300dpi). Because of this, it is strongly recommended to size your image at 3000x3000 pixels (300dpi) in the RGB color space in order to be successfully delivered to all DSPs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    @Scripts.Render("~/Content/app-assets/vendors/js/core/jquery-3.2.1.min.js")
+    @Scripts.Render("~/Content/app-assets/vendors/js/core/popper.min.js")
+    @Scripts.Render("~/Content/app-assets/vendors/js/core/bootstrap.min.js")
+    @Scripts.Render("~/Content/app-assets/vendors/js/perfect-scrollbar.jquery.min.js")
+    @Scripts.Render("~/Content/app-assets/vendors/js/prism.min.js")
+    @Scripts.Render("~/Content/app-assets/vendors/js/jquery.matchHeight-min.js")
+    @Scripts.Render("~/Content/app-assets/vendors/js/screenfull.min.js")
+    @Scripts.Render("~/Content/app-assets/vendors/js/pace/pace.min.js")
+</body>
+
+</html>

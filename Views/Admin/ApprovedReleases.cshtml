@@ -1,0 +1,76 @@
+﻿@{
+    ViewBag.Title = "Approved Releases";
+    Layout = "~/Views/Shared/_LayoutPage_Admin.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script>
+        $(document).ready(function () {
+            $.fn.dataTable.moment('MM/DD/YYYY HH:mm:ss ASSS');
+            $('#approved_releases').DataTable({
+                "scrollX": true
+            });
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+</head>
+<body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
+    <div class="wrapper">
+        <div class="main-panel">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div class="row match-height">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px;">
+                                        <h5>Approved Releases</h5>
+                                        <table data-page-length='30' id="approved_releases" style="width:100%;" class="table table-striped table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th style="text-align: center;">First Name</th>
+                                                    <th style="text-align: center;">Last Name</th>
+                                                    <th style="text-align: center;">Email</th>
+                                                    <th style="text-align: center;">Label Name</th>
+                                                    <th style="text-align: center;">Release Name</th>
+                                                    <th style="text-align: center;">UPCEAN</th>
+                                                    <th style="text-align: center;">Date/Time</th>
+                                                    <th style="text-align: center;">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var res in ViewBag.UserDistributions)
+                                                {
+                                                    <tr class="pointer">
+                                                        @foreach (var us in ViewBag.Users)
+                                                        {
+                                                            if (us.Id == res.UserId)
+                                                            {
+                                                                <td style="text-align: center;">@us.FirstName</td>
+                                                                <td style="text-align: center;">@us.LastName</td>
+                                                                <td style="text-align: center;">@us.Email</td>
+                                                                <td style="text-align: center;">@us.LabelName</td>
+                                                            }
+                                                        }
+                                                        <td style="text-align: center;">@res.ReleaseName</td>
+                                                        <td style="text-align: center;">@res.UPCEAN</td>
+                                                        <td style="text-align: center;">@res.Sales_Start_Date@res.MusicReleaseId</td>
+                                                        <td style="text-align: center;"><a href="@Url.Action("ReleaseDistributed", new { id = res.MusicReleaseId })">Distributed</a></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,125 @@
+﻿@{
+    ViewBag.Title = "Release Details";
+    Layout = "~/Views/Shared/_LayoutPage_Admin.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script>
+        $(document).ready(function () {
+            $('#deleted_releases').DataTable({
+                "scrollX": true
+            });
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+</head>
+<body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
+    <div class="wrapper">
+        <div class="main-panel">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div class="row match-height">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px;">
+
+                                        <p>Popup with the list of all releases from this user</p>
+                                        <p>Popup confirmation on Approve this release button and redirect to approved releases page after confirmation</p>
+
+
+                                        <h5>Selected release details</h5>
+
+                                        <div class="col-xl-4 col-lg-12">
+                                            <table class="table table-striped table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <td>First Name</td>
+                                                        <th>@ViewBag.User.FirstName</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Last Name</td>
+                                                        <th>@ViewBag.User.LastName</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Email</td>
+                                                        <th>@ViewBag.User.Email</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                            <button style="width:100%; margin-top:20px;" type="submit" class="btn btn-danger">All releases from this user</button><br>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-12">
+                                            <table class="table table-striped table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <td>Release Name</td>
+                                                        <th>@ViewBag.Dis.ReleaseName</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>UPC Code</td>
+                                                        <th>@ViewBag.Dis.UPCEAN</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Sales Date</td>
+                                                        <th>@ViewBag.Dis.Sales_Start_Date</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+
+                                        </div>
+                                        <div class="col-xl-4 col-lg-12" style="margin-bottom:30px;">
+                                            <center><img src="@ViewBag.Dis.CoverImage" width="250" /></center>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row match-height">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px;">
+                                        <h5>Songs from this release</h5>
+                                        <table class="table table-striped table-bordered table-hover">
+                                            <tr>
+                                                <th>Song Title</th>
+                                                <th>Payment Status</th>
+                                                <th>ISRC</th>
+                                                <th>Song Play</th>
+                                            </tr>
+                                            @foreach (var res in ViewBag.songs)
+                                            {
+                                                <tr class="pointer">
+                                                    <td>@res.SongTitle</td>
+                                                    <td>@ViewBag.Dis.PaymentStaus</td>
+                                                    <td>@res.isrc</td>
+                                                    <td>
+                                                        <center>
+                                                            <audio preload="auto" controls>
+                                                                <source src="@res.SongPath">
+                                                            </audio>
+                                                        </center>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </table>
+                                        <a style="width:100%; margin-top:20px;" href="@Url.Action("ApproveRelease","Admin", new { id = ViewBag.Dis.MusicReleaseId })" class="btn btn-success">Approve this release</a><br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

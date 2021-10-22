@@ -1,0 +1,728 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <head>
+        <style>
+            .loader {
+                border: 16px solid #f3f3f3;
+                border-radius: 50%;
+                border: 16px solid red;
+                padding-top: 10%;
+                width: 200px;
+                height: 200px;
+                -webkit-animation: spin 2s linear infinite;
+                animation: spin 2s linear infinite;
+            }
+            .loadernew {
+                border: 8px solid #f3f3f3;
+                border-radius: 50%;
+                border-top: 8px solid #3498db;
+                width: 80px;
+                height: 80px;
+                -webkit-animation: spin 2s linear infinite; /* Safari */
+                animation: spin 2s linear infinite;
+            }
+        </style>
+    </head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js" type="text/javascript"></script>
+
+
+<script>
+
+    //window.onload = function () {
+    //    $.ajax({
+    //        type: "POST",
+    //        url: "/Home/NewChart1",
+    //        contentType: "application/json; charset=utf-8",
+    //        dataType: "json",
+    //        success: function (chData) {
+    //            var aData = chData;
+    //            var aLabels = aData[0];
+    //            var aDatasets1 = aData[1];
+    //            var aDatasets2 = aData[2];
+    //            var aDatasets3 = aData[3];
+    //            var aDatasets4 = aData[4];
+    //            $('#LoadingChartFirst1').remove();
+    //            $('#chartFirst1').append('<canvas id="myChartNEW1" style=""> </canvas>');
+    //            var ctx = $("#myChartNEW1").get(0).getContext("2d");
+    //            var myNewChart = new Chart(ctx, {
+    //                type: 'bar',
+    //                data: {
+    //                    labels: aLabels,
+    //                    datasets: [
+    //                        {
+    //                            label: "Spotify",
+    //                            backgroundColor: "rgb(34,139,34)",
+    //                            data: aDatasets1
+    //                        }, {
+    //                            label: "Deezer",
+    //                            backgroundColor: "rgb(147,112,219)",
+    //                            data: aDatasets2
+    //                        }, {
+    //                            label: "Google Play",
+    //                            backgroundColor: "rgb(169,169,169)",
+    //                            data: aDatasets3
+    //                        }, {
+    //                            label: "Sound Cloud",
+    //                            backgroundColor: "rgb(255,127,80)",
+    //                            data: aDatasets4
+    //                        }
+    //                    ]
+    //                },
+    //                options: {
+    //                    responsive: true,
+    //                    title: { display: true, text: 'SPOTIFY / DEEZER / GOOGLE PLAY / SOUND COULD ( CHANNELS REVENUE / MONTH )' },
+    //                    legend: { position: 'bottom' },
+    //                    scales: {
+    //                        xAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }],
+    //                        yAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' }, ticks: { beginAtZero: true } }]
+    //                    },
+    //                }
+    //            });
+    //        }
+    //    });
+    //}
+
+    //function getYears() {
+
+        //if ($('#store').val() != "") {
+        //    //alert($('#store').val());
+        //    $.getJSON("/YoutubeAnalytics/GetStoreYears?store=" + $('#store').val(), function (data) {
+        //        $("#months option").remove();
+        //        $("#years option").remove();
+        //        $("#storeName").html("Store Name");
+        //        $("#storeRev").html("$0.00");
+        //        $("#storeImage").attr("src", "");
+        //        if (data) {
+        //           // alert(data);
+        //            $("#years").append('<option value="">-Select Year-</option>');
+        //            $.each(data, function (i, item) {
+        //                $("#years").append('<option value=' + item + '>' + item + '</option>');
+        //            });
+        //        }
+        //    });
+        //}
+    //}
+
+    //function getMonths() {
+    //    if ($('#store').val() != "" && $('#years').val() != "") {
+    //        //alert($('#store').val());
+    //        $.getJSON("/YoutubeAnalytics/GetStoreMonths?store=" + $('#store').val() + "&year=" + $('#years').val(), function (data) {
+    //            $("#months option").remove();
+    //            if (data) {
+    //                //alert(data);
+    //                $("#months").append('<option value="">-Select Month-</option>');
+    //                $.each(data, function (i, item) {
+    //                    $("#months").append('<option value=' + item + '>' + item + '</option>');
+    //                });
+    //            }
+    //        });
+    //    }
+    //}
+
+    function getStoreData() {
+        $("#storeName").html("-");
+        $("#storeRev").html("$0.00");
+        $("#storeImage").empty();
+        if ($('#store').val() != "" && $('#years').val() != "" && $('#months').val() != "") {
+            $("#storeImage").append(`<div class="loadernew"></div>`);
+            $.getJSON("/YoutubeAnalytics/GetStoreData?store=" + $('#store').val() + "&year=" + $('#years').val() + "&month=" + $('#months').val(), function (data) {
+                //$("#months option").remove();
+                 $("#storeImage").empty();
+                if (data) {
+                    $("#storeName").html($('#store').val());
+                    $("#storeRev").html("$" + data);
+
+                    if ($('#store').val() == "Spotify") {
+                        $('#storeImage').append(`<img src="https://tpdigital.blob.core.windows.net/logo/spotify.png" alt="" width="70" height="70">`);
+                        //$("#storeImage").attr("src", "https://tpdigital.blob.core.windows.net/logo/spotify.png");
+                    }
+                    if ($('#store').val() == "Deezer") {
+                         $('#storeImage').append(`<img src="https://tpdigital.blob.core.windows.net/logo/deezer-icon-png-2.pngg" alt="" width="70" height="70">`);
+                        //$("#storeImage").attr("src", "https://tpdigital.blob.core.windows.net/logo/deezer-icon-png-2.png");
+                    }
+                    if ($('#store').val() == "GooglePlay") {
+                         $('#storeImage').append(`<img src="https://tpdigital.blob.core.windows.net/logo/452-4523198_play-music-png-google-play-music-icon-png.png" alt="" width="70" height="70">`);
+                        //$("#storeImage").attr("src", "https://tpdigital.blob.core.windows.net/logo/452-4523198_play-music-png-google-play-music-icon-png.png");
+                    }
+                    if ($('#store').val() == "SoundCloud") {
+                         $('#storeImage').append(`<img src="https://tpdigital.blob.core.windows.net/logo/soundcloud.png" alt="" width="70" height="70">`);
+                        //$("#storeImage").attr("src", "https://tpdigital.blob.core.windows.net/logo/soundcloud.png");
+                    }
+                }
+                else {
+                    $("#storeName").html("No Record Found");
+                    $("#storeRev").html("$0.00");
+
+                    if ($('#store').val() == "Spotify") {
+                        $('#storeImage').append(`<img src="https://tpdigital.blob.core.windows.net/logo/spotify.png" alt="" width="70" height="70">`)
+                        //$("#storeImage").attr("src", "https://tpdigital.blob.core.windows.net/logo/spotify.png");
+                    }
+                    if ($('#store').val() == "Deezer") {
+                        $('#storeImage').append(`<img src="https://tpdigital.blob.core.windows.net/logo/deezer-icon-png-2.png" alt="" width="70" height="70">`)
+                        //$("#storeImage").attr("src", "https://tpdigital.blob.core.windows.net/logo/deezer-icon-png-2.png");
+                    }
+                    if ($('#store').val() == "GooglePlay") {
+                        $('#storeImage').append(`<img src="https://tpdigital.blob.core.windows.net/logo/452-4523198_play-music-png-google-play-music-icon-png.png" alt="" width="70" height="70">`)
+                        //$("#storeImage").attr("src", "https://tpdigital.blob.core.windows.net/logo/452-4523198_play-music-png-google-play-music-icon-png.png");
+                    }
+                    if ($('#store').val() == "SoundCloud") {
+                        $('#storeImage').append(`<img src="https://tpdigital.blob.core.windows.net/logo/soundcloud.png" alt="" width="70" height="70">`)
+                        //$("#storeImage").attr("src", "https://tpdigital.blob.core.windows.net/logo/soundcloud.png");
+                    }
+                }
+            });
+        }
+    }
+
+    function getStoreDataYearly() {
+        $("#storeNameYearly").html("-");
+        $("#storeRevYearly").html("$0.00");
+         $("#storeImageYearly").empty();
+        if ($('#storeNameYear').val() != "" && $('#yearsYearly').val() != "" ) {
+             $("#storeImageYearly").append(`<div class="loadernew"></div>`);
+            $.getJSON("/YoutubeAnalytics/GetStoreDataYearly?store=" + $('#storeNameYear').val() + "&year=" + $('#yearsYearly').val() , function (data) {
+                //$("#months option").remove();
+                $("#storeImageYearly").empty();
+                if (data) {
+                    $("#storeNameYearly").html($('#storeNameYear').val());
+                    $("#storeRevYearly").html("$" + data);
+                     
+                    if ($('#storeNameYear').val() == "Spotify") {
+                        $('#storeImageYearly').append(`<img src="https://tpdigital.blob.core.windows.net/logo/spotify.png" alt="" width="70" height="70">`);
+                        //$("#storeImageYearly").attr("src", "https://tpdigital.blob.core.windows.net/logo/spotify.png");
+                    }
+                    if ($('#storeNameYear').val() == "Deezer") {
+                        $('#storeImageYearly').append(`<img src="https://tpdigital.blob.core.windows.net/logo/deezer-icon-png-2.png" alt="" width="70" height="70">`);
+                        //$("#storeImageYearly").attr("src", "https://tpdigital.blob.core.windows.net/logo/deezer-icon-png-2.png");
+                    }
+                    if ($('#storeNameYear').val() == "GooglePlay") {
+                        $('#storeImageYearly').append(`<img src="https://tpdigital.blob.core.windows.net/logo/452-4523198_play-music-png-google-play-music-icon-png.png" alt="" width="70" height="70">`);
+                        //$("#storeImageYearly").attr("src", "https://tpdigital.blob.core.windows.net/logo/452-4523198_play-music-png-google-play-music-icon-png.png");
+                    }
+                    if ($('#storeNameYear').val() == "SoundCloud") {
+                        $('#storeImageYearly').append(`<img src="https://tpdigital.blob.core.windows.net/logo/soundcloud.png" alt="" width="70" height="70">`);
+                        //$("#storeImageYearly").attr("src", "https://tpdigital.blob.core.windows.net/logo/soundcloud.png");
+                    }
+                }
+                else {
+                    $("#storeNameYearly").html("No Record Found");
+                    $("#storeRevYearly").html("$0.00");
+
+                    if ($('#storeNameYear').val() == "Spotify") {
+                        $('#storeImageYearly').append(`<img src="https://tpdigital.blob.core.windows.net/logo/spotify.png" alt="" width="70" height="70">`);
+                        //$("#storeImageYearly").attr("src", "https://tpdigital.blob.core.windows.net/logo/spotify.png");
+                    }
+                    if ($('#storeNameYear').val() == "Deezer") {
+                        $('#storeImageYearly').append(`<img src="https://tpdigital.blob.core.windows.net/logo/deezer-icon-png-2.png" alt="" width="70" height="70">`);
+                        //$("#storeImageYearly").attr("src", "https://tpdigital.blob.core.windows.net/logo/deezer-icon-png-2.png");
+                    }
+                    if ($('#storeNameYear').val() == "GooglePlay") {
+                        $('#storeImageYearly').append(`<img src="https://tpdigital.blob.core.windows.net/logo/452-4523198_play-music-png-google-play-music-icon-png.png" alt="" width="70" height="70">`);
+                        //$("#storeImageYearly").attr("src", "https://tpdigital.blob.core.windows.net/logo/452-4523198_play-music-png-google-play-music-icon-png.png");
+                    }
+                    if ($('#storeNameYear').val() == "SoundCloud") {
+                        $('#storeImageYearly').append(`<img src="https://tpdigital.blob.core.windows.net/logo/soundcloud.png" alt="" width="70" height="70">`);
+                        //$("#storeImageYearly").attr("src", "https://tpdigital.blob.core.windows.net/logo/soundcloud.png");
+                    }
+                }
+            });
+        }
+    }
+
+    function getStoreDataLabel() {
+        $("#storeNameLabel").html("-");
+        $("#storeRevLabel").html("$0.00");
+        $("#storeImageLabel").empty();
+        if ($('#storeLab').val() != "" && $('#yearsLabel').val() != "" && $('#monthsLabel').val() != "" && $('#Label').val() != "") {
+            $("#storeImageLabel").append(`<div class="loadernew"></div>`);
+            $.getJSON("/YoutubeAnalytics/GetStoreDataLabel?store=" + $('#storeLab').val() + "&year=" + $('#yearsLabel').val() + "&month=" + $('#monthsLabel').val() + "&label=" + $('#Label').val(), function (data) {
+                //$("#months option").remove();
+                $("#storeImageLabel").empty();
+                if (data) {
+                    $("#storeNameLabel").html($('#storeLab').val());
+                    $("#storeRevLabel").html("$" + data);
+
+                    if ($('#storeLab').val() == "Spotify") {
+                        $('#storeImageLabel').append(`<img src="https://tpdigital.blob.core.windows.net/logo/spotify.png" alt="" width="70" height="70">`);
+                        //$("#storeImageLabel").attr("src", "https://tpdigital.blob.core.windows.net/logo/spotify.png");
+                    }
+                    if ($('#storeLab').val() == "Deezer") {
+                        $('#storeImageLabel').append(`<img src="https://tpdigital.blob.core.windows.net/logo/deezer-icon-png-2.png" alt="" width="70" height="70">`);
+                        //$("#storeImageLabel").attr("src", "https://tpdigital.blob.core.windows.net/logo/deezer-icon-png-2.png");
+                    }
+                    if ($('#storeLab').val() == "GooglePlay") {
+                        $('#storeImageLabel').append(`<img src="https://tpdigital.blob.core.windows.net/logo/452-4523198_play-music-png-google-play-music-icon-png.png" alt="" width="70" height="70">`);
+                        //$("#storeImageLabel").attr("src", "https://tpdigital.blob.core.windows.net/logo/452-4523198_play-music-png-google-play-music-icon-png.png");
+                    }
+                    if ($('#storeLab').val() == "SoundCloud") {
+                         $('#storeImageLabel').append(`<img src="https://tpdigital.blob.core.windows.net/logo/soundcloud.png" alt="" width="70" height="70">`);
+                        //$("#storeImageLabel").attr("src", "https://tpdigital.blob.core.windows.net/logo/soundcloud.png");
+                    }
+                }
+                else {
+                    $("#storeNameLabel").html("No Record Found");
+                    $("#storeRevLabel").html("$0.00");
+
+                    if ($('#storeLab').val() == "Spotify") {
+                        $('#storeImageLabel').append(`<img src="https://tpdigital.blob.core.windows.net/logo/spotify.png" alt="" width="70" height="70">`);
+                        //$("#storeImageLabel").attr("src", "https://tpdigital.blob.core.windows.net/logo/spotify.png");
+                    }
+                    if ($('#storeLab').val() == "Deezer") {
+                        $('#storeImageLabel').append(`<img src="https://tpdigital.blob.core.windows.net/logo/deezer-icon-png-2.png" alt="" width="70" height="70">`);
+                        //$("#storeImageLabel").attr("src", "https://tpdigital.blob.core.windows.net/logo/deezer-icon-png-2.png");
+                    }
+                    if ($('#storeLab').val() == "GooglePlay") {
+                         $('#storeImageLabel').append(`<img src="https://tpdigital.blob.core.windows.net/logo/452-4523198_play-music-png-google-play-music-icon-png.png" alt="" width="70" height="70">`);
+                        //$("#storeImageLabel").attr("src", "https://tpdigital.blob.core.windows.net/logo/452-4523198_play-music-png-google-play-music-icon-png.png");
+                    }
+                    if ($('#storeLab').val() == "SoundCloud") {
+                         $('#storeImageLabel').append(`<img src="https://tpdigital.blob.core.windows.net/logo/soundcloud.png" alt="" width="70" height="70">`);
+                        //$("#storeImageLabel").attr("src", "https://tpdigital.blob.core.windows.net/logo/soundcloud.png");
+                    }
+                }
+            });
+        }
+    }
+
+</script>
+
+<!-- main menu-->
+<!--.main-menu(class="#{menuColor} #{menuOpenType}", class=(menuShadow == true ? 'menu-shadow' : ''))-->
+<!-- Navbar (Header) Ends-->
+<div class="main-panel">
+    <div class="main-content">
+        <div class="content-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <center>
+                        <label style="font-size:30px; margin-bottom: 30px;">
+                            <b>ANALYTICS</b>
+                        </label>
+                    </center>
+                </div>
+            </div>
+            <!--Statistics cards Starts-->
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="px-3 py-3">
+                                <div class="media">
+                                    <div class="media-body text-left">
+                                        <h2 class="mb-1 danger">@ViewBag.TotalSongs</h2>
+                                        <h5>Total Tracks<br /> Distributed</h5>
+                                    </div>
+                                    <div class="media-right align-self-center">
+                                        <!--<img src="https://tpdigital.blob.core.windows.net/logo/youtube.png" alt="" width="70" height="70">-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="px-3 py-3">
+                                <div class="media">
+                                    <div class="media-body text-left">
+                                        <h2 class="mb-1 danger">@ViewBag.TotalReleases</h2>
+                                        <h5>Total Releases<br /> Distributed</h5>
+                                    </div>
+                                    <div class="media-right align-self-center">
+                                        <!--<img src="https://tpdigital.blob.core.windows.net/logo/youtube.png" alt="" width="70" height="70">-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-lg-6">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <div class="card">
+                            <div class="card">
+                                <a href="~/MusicReleases/Index">
+                                    <div class="card-content">
+                                        <div class="px-3 py-3">
+                                            <div class="media">
+                                                <div class="media-body text-left">
+                                                    <h2 class="mb-1 danger">$@ViewBag.SpotifyEarningLastMonth</h2>
+                                                    <h5>Spotify<br /> Last Month</h5>
+                                                </div>
+                                                <div class="media-right align-self-center">
+                                                    <img src="https://tpdigital.blob.core.windows.net/logo/Icons/spotify.png" alt="" height="70">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <div class="card">
+                            <div class="card">
+                                <a href="~/MusicReleases/Index">
+                                    <div class="card-content">
+                                        <div class="px-3 py-3">
+                                            <div class="media">
+                                                <div class="media-body text-left">
+                                                    <h2 class="mb-1 danger">$@ViewBag.DeezersEarningLastMonth</h2>
+                                                    <h5>Deezer<br /> Last Month</h5>
+                                                </div>
+                                                <div class="media-right align-self-center">
+                                                    <img src="https://tpdigital.blob.core.windows.net/logo/Icons/deezer.png" alt="" height="70">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <div class="card">
+                            <div class="card">
+                                <a href="~/MusicReleases/Index">
+                                    <div class="card-content">
+                                        <div class="px-3 py-3">
+                                            <div class="media">
+                                                <div class="media-body text-left">
+                                                    <h2 class="mb-1 danger">$@ViewBag.GooglePlayEarningLastMonth</h2>
+                                                    <h5>Google Play <br />Last Month</h5>
+                                                </div>
+                                                <div class="media-right align-self-center">
+                                                    <img src="https://tpdigital.blob.core.windows.net/logo/Icons/google-play-music.png" alt="" height="70">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <div class="card">
+                            <div class="card">
+                                <a href="~/MusicReleases/Index">
+                                    <div class="card-content">
+                                        <div class="px-3 py-3">
+                                            <div class="media">
+                                                <div class="media-body text-left">
+                                                    <h2 class="mb-1 danger">$@ViewBag.SoundCloudEarningLastMonth</h2>
+                                                    <h5>Sound Cloud<br /> Last Month</h5>
+                                                </div>
+                                                <div class="media-right align-self-center">
+                                                    <img src="https://tpdigital.blob.core.windows.net/logo/Icons/soundcloud.png" alt="" height="70">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <div class="card">
+                            <div class="card">
+                                <a href="~/MusicReleases/Index">
+                                    <div class="card-content">
+                                        <div class="px-3 py-3">
+                                            <div class="media">
+                                                <div class="media-body text-left">
+                                                    <h2 class="mb-1 danger">$@ViewBag.AppleEarningLastMonth</h2>
+                                                    <h5>Apple<br /> Last Month</h5>
+                                                </div>
+                                                <div class="media-right align-self-center">
+                                                    <img src="https://tpdigital.blob.core.windows.net/logo/Icons/apple.png" alt="" height="70">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <div class="card">
+                            <div class="card">
+                                <a href="~/MusicReleases/Index">
+                                    <div class="card-content">
+                                        <div class="px-3 py-3">
+                                            <div class="media">
+                                                <div class="media-body text-left">
+                                                    <h2 class="mb-1 danger">$@ViewBag.TidalEarningLastMonth</h2>
+                                                    <h5>Tidals<br /> Last Month</h5>
+                                                </div>
+                                                <div class="media-right align-self-center">
+                                                    <img src="https://tpdigital.blob.core.windows.net/logo/Icons/tidal.png" alt="" height="70">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <div class="card">
+                            <div class="card">
+                                <a href="~/MusicReleases/Index">
+                                    <div class="card-content">
+                                        <div class="px-3 py-3">
+                                            <div class="media">
+                                                <div class="media-body text-left">
+                                                    <h2 class="mb-1 danger">$@ViewBag.PandoraEarningLastMonth</h2>
+                                                    <h5>Pandora <br />Last Month</h5>
+                                                </div>
+                                                <div class="media-right align-self-center">
+                                                    <img src="https://tpdigital.blob.core.windows.net/logo/Icons/pandora.png" alt="" height="70">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <div class="card">
+                            <div class="card">
+                                <a href="~/MusicReleases/Index">
+                                    <div class="card-content">
+                                        <div class="px-3 py-3">
+                                            <div class="media">
+                                                <div class="media-body text-left">
+                                                    <h2 class="mb-1 danger">$@ViewBag.NapsterEarningLastMonth</h2>
+                                                    <h5>Napster<br /> Last Month</h5>
+                                                </div>
+                                                <div class="media-right align-self-center">
+                                                    <img src="https://tpdigital.blob.core.windows.net/logo/Icons/napster.png" alt="" height="70">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                @*<div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <div style="width:100%;height:330px;">
+                        <div style="width:100%;height:330px;" id="chartFirst1">
+                            <center><div class="loader" style="margin-top:20px;" id="LoadingChartFirst1">Loading Chart Data...</div></center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>*@
+            </div>
+
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-lg-6">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <div class="card">
+                            <div class="card">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                    <select id="store" class="form-control " onchange="getStoreData()">
+                                        <option selected value="">--Select Store--</option>
+                                        <option value="Spotify">Spotify</option>
+                                        <option value="Deezer">Deezer</option>
+                                        <option value="GooglePlay">Google Play</option>
+                                        <option value="SoundCloud">Sound Cloud</option>
+                                    </select>
+                                </div>
+                                <div style="margin-top:3%;" class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                    <select id="years" class="form-control " onchange="getStoreData()">
+                                        <option selected value="">-Select Year-</option>
+                                        <option value="2019">2019</option>
+                                        <option value="2020">2020</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2022">2022</option>
+                                    </select>
+                                </div>
+                                <div style="margin-top:3%;" class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                    <select id="months" class="form-control " onchange="getStoreData()">
+                                        <option selected value="">-Select Month-</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <div class="card">
+                            <div class="card">
+                                <a href="">
+                                    <div class="card-content">
+                                        <div class="px-3 py-3">
+                                            <div class="media">
+                                                <div class="media-body text-left">
+                                                    <h2 class="mb-1 danger" id="storeRev">$0.00</h2>
+                                                    <h5 id="storeName">-</h5>
+                                                </div>
+                                                <div class="media-right align-self-center" id="storeImage">
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <div class="card">
+                            <div class="card">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                    <select id="storeNameYear" style="margin-top:5%;" class="form-control " onchange="getStoreDataYearly()">
+                                        <option selected value="">--Select Store--</option>
+                                        <option value="Spotify">Spotify</option>
+                                        <option value="Deezer">Deezer</option>
+                                        <option value="GooglePlay">Google Play</option>
+                                        <option value="SoundCloud">Sound Cloud</option>
+                                    </select>
+                                </div>
+                                <div style="margin-top:5%;" class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                    <select id="yearsYearly" class="form-control " onchange="getStoreDataYearly()">
+                                        <option selected value="">-Select Year-</option>
+                                        <option value="2019">2019</option>
+                                        <option value="2020">2020</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2022">2022</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <div class="card">
+                            <div class="card">
+                                <a href="">
+                                    <div class="card-content">
+                                        <div class="px-3 py-3">
+                                            <div class="media">
+                                                <div class="media-body text-left">
+                                                    <h2 class="mb-1 danger" id="storeRevYearly">$0.00</h2>
+                                                    <h5 id="storeNameYearly">-</h5>
+                                                </div>
+                                                <div class="media-right align-self-center" id="storeImageYearly">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-lg-6">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <div class="card">
+                            <div class="card">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                    <select id="Label" class="form-control " onchange="getStoreDataLabel()">
+                                        <option selected value="">--Select Label--</option>
+                                        @foreach (var x in ViewBag.Labels)
+                                        {
+                                            <option value="@x">@x</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div style="margin-top:3%;" class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                    <select id="storeLab" class="form-control " onchange="getStoreDataLabel()">
+                                        <option selected value="">--Select Store--</option>
+                                        <option value="Spotify">Spotify</option>
+                                        <option value="Deezer">Deezer</option>
+                                        <option value="GooglePlay">Google Play</option>
+                                        <option value="SoundCloud">Sound Cloud</option>
+                                    </select>
+                                </div>
+                                <div style="margin-top:3%;" class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                    <select id="yearsLabel" class="form-control " onchange="getStoreDataLabel()">
+                                        <option selected value="">-Select Year-</option>
+                                        <option value="2019">2019</option>
+                                        <option value="2020">2020</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2022">2022</option>
+                                    </select>
+                                </div>
+                                <div style="margin-top:3%;" class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                    <select id="monthsLabel" class="form-control " onchange="getStoreDataLabel()">
+                                        <option selected value="">-Select Month-</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                        <div class="card">
+                            <div class="card">
+                                <a href="">
+                                    <div class="card-content">
+                                        <div class="px-3 py-3">
+                                            <div class="media">
+                                                <div class="media-body text-left">
+                                                    <h2 class="mb-1 danger" id="storeRevLabel">$0.00</h2>
+                                                    <h5 id="storeNameLabel">-</h5>
+                                                </div>
+                                                <div class="media-right align-self-center" id="storeImageLabel">
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

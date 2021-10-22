@@ -1,0 +1,74 @@
+﻿@model List<TempoDigitalApex3.Models.YoutubeConnect>
+@{
+    ViewBag.Title = "YouTube Connect Requests";
+    Layout = "~/Views/Shared/_LayoutPage_Admin.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script>
+        $(document).ready(function () {
+
+            $('#myTable5').DataTable({
+                "scrollX": true,
+                "order": [[7, "desc"]]
+            });
+
+        });
+    </script>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+</head>
+<body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
+    <div class="wrapper">
+        <div class="main-panel">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div class="row match-height">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px;">
+                                        <table data-order='[[ 7, "desc" ]]' data-page-length='15' id="myTable5" style="width:100%;" class="table table-striped table-bordered table-hover display">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Status</th>
+                                                    <th>Contract</th>
+                                                    <th>Account Status</th>
+                                                    <th>Application Status</th>
+                                                    <th>Stat</th>
+                                                    <th>Country</th>
+                                                    <th>Created</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @for (int i = 0; i < Model.Count; i++)
+                                                {
+                                                <tr>
+
+                                                    <td><img src="@Model[i].ImageURL" alt="Avatar" style="border-radius: 50%;width:50px"> <a href="@Url.Action("YoutubeConnectDetailsAdmin","Admin",new { Id = Model[i].Id })">@Model[i].FirstName @Model[i].LastName</a></td>
+                                                    <td>@Model[i].Status</td>
+                                                    <td>Open</td>
+                                                    <td>@Model[i].AccountStatus</td>
+                                                    <td>@Model[i].Status</td>
+                                                    <td><i class="fa fa-address-book"></i> @Model[i].SubscribersCount Suscribers</td>
+                                                    <td>@Model[i].Country</td>
+                                                    <td>@Model[i].Created</td>
+                                                </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

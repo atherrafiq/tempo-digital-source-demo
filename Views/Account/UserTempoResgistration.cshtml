@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "Register - Tempo Digital";
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- MATERIAL DESIGN ICONIC FONT -->
+    <link rel="stylesheet" href="~/Content/NewTemplate/fonts/material-design-iconic-font/css/material-design-iconic-font.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- STYLE CSS -->
+    <link rel="stylesheet" href="~/Content/NewTemplate/css/style.css">
+    
+    <script>
+
+    </script>
+</head>
+
+<body background='~/Content/NewTemplate/images/bg-registration-form-2.jpg' style="background-repeat:no-repeat;  background-size:100% 100%;">
+
+    <div class="wrapper">
+        <div class="inner">
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal" }))
+            {
+                @Html.AntiForgeryToken()
+                <h3>Registration Form</h3>
+                @Html.ValidationSummary("", new { @class = "text-danger" })
+                <div class="form-group">
+                    <div class="form-wrapper">
+                        <label>First Name</label>
+                        <input class="form-control" />
+                    </div>
+                    <div class="form-wrapper">
+                        <label>Last Name</label>
+                        <input class="form-control" />
+                    </div>
+                </div>
+                <div class="form-wrapper">
+                    <label>Email</label>
+                    <input class="form-control" />
+                </div>
+                <div class="form-wrapper">
+                    <label>Confirm Email</label>
+                    <input class="form-control" />
+                </div>
+                <div class="form-wrapper">
+                    <label>Country</label>
+                    <input class="form-control" />
+                </div>
+                <div class="form-group">
+                    <div class="form-wrapper">
+                        <label>State</label>
+                        <input class="form-control" />
+                    </div>
+                    <div class="form-wrapper">
+                        <label>Province</label>
+                        <input class="form-control" />
+                    </div>
+                </div>
+                
+                
+                <button type="submit">SAVE</button>
+            }
+            @section Scripts {
+                @Scripts.Render("~/bundles/jqueryval")
+            }
+        </div>
+    </div>
+
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</html>

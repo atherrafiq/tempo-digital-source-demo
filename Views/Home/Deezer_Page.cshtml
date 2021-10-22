@@ -1,0 +1,170 @@
+﻿@{
+    ViewBag.Title = "Spotify Analytics";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+</head>
+
+<body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
+    <div class="wrapper">
+        <div class="main-panel">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div class="row match-height">
+                        <div class="col-xl-12 col-lg-12">
+
+
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px">
+                                        <p>Full Analytics</p>
+                                        <form method="get">
+                                            <select name="year" required style="margin-bottom:10px" class="form-control ">
+                                                <option selected value="">-Select Year-</option>
+                                                <option value="2021">2021</option>
+                                            </select>
+                                            <select name="month" required style="margin-bottom:10px" class="form-control">
+                                                <option selected value="">-Select Month-</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7" disabled>7</option>
+                                                <option value="8" disabled>8</option>
+                                                <option value="9" disabled>9</option>
+                                                <option value="10" disabled>10</option>
+                                                <option value="11" disabled>11</option>
+                                                <option value="12" disabled>12</option>
+                                            </select>
+                                            <input name="full" value="full" type="hidden" />
+                                            <button style="width:100%;" type="submit" class="btn btn-success">Full report in HTML</button>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px">
+                                        <img src="https://tpdigital.blob.core.windows.net/logo/Icons/deezer.png" alt="" width="150px" style="padding:5px">
+                                        <div class="row match-height">
+
+                                            <form method="GET" class="col-xl-12 col-lg-12">
+                                                <div class="col-xl-6 col-lg-12">
+                                                    <select class="form-control" name="id" required>
+                                                        <option value="">-Select Release-</option>
+                                                        @foreach (var r in ViewBag.Releases)
+                                                        {
+                                                            <option value="@r.MusicReleaseId">@r.ReleaseName</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-12">
+                                                    <select name="year" class="form-control" required>
+                                                        <option value="">-Select Year-</option>
+                                                        <option value="2019">2019</option>
+                                                        <option value="2020">2020</option>
+                                                        <option value="2021">2021</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-12">
+                                                    <select name="month" class="form-control" required>
+                                                        <option value="">-Select Month-</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="6">6</option>
+                                                        <option value="7">7</option>
+                                                        <option value="8">8</option>
+                                                        <option value="9">9</option>
+                                                        <option value="10">10</option>
+                                                        <option value="11">11</option>
+                                                        <option value="12">12</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-12">
+                                                    <button style="width:100%;" type="submit" class="btn btn-danger">Get data</button>
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row match-height">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Release Name</th>
+                                                    <th>UPC</th>
+                                                    <th>Track Name</th>
+                                                    <th>ISRC</th>
+                                                    <th>Country</th>
+                                                    <th>Artist</th>
+                                                    <th>Album</th>
+                                                    <th>Views</th>
+                                                    <th>Revenue</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.Spotify != null)
+                                                {
+                                                    if (ViewBag.Count == 0)
+                                                    {
+                                                        <tr>
+                                                            <td colspan="9"><center><label>No Record Found..!</label></center></td>
+                                                        </tr>
+                                                    }
+                                                    foreach (var x in ViewBag.Spotify)
+                                                    {
+                                                        <tr>
+                                                            <td>@ViewBag.Name</td>
+                                                            <td>@x.UPC</td>
+                                                            <td>@x.Title</td>
+                                                            <td>@x.ISRC</td>
+                                                            <td>@x.Country</td>
+                                                            <td>@x.Artist</td>
+                                                            <td>@x.Album</td>
+                                                            <td>@x.Nb_of_plays</td>
+                                                            <td>@x.Royalties</td>
+                                                        </tr>
+                                                    }
+                                                }
+
+                                            </tbody>
+                                        </table>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+</html>

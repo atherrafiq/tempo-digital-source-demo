@@ -1,0 +1,197 @@
+﻿@{
+    ViewBag.Title = "Settings";
+    Layout = "~/Views/Shared/_LayoutPage_Admin.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script>
+        $(document).ready(function () {
+            $('#monthly_paid').DataTable({
+                "scrollX": true
+            });
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+</head>
+<body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
+    <div class="wrapper">
+        <div class="main-panel">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div class="row match-height">
+                        <div class="col-xl-8 col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px;">
+                                        <h5>Youtube Settings</h5>
+                                        <form method="post" action="@Url.Action("saveMailTemplate","Admin")">
+                                            <p>Accept channel email template</p>
+                                            @if (ViewBag.AcceptChannel != null)
+                                            {
+                                                <textarea class="form-control" name="AcceptChannel" style="width:100%;" id="accept_channel_email_template" rows="3">@ViewBag.AcceptChannel.template</textarea>
+
+                                            }
+                                            else
+                                            {
+                                                <textarea class="form-control" name="AcceptChannel" style="width:100%;" id="accept_channel_email_template" rows="3"></textarea>
+
+                                            }
+                                            <p style="margin-top:20px;">Decline channel email template</p>
+                                            @if (ViewBag.DeclineChannel != null)
+                                            {
+                                                <textarea class="form-control" name="DeclineChannel" style="width:100%;" id="decline_channel_email_template" rows="3">@ViewBag.DeclineChannel.template</textarea>
+                                            }
+                                            else
+                                            {
+                                                <textarea class="form-control" name="DeclineChannel" style="width:100%;" id="decline_channel_email_template" rows="3"></textarea>
+                                            }
+
+
+                                            <h5 style="margin-top:50px;">Distribution email templates</h5>
+                                            <p style="margin-top:30px;">Distribution created email template</p>
+                                            @if (ViewBag.DistributionCreated != null)
+                                            {
+                                                <textarea class="form-control" name="DistributionCreated" style="width:100%;" id="accept_channel_email_template" rows="3">@ViewBag.DistributionCreated.template</textarea>
+                                            }
+                                            else
+                                            {
+                                                <textarea class="form-control" name="DistributionCreated" style="width:100%;" id="accept_channel_email_template" rows="3"></textarea>
+                                            }
+                                            <p style="margin-top:30px;">Distribution updated email template</p>
+                                            @if (ViewBag.DistributionUpdated != null)
+                                            {
+                                                <textarea class="form-control" name="DistributionUpdated" style="width:100%;" id="accept_channel_email_template" rows="3">@ViewBag.DistributionUpdated.template</textarea>
+                                            }
+                                            else
+                                            {
+                                                <textarea class="form-control" name="DistributionUpdated" style="width:100%;" id="accept_channel_email_template" rows="3"></textarea>
+                                            }
+                                            <p style="margin-top:30px;">Distribution deleted email template</p>
+                                            @if (ViewBag.DistributionDeleted != null)
+                                            {
+                                                <textarea class="form-control" name="DistributionDeleted" style="width:100%;" id="accept_channel_email_template" rows="3">@ViewBag.DistributionDeleted.template</textarea>
+                                            }
+                                            else
+                                            {
+                                                <textarea class="form-control" name="DistributionDeleted" style="width:100%;" id="accept_channel_email_template" rows="3"></textarea>
+                                            }
+
+
+                                            <h5 style="margin-top:50px;">Reporting email templates</h5>
+                                            <p style="margin-top:30px;">Youtube report send email template</p>
+                                            @if (ViewBag.YoutubeReport != null)
+                                            {
+                                                <textarea class="form-control" name="YoutubeReport" style="width:100%;" id="accept_channel_email_template" rows="3">@ViewBag.YoutubeReport.template</textarea>
+                                            }
+                                            else
+                                            {
+                                                <textarea class="form-control" name="YoutubeReport" style="width:100%;" id="accept_channel_email_template" rows="3">@ViewBag.YoutubeReport.template</textarea>
+                                            }
+                                            <p style="margin-top:30px;">Distribution report send email template</p>
+                                            @if (ViewBag.DistributionReport != null)
+                                            {
+                                                <textarea class="form-control" name="DistributionReport" style="width:100%;" id="accept_channel_email_template" rows="3">@ViewBag.DistributionReport.template</textarea>
+                                            }
+                                            else
+                                            {
+                                                    <textarea class="form-control" name="DistributionReport" style="width:100%;" id="accept_channel_email_template" rows="3"></textarea>
+                                            }
+
+                                            <h5 style="margin-top:50px;">Account email templates</h5>
+                                            <p style="margin-top:30px;">New registration email template</p>
+                                            @if (ViewBag.NewRegistration != null)
+                                            {
+                                                <textarea class="form-control" name="NewRegistration" style="width:100%;" id="accept_channel_email_template" rows="3">@ViewBag.NewRegistration.template</textarea>
+                                            }
+                                            else
+                                            {
+                                                <textarea class="form-control" name="NewRegistration" style="width:100%;" id="accept_channel_email_template" rows="3"></textarea>
+                                            }
+                                            <p style="margin-top:30px;">Changed Password email template</p>
+                                            @if (ViewBag.ChangePassword != null)
+                                            {
+                                                <textarea class="form-control" name="ChangePassword" style="width:100%;" id="accept_channel_email_template" rows="3">@ViewBag.ChangePassword.template</textarea>
+                                            }
+                                            else
+                                            {
+                                                <textarea class="form-control" name="ChangePassword" style="width:100%;" id="accept_channel_email_template" rows="3"></textarea>
+                                            }
+                                            <p style="margin-top:30px;">Account confirmation email template</p>
+                                            @if (ViewBag.AccountConfirmation != null)
+                                            {
+                                                <textarea class="form-control" name="AccountConfirmation" style="width:100%;" id="accept_channel_email_template" rows="3">@ViewBag.AccountConfirmation.template</textarea>
+                                            }
+                                            else
+                                            {
+                                                <textarea class="form-control" name="AccountConfirmation" style="width:100%;" id="accept_channel_email_template" rows="3"></textarea>
+                                            }
+                                            <button value="Save Changes" style="width:100%; margin-top:20px;" type="submit" class="btn btn-success">Save Changes</button><br>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="col-xl-4 col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px;">
+                                        <h5>Email Settings</h5>
+                                        <form method="post" action="@Url.Action("saveMailAddress","Admin")">
+                                            <p style="margin-top:30px;">Youtube email address</p>
+                                            @if (ViewBag.YoutubeEmail != null)
+                                            {
+                                                <input type="text" class="form-control" name="YoutubeEmail" value="@ViewBag.YoutubeEmail.template" />
+                                            }
+                                            else
+                                            {
+                                                <input type="text" class="form-control" name="YoutubeEmail" />
+                                            }
+
+                                            <p style="margin-top:20px;">Distribution email address</p>
+                                            @if (ViewBag.DistEmail != null)
+                                            {
+                                                <input type="text" class="form-control" name="DistEmail" value="@ViewBag.DistEmail.template" />
+                                            }
+                                            else
+                                            {
+                                                <input type="text" class="form-control" name="DistEmail" value="" />
+                                            }
+
+                                            <p style="margin-top:20px;">Support email address</p>
+                                            @if (ViewBag.SupportEmail != null)
+                                            {
+                                                <input type="text" class="form-control" name="SupportEmail" value="@ViewBag.SupportEmail.template"/>
+                                            }
+                                            else
+                                            {
+                                                <input type="text" class="form-control" name="SupportEmail" value=""/>
+                                            }
+
+                                            <p style="margin-top:20px;">Minimum number of subscribers</p>
+                                            @if (ViewBag.MinimumSubs != null)
+                                            {
+                                                <input type="text" class="form-control" name="MinimumSubs" value="@ViewBag.MinimumSubs.template"/>
+                                            }
+                                            else
+                                            {
+                                                <input type="text" class="form-control" name="MinimumSubs" value=""/>
+                                            }
+
+                                            <button value="Save Changes" style="width:100%; margin-top:20px;" type="submit" class="btn btn-success">Save Changes</button><br>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

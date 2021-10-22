@@ -1,0 +1,343 @@
+﻿@model List<TempoDigitalApex3.Models.YoutubeConnect>
+@{
+    ViewBag.Title = "YouTube Payments";
+    Layout = "~/Views/Shared/_LayoutPage_Admin.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            $('#payments').DataTable({
+                "scrollX": true,
+                "order": [[5, "desc"]]
+            });
+        });
+
+        googleApiClientReady = function () {
+            gapi.auth.init(function () {
+                window.setTimeout(checkAuth, 1);
+            });
+        }
+
+        function checkAuth() {
+            handleAuthResult();
+        }
+
+        function handleAuthResult() {
+            loadAPIClientInterfaces();
+        }
+
+        function loadAPIClientInterfaces() {
+            gapi.client.load("https://youtubeanalytics.googleapis.com/$discovery/rest?version=v2")
+                .then(function () {
+                    console.log("GAPI client loaded for API");
+                    handleAPILoaded();
+                },
+                    function (err) { console.error("Error loading GAPI client for API", err); });
+        }
+
+        var token = @Html.Raw(Json.Encode(ViewBag.Token));
+        function handleAPILoaded() {
+            //alert(token);
+            gapi.client.setToken({ access_token: token });
+
+            if (month != '0' && year != '0') {
+                start = new Date();
+                start = start.setFullYear(year);
+                start = new Date(start);
+                start = start.setMonth(parseInt(month) - 1);
+                start = new Date(start);
+                start = new Date(start.getFullYear(), start.getMonth(), 1);
+                end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+                startDate = start.getFullYear() + "-" + ("0" + (start.getMonth() + 1)).slice(-2) + "-" + ("0" + start.getDate()).slice(-2);
+                endDate = end.getFullYear() + "-" + ("0" + (end.getMonth() + 1)).slice(-2) + "-" + ("0" + end.getDate()).slice(-2);
+
+                //alert(startDate)
+                executeMusic1(startDate, endDate);
+            }
+        }
+
+
+        var month = @Html.Raw(Json.Encode(ViewBag.Month));
+        var year = @Html.Raw(Json.Encode(ViewBag.Year));
+
+        var startDate = null;
+        var endDate = null;
+
+        var MusicEarnings = 0;
+        var EntEarnings = 0;
+        //$('#totalEarnings').text("$ " + total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+
+        function executeMusic1(startDate, endDate) {
+            return gapi.client.youtubeAnalytics.reports.query({
+                "currency": "USD",
+                "dimensions": "day",
+                "endDate": endDate,
+                "filters": "claimedStatus==claimed",
+                "ids": "contentOwner==PuL6c--O0J3ZkNaWtTV1RA",
+                "metrics": "estimatedRevenue,estimatedMinutesWatched,views,subscribersGained",
+                "startDate": startDate,
+                "startIndex": "1"
+            })
+                .then(function (response) {
+                    var earnings = [];
+                    $.each(response.result.rows, function (i, item) {
+                        earnings.push(item[1]);
+                    });
+
+                    MusicEarnings = Math.round(earnings.reduce((a, b) => a + b, 0) * 100) / 100;
+                    executeEnt1(startDate, endDate);
+
+                },
+                    function (err) { console.error("Execute error", err); });
+        }
+
+        function executeEnt1(startDate, endDate) {
+            return gapi.client.youtubeAnalytics.reports.query({
+                "currency": "USD",
+                "dimensions": "day",
+                "endDate": endDate,
+                "filters": "claimedStatus==claimed",
+                "ids": "contentOwner==cwoucXAu09H80RrnqGyO9w",
+                "metrics": "estimatedRevenue,estimatedMinutesWatched,views,subscribersGained",
+                "startDate": startDate,
+                "startIndex": "1"
+            })
+                .then(function (response) {
+                    var earnings = [];
+                    $.each(response.result.rows, function (i, item) {
+                        earnings.push(item[1]);
+                    });
+
+                    EntEarnings = Math.round(earnings.reduce((a, b) => a + b, 0) * 100) / 100;
+
+                    loadData();
+                },
+                    function (err) { console.error("Execute error", err); });
+        }
+
+        function loadData() {
+            //alert(MusicEarnings)
+            //alert(EntEarnings)
+
+            var MusicIncome = MusicEarnings;
+            var EntMusicIncome = EntEarnings;
+
+            var MusicOutcome =  @Html.Raw(Json.Encode(ViewBag.MusicOutcome));
+            var EntMusicOutcome =  @Html.Raw(Json.Encode(ViewBag.EntMusicOutcome));
+
+            var MusicTotal = parseFloat(MusicIncome) - parseFloat(MusicOutcome);
+            MusicTotal = Math.round((MusicTotal + Number.EPSILON) * 100) / 100;
+            var EntTotal = parseFloat(EntMusicIncome) - parseFloat(EntMusicOutcome);
+            EntTotal = Math.round((EntTotal + Number.EPSILON) * 100) / 100;
+
+            $('#music_income').html('<b>Income:</b> $' + MusicIncome.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#music_outcome').html('<b>Outcome:</b> $' + MusicOutcome.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#music_total').html('<b>Total:</b> $' + MusicTotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+
+            $('#ent_income').html('<b>Income:</b> $' + EntMusicIncome.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#ent_outcome').html('<b>Outcome:</b> $' + EntMusicOutcome.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#ent_total').html('<b>Total:</b> $' + EntTotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+
+            var AllIncome = parseFloat(MusicIncome) + parseFloat(EntMusicIncome);
+            AllIncome = Math.round((AllIncome + Number.EPSILON) * 100) / 100;
+
+            var AllOutcome = parseFloat(MusicOutcome) + parseFloat(EntMusicOutcome);
+            AllOutcome = Math.round((AllOutcome + Number.EPSILON) * 100) / 100;
+
+            var AllTotal = parseFloat(AllIncome) - parseFloat(AllOutcome);
+            AllTotal = Math.round((AllTotal + Number.EPSILON) * 100) / 100;
+
+            $('#all_income').html('<b>Income:</b> $' + AllIncome.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#all_outcome').html('<b>Outcome:</b> $' + AllOutcome.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#all_total').html('<b>Total:</b> $' + AllTotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        }
+
+    </script>
+
+    <script src="https://apis.google.com/js/client.js?onload=googleApiClientReady"></script>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+</head>
+
+    <body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
+        <div class="wrapper">
+            <div class="main-panel">
+                <div class="main-content">
+                    <div class="content-wrapper">
+                        <div class="row match-height">
+                            <div class="col-xl-12 col-lg-12">
+                                <div class="card">
+                                    <div class="card-content">
+                                        <form method="GET">
+                                            <div class="card-body" style="padding:10px;">
+                                                <div class="col-xl-3 col-lg-12">
+                                                    <select name="year" class="form-control" required>
+                                                        <option value="">-Select Year-</option>
+                                                        <option value="2019">2019</option>
+                                                        <option value="2020">2020</option>
+                                                        <option value="2021">2021</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-12">
+                                                    <select name="month" class="form-control" required>
+                                                        <option value="">-Select Month-</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="6">6</option>
+                                                        <option value="7">7</option>
+                                                        <option value="8">8</option>
+                                                        <option value="9">9</option>
+                                                        <option value="10">10</option>
+                                                        <option value="11">11</option>
+                                                        <option value="12">12</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-xl-6 col-lg-12">
+                                                    <button style="width:100%;" type="submit" class="btn btn-danger">Get Data</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row match-height">
+                            <div class="col-xl-12 col-lg-12">
+                                <div class="card">
+                                    <div class="card-content">
+                                        <div class="card-body" style="padding:10px;">
+
+                                            <div class="col-xl-4 col-lg-12">
+                                                <h5>Music Network</h5>
+                                                <p id="music_income">Income: $---</p>
+                                                <p id="music_outcome">Outcome: $--- </p>
+                                                <p id="music_total">Total: $---</p>
+                                            </div>
+                                            <div class="col-xl-4 col-lg-12">
+                                                <h5>Entertainment Network</h5>
+                                                <p id="ent_income">Income: $---</p>
+                                                <p id="ent_outcome">Outcome: $--- </p>
+                                                <p id="ent_total">Total: $---</p>
+                                            </div>
+                                            <div class="col-xl-4 col-lg-12">
+                                                <h5>All Networks</h5>
+                                                <p id="all_income">Income: $---</p>
+                                                <p id="all_outcome">Outcome: $--- </p>
+                                                <p id="all_total">Total: $---</p>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row match-height">
+                            <div class="col-xl-12 col-lg-12">
+                                <div class="card">
+                                    <div class="card-content">
+                                        <div class="card-body" style="padding:10px;">
+                                            <table data-page-length='50' id="payments" style="width:100%;" class="table table-striped table-bordered table-hover display">
+                                                @*<thead>
+            <tr>
+                <th>Network</th>
+                <th>User</th>
+                <th>Email</th>
+                <th>Channel Name</th>
+                <th>Channel ID</th>
+                <th>Share</th>
+                <th>Income</th>
+                <th>Paid</th>
+                <th>Date Paid</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (ViewBag.FinalList != null)
+            {
+                foreach (var x in ViewBag.FinalList)
+                {
+                    <tr>
+                        <td>@x.network</td>
+                        <td>@x.user</td>
+                        <td>@x.email</td>
+                        <td>@x.channelName</td>
+                        <td>@x.channellID</td>
+                        <td>@x.share</td>
+                        <td>@x.income</td>
+                        <td>@x.paid</td>
+                        <td>@x.datePaid</td>
+                        <td>@x.total</td>
+                    </tr>
+                }
+            }
+
+        </tbody>*@
+                                                <thead>
+                                                    <tr>
+                                                        <th>User</th>
+                                                        <th>Music Network Amount</th>
+                                                        <th>Music Network Month / Year</th>
+                                                        <th>Entertainment Network Amount</th>
+                                                        <th>Entertainment Network Month / Year</th>
+                                                        <th>Date/Time</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (ViewBag.FinalList != null)
+                                                    {
+                                                        foreach (var x in ViewBag.FinalList)
+                                                        {
+                                                            <tr>
+                                                                <td>@x.User</td>
+                                                                <td>$@x.MusicAmount</td>
+                                                                <td>@x.Music_Month / @x.Music_Year</td>
+                                                                <td>$@x.EntAmount</td>
+                                                                <td>@x.Ent_Month / @x.Ent_Year</td>
+                                                                <td>@x.Date_Time</td>
+                                                                @if (x.Is_Paid)
+                                                                {
+                                                                    <td>
+                                                                        Paid
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td>
+                                                                        Not Paid
+                                                                    </td>
+                                                                }
+                                                            </tr>
+                                                        }
+                                                    }
+
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+
+</html>

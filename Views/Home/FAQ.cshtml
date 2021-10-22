@@ -1,0 +1,335 @@
+﻿
+@{
+    ViewBag.Title = "Help";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+    <link href="~/Content/app-assets/reset.css" rel="stylesheet" />
+    <link href="~/Content/app-assets/style.css" rel="stylesheet" />
+    <script src="~/Content/app-assets/modernizr.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $('.faq_question').click(function () {
+
+                if ($(this).parent().is('.open')) {
+                    $(this).closest('.faq').find('.faq_answer_container').animate({ 'height': '0' }, 500);
+                    $(this).closest('.faq').removeClass('open');
+
+                } else {
+                    var newHeight = $(this).closest('.faq').find('.faq_answer').height() + 'px';
+                    $(this).closest('.faq').find('.faq_answer_container').animate({ 'height': newHeight }, 500);
+                    $(this).closest('.faq').addClass('open');
+                }
+
+            });
+
+        });
+    </script>
+    <style>
+        /*FAQS*/
+        .faq_question {
+            margin: 0px;
+            padding: 0px 0px 5px 0px;
+            display: inline-block;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .faq_answer_container {
+            height: 0px;
+            overflow: hidden;
+            padding: 0px;
+        }
+    </style>
+</head>
+
+    <body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
+        <div class="wrapper">
+            <div class="main-panel">
+                <div class="main-content">
+                    <div class="content-wrapper">
+                        <div class="row match-height">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <center><label style="font-size:30px; margin-bottom:20px;">Music Distribution</label></center>
+                            </div>
+
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <div class="faq_container">
+                                    <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                        <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">What is Digital Music Distribution?</div>
+                                        <div class="faq_answer_container">
+                                            <div class="faq_answer">
+                                                <p style="font-size:18px; font-family:Lato;">
+                                                    Music distribution is the link between your finished record and your future fans.
+                                                    Distribution is a crucial part of music promotion.
+                                                    Brick and mortar music distributors used to be the only way for record labels and independent artists to get their records in the hands of listeners.
+                                                    Music distribution is how music gets delivered to the listener. Traditionally, distributors enter agreements with record labels to sell to stores.
+                                                    However, digital distribution changed all of that by cutting out the middleman—allowing artists to distribute music directly to online stores while keeping 100% of their royalties.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <div class="faq_container">
+                                    <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                        <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">Why Tempo Digital?</div>
+                                        <div class="faq_answer_container">
+                                            <div class="faq_answer">
+                                                <p style="font-size:18px; font-family:Lato;">
+                                                    When an artist releases their music with us, we distribute to more than 45 streaming platforms, including the giants: Spotify, Apple Music, Deezer, Amazon and iTunes.
+                                                    But also the less common ones like Shazam, Beatport and 7 Digital.
+                                                    After processing, it becomes available to stream and download all over the world and you will earn royalties every time a track is streamed or downloaded.
+                                                    We pay artists 100% of their royalties in monthly sales reports via PayPal or Bank account.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <div class="faq_container">
+                                    <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                        <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">Tempo Digital is the Platform</div>
+                                        <div class="faq_answer_container">
+                                            <div class="faq_answer">
+                                                <p style="font-size:18px; font-family:Lato;">
+                                                    With us, you can distribute your music to almost all music stores all over the world in just few clicks, you can get realtime analytics, you can download your monthly reports, you can analyze and compare your releases in all stores.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <div class="faq_container">
+                                    <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                        <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">What about UPC/EAN and ISRC codes?</div>
+                                        <div class="faq_answer_container">
+                                            <div class="faq_answer">
+                                                <p style="font-size:18px; font-family:Lato;">
+                                                    UPC/EAN is the unique release code. ISRC is the unique code for the song. We provide all codes for free, id you don't have your own codes. You cannot distribute your music without codes.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <div class="faq_container">
+                                    <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                        <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">Music Distribution Payments and Reports</div>
+                                        <div class="faq_answer_container">
+                                            <div class="faq_answer">
+                                                <p style="font-size:18px; font-family:Lato;">
+                                                    We provide full analytics and reports from all music stores, so you can see details for all your release for every store. The system provides detailed report and we pay every month.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <center><label style="        font-size: 30px;
+        margin-bottom: 20px;
+">Youtube MCN abd Content ID</label></center>
+                            </div>
+
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <div class="faq_container">
+                                    <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                        <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">How do MCNs work?</div>
+                                        <div class="faq_answer_container">
+                                            <div class="faq_answer">
+                                                <p style="font-size:18px; font-family:Lato;">
+                                                    On YouTube, multi-channel networks (or MCNs) are organizations set up to manage multiple video content creators, primarily YouTubers and YouTube channels.
+                                                    MCNs work directly with YouTube and are given access to a content management system (CMS)—a system that enables a MCN to manage multiple partner channels and, in a case by case basis, they are given tools to implement Content ID.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <div class="faq_container">
+                                    <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                        <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">What is YouTube Content ID</div>
+                                        <div class="faq_answer_container">
+                                            <div class="faq_answer">
+                                                <p style="font-size:18px; font-family:Lato;">
+                                                    Content ID is a tool that allows copyright owners to identify and manage their content on YouTube. Every video that is uploaded is scanned against reference files that content owners have uploaded into the CMS. If a match is found, YouTube takes action in accordance with the rules or instructions that the content owner programmed in Content ID.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <div class="faq_container">
+                                    <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                        <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">Why to connect to our MCN?</div>
+                                        <div class="faq_answer_container">
+                                            <div class="faq_answer">
+                                                <p style="font-size:18px; font-family:Lato;">
+                                                    When a channel joins a MCN, some additional tools within the channel dashboard are unlocked to optimize and claim content. Networks offer various types of support such as production and editing tools, funding, monetization assistance, cross-promotion with other channels as well as digital rights management.
+                                                    In addition to the abovementioned services, MCNs can provide other advantages like production support and training as well as studio spaces complete with cameras, sets, wardrobes and green screens. They can provide creators with channel growth strategies, website support and the opportunity to collaborate with other YouTubers within the network.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <div class="faq_container">
+                                    <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                        <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">We have very high CPM</div>
+                                        <div class="faq_answer_container">
+                                            <div class="faq_answer">
+                                                <p style="font-size:18px; font-family:Lato;">
+                                                    Content monetization on YouTube can be very confusing for creators since the CPM fluctuates constantly with demand and seasonality. CPM stands for Cost Per Mille (also referred to as cost per thousand), which is the amount of money generated per 1,000 impressions (ad views). For example, if your channel gets an average CPM of $5 and you generate 1,000,000 ad views, you will earn $5,000.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <div class="faq_container">
+                                    <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                        <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">Music or Entertainment MCN?</div>
+                                        <div class="faq_answer_container">
+                                            <div class="faq_answer">
+                                                <p style="font-size:18px; font-family:Lato;">
+                                                    We have two MCNs, music and entertainment. If you are an artist or band you can connect your channel to our Music MCN. We protect your music rights, based on your music distribution and UPC/EAN and ISRC codes.
+                                                    <br>If you are an gamer or you have a TV channel you can connect your channel to our Entertainment MCN so we can protect your rights.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <div class="faq_container">
+                                    <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                        <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">Analytics vs Payments</div>
+                                        <div class="faq_answer_container">
+                                            <div class="faq_answer">
+                                                <p style="font-size:18px; font-family:Lato;">
+                                                    Youtube Analytics option is a real-time analytic from the Youtube. You can see details for all your channel including CPM data. <br>
+                                                    Youtube Payments option can show you payments charts, tables and history for payments and shares, based on YouTube Reporting feature.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <center><label style="font-size:30px; margin-bottom:20px;">Account</label></center>
+                            </div>
+
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <div class="faq_container">
+                                    <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                        <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">How do I change my password?</div>
+                                        <div class="faq_answer_container">
+                                            <div class="faq_answer">
+                                                <p style="font-size:18px; font-family:Lato;">
+                                                    If you want to change your password, you can go to Account/Edit Account and go to Change Password link.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <div class="faq_container">
+                                    <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                        <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">How do I delete my account?</div>
+                                        <div class="faq_answer_container">
+                                            <div class="faq_answer">
+                                                <p style="font-size:18px; font-family:Lato;">
+                                                    If you want to delete your account, you have to write an email to us (support@tempodigital.org). We will delete your account. Please make sure you have a copy of your work before you delete the account.
+                                                    We have to delete all releases from stores and we have to make sure you don't have any channel connect to our MCNs.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <div class="faq_container">
+                                    <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                        <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">I forgot my password. How do I reset it?</div>
+                                        <div class="faq_answer_container">
+                                            <div class="faq_answer">
+                                                <p style="font-size:18px; font-family:Lato;">
+                                                    If you want to reset your password, you can click on Reset my password link on login page and follow the instructions.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <center><label style="font-size: 30px;margin-bottom: 20px;">Payments</label></center>
+                            </div>
+
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <div class="faq_container">
+                                    <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                        <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">Can I have an invoice for my payments?</div>
+                                        <div class="faq_answer_container">
+                                            <div class="faq_answer">
+                                                <p style="font-size:18px; font-family:Lato;">
+                                                    The system provides self-billings for every report and we pay based on that. So, you will have self-billings for every month. Also, you can download reports in pdf or html.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                <div class="faq_container">
+                                    <div class="faq" style="box-shadow: 2px 2px 5px grey; margin-bottom: 20px; padding:10px;">
+                                        <div class="faq_question" style="font-size:20px; font-family:Lato; margin-bottom:10px;">How do you pay?</div>
+                                        <div class="faq_answer_container">
+                                            <div class="faq_answer">
+                                                <p style="font-size:18px; font-family:Lato;">
+                                                    We pay on your PayPal or bank account every month if you reach $70, based on our Agreement. You can define this in you account settings.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </body>
+
+    <script src="~/Content/app-assets/jquery-2.1.1.js"></script>
+    <script src="~/Content/app-assets/jquery.mobile.custom.min.js"></script>
+    <script src="~/Content/app-assets/main.js"></script>
+</html>

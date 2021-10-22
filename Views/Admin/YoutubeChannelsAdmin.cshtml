@@ -1,0 +1,71 @@
+﻿@model List<TempoDigitalApex3.Models.YoutubeConnect>
+@{
+    ViewBag.Title = "YouTube Channels";
+    Layout = "~/Views/Shared/_LayoutPage_Admin.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script>
+        $(document).ready(function () {
+            $('#channels_list').DataTable({
+                "scrollX": true
+            });
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+</head>
+    <body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
+        <div class="wrapper">
+            <div class="main-panel">
+                <div class="main-content">
+                    <div class="content-wrapper">
+                        <div class="row match-height">
+                            <div class="col-xl-12 col-lg-12">
+                                <div class="card">
+                                    <div class="card-content">
+                                        <div class="card-body" style="padding:10px;">                                            
+                                            <table data-order='[[ 5, "desc" ]]' data-page-length='20' style="width:100%" id="channels_list" class="table table-striped table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Network</th>
+                                                        <th>User</th>
+                                                        <th>Email</th>
+                                                        <th>Channel Name</th>
+                                                        <th>Channel ID</th>
+                                                        <th>Share</th>
+                                                        <th>Claims Standing</th>
+                                                        <th>Strikes Standing</th>
+                                                        <th>Community Standing</th>                                                        
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach(var x in ViewBag.List)
+                                                    {
+                                                    <tr>
+                                                        <td>@x.network</td>
+                                                        <td>@x.user</td>
+                                                        <td>@x.email</td>
+                                                        <td>@x.channelName</td>
+                                                        <td>@x.channellID</td>
+                                                        <td>@x.share</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

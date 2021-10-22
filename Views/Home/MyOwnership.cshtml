@@ -1,0 +1,151 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <style>
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border: 16px solid red;
+            padding-top: 10%;
+            width: 200px;
+            height: 200px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+    </style>
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<script>
+
+    window.onload = function () {
+        $.ajax({
+            type: "POST",
+            url: "/Home/NewChart",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (chData) {
+                var aData = chData;
+                var aLabels = aData[0];
+                var aDatasets1 = aData[1];
+                var aDatasets2 = aData[2];
+                $('#LoadingChartFirst').remove();
+                $('#chartFirst').append('<canvas id="myChartNEW"  height="110"> </canvas>');
+                var ctx = $("#myChartNEW").get(0).getContext("2d");
+                var myNewChart = new Chart(ctx, {
+                    type: 'bar',
+                    data:{
+                        labels: aLabels,
+                        datasets: [
+                            {
+                                label: "Youtube",
+                                backgroundColor: "rgb(255,0,0)",
+                                data: aDatasets1
+                            }, {
+                                label: "Entertainment",
+                                backgroundColor: "rgb(139,0,0)",
+                                data: aDatasets2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        title: { display: true, text: 'YOUTUBE/ENT NETWORK( CHANNELS REVENUE / MONTH )' },
+                        legend: { position: 'bottom' },
+                        scales: {
+                            xAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }],
+                            yAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' }, ticks: {  beginAtZero: true } }]
+                        },
+                    }
+                });
+            }
+        });
+    }
+
+</script>
+
+<div class="main-panel">
+    <div class="main-content">
+        <div class="content-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <center>
+                        <label style="font-size:30px; margin-bottom: 30px;">
+                            <b>YOUTUBE ANALYTICS</b>
+                        </label>
+                    </center>
+                </div>
+            </div>
+            <!--Statistics cards Starts-->
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                        <div class="card">
+                            <div class="card">
+                                <a href="~/YoutubeAnalytics/Index">
+                                    <div class="card-content">
+                                        <div class="px-3 py-3">
+                                            <div class="media">
+                                                <div class="media-body text-left">
+                                                    <h2 class="mb-1 danger">$@ViewBag.YoutubeEarningLastMonth</h2>
+                                                    <h5>Youtube<br /> Last Month</h5>
+                                                </div>
+                                                <div class="media-right align-self-center">
+                                                    <img src="https://tpdigital.blob.core.windows.net/logo/youtube.png" alt="" width="70" height="70">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                        <div class="card">
+                            <div class="card">
+                                <a href="~/YoutubeEntAnalytics/Index">
+                                    <div class="card-content">
+                                        <div class="px-3 py-3">
+                                            <div class="media">
+                                                <div class="media-body text-left">
+                                                    <h2 class="mb-1 danger">$@ViewBag.YoutubeEntEarningLastMonth</h2>
+                                                    <h5>Youtube<br /> Entertainment</h5>
+                                                </div>
+                                                <div class="media-right align-self-center">
+                                                    <img src="https://tpdigital.blob.core.windows.net/logo/youtube.png" alt="" width="70" height="70">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="width:100%;height:380px;" id="chartFirst">
+                                <center><div class="loader" id="LoadingChartFirst">Loading Chart Data...</div></center>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-lg-6">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

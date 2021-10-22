@@ -1,0 +1,460 @@
+﻿@{
+    ViewBag.Title = "User Management";
+    Layout = "~/Views/Shared/_LayoutPage_Admin.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                "scrollX": true
+            });
+
+            //$('#myTable1').DataTable({
+            //    "scrollX": true
+            //});
+
+            $('#myTable2').DataTable({
+                "scrollX": true
+            });
+
+            $('#myTable3').DataTable({
+                "scrollX": true
+            });
+
+            $('#myTable4').DataTable({
+                "scrollX": true
+            });
+        });
+
+        function show_active_users() {
+            $('.allusers').show();
+            $('.inactiveusers').hide();
+            if ($.fn.dataTable.isDataTable("#myTable1") == false) {
+                $('#myTable1').DataTable({
+                    "scrollX": true
+                });
+            }
+            
+        }
+
+        function show_inactive_users() {
+            $('.allusers').hide();
+            $('.inactiveusers').show();
+
+        }
+    </script>
+
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+</head>
+<body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
+    <div class="wrapper">
+        <div class="main-panel">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div class="row match-height">
+
+                        <div class="col-xl-12 col-lg-12 inactiveusers">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px">
+                                        <button onclick="show_active_users()" class="btn btn-outline-info">Show All Users</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 allusers" style="display: none;">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px">
+                                        <button onclick="show_inactive_users()" class="btn btn-outline-info">Show Inactive Users</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 inactiveusers">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px">
+                                        <table data-order='[[ 5, "desc" ]]' data-page-length='15' id="myTable" style="width:100%;" class="table table-striped table-bordered table-hover display">
+                                            <thead>
+                                                <tr>
+                                                    <th>Last Name</th>
+                                                    <th>First Name</th>
+                                                    <th>Email</th>
+                                                    <th>Label Name</th>
+                                                    <th>Atrist Name</th>
+                                                    <th>Date/Time</th>
+                                                    <th>Action</th>
+                                                    @*<th>Details</th>*@
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var x in ViewBag.UserList)
+                                                {
+                                                    if (!x.isActive)
+                                                    {
+                                                        <tr>
+                                                            <td>@x.LastName</td>
+                                                            <td>@x.FirstName</td>
+                                                            <td>@x.Email</td>
+                                                            <td>@x.LabelName</td>
+                                                            <td>@x.AtristName</td>
+                                                            <td>@x.DateTimeCreated</td>
+                                                            <td>
+                                                                @if (!x.isActive)
+                                                                {
+                                                                    <a href="@Url.Action("ActivateUser", "Admin", new { id=x.Id })" class="btn btn-success">Activate</a>
+                                                                }
+                                                                else
+                                                                {
+                                                            <a href="@Url.Action("DisableUser","Admin", new { id=x.Id })" class="btn btn-danger">Deactivate</a>
+                                                                }
+                                                            </td>
+                                                            @*<td><a href="javascript::" onclick="getLists('@x.Email')">Details</a></td>*@
+                                                        </tr>
+                                                    }
+
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 allusers" style="display: none;">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px">
+                                        <table data-order='[[ 0, "desc" ]]' data-page-length='15' id="myTable1" style="width:100%;" class="table table-striped table-bordered table-hover display">
+                                            <thead>
+                                                <tr>
+                                                    <th>Last Name</th>
+                                                    <th>First Name</th>
+                                                    <th>Email</th>
+                                                    <th>Label Name</th>
+                                                    <th>Atrist Name</th>
+                                                    <th>Share</th>
+                                                    <th>Action</th>
+                                                    <th>Details</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var x in ViewBag.UserList)
+                                                {
+                                                    <tr>
+                                                        <td>@x.LastName</td>
+                                                        <td>@x.FirstName</td>
+                                                        <td>@x.Email</td>
+                                                        <td>@x.LabelName</td>
+                                                        <td>@x.AtristName</td>
+                                                        <td>@x.share</td>
+                                                        <td>
+                                                            @if (!x.isActive)
+                                                            {
+                                                                <a href="@Url.Action("ActivateUser", "Admin", new { id=x.Id })" class="btn btn-success">Activate</a>
+                                                            }
+                                                            else
+                                                            {
+                                                                <a href="@Url.Action("DisableUser","Admin", new { id=x.Id })" class="btn btn-danger">Deactivate</a>
+                                                            }
+                                                        </td>
+                                                        <td><a href="javascript::" onclick="getLists('@x.Email')">Details</a></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="row match-height allusers" style="display: none;">
+                        <div class="col-xl-4 col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px">
+                                        <p> Account details</p>
+
+                                        <form action="~/Admin/UpdateUser" method="post" style="width:100%;">
+
+                                            <input type="hidden" name="Email" id="updateUserEmail" value="">
+
+                                            <p style="margin-bottom:0px">User Share</p>
+                                            <input placeholder="User Share" name="UserShare" id="UserShare" type="number" class="form-control" />
+
+                                            <p style="margin-bottom:0px">Bank Name</p>
+                                            <input placeholder="Bank Name" name="BankName" id="BankName" type="text" class="form-control" />
+
+                                            <p style="margin-bottom:0px; margin-top:10px;">Bank Address</p>
+                                            <input placeholder="Bank Address" name="BankAddress" id="BankAddress" type="text" class="form-control" />
+
+                                            <p style="margin-bottom:0px; margin-top:10px;">Bank Country</p>
+                                            <input placeholder="Bank Country" name="BankCountry" id="BankCountry" type="text" class="form-control" />
+
+                                            <p style="margin-bottom:0px; margin-top:10px;">Bank Email</p>
+                                            <input placeholder="Bank Email" id="BankEmail" type="email" class="form-control" />
+
+                                            <p style="margin-bottom:0px; margin-top:10px;">Bank IBAN</p>
+                                            <input placeholder="Bank IBAN" name="BankIBAN" id="BankIBAN" type="number" class="form-control" />
+
+                                            <p style="margin-bottom:0px; margin-top:10px;">Company Name</p>
+                                            <input placeholder="Company Name" name="CompanyName" id="CompanyName" type="text" class="form-control" />
+
+                                            <p style="margin-bottom:0px; margin-top:10px;">Company Address</p>
+                                            <input placeholder="Company Address" name="CompanyAddress" id="CompanyAddress" type="text" class="form-control" />
+
+                                            <p style="margin-bottom:0px; margin-top:10px;">Contact Number</p>
+                                            <input placeholder="Contact Number" name="ContactNumber" id="ContactNumber" type="number" class="form-control" />
+
+                                            <hr />
+
+                                            <p style="margin-bottom:0px; margin-top:10px;">Paypal Email</p>
+
+                                            <input placeholder="Paypal Email" name="PaypalEmail" id="PaypalEmail" type="email" class="form-control" />
+
+                                            <button value="Save Changes" style="width:100%; margin-top:20px;" type="submit" class="btn btn-danger">Save Changes</button><br>
+                                            @*<input style="width:80%; margin-bottom:20px;" type="submit" value="Save Changes" />*@
+                                            <hr />
+                                        </form>
+
+
+                                        <p> Document management</p>
+                                        <form action="~/Admin/UploadFile" id="uploadFileForm" method="post" style="width:100%;" enctype="multipart/form-data" onsubmit="uploadFileForm(event)">
+
+                                            <p style="margin-bottom:0px">Title</p>
+                                            <input placeholder="File Title" name="FileTitle" required type="text" class="form-control" />
+
+                                            <p style="margin-bottom:0px;margin-top:10px">Select File Here</p>
+                                            <input required type="file" name="file" class="form-control" accept="application/pdf" />
+
+                                            <button value="Upload File" style="width:100%; margin-top:20px;" type="submit" class="btn btn-danger">Upload File</button><br>
+                                            @*<input style="margin-top:20px; margin-bottom:50px;" type="submit" value="Upload File" />*@
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-8 col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px">
+
+                                        <h5> Client's Property</h5>
+
+                                        <p>YouTube Channels</p>
+                                        <table id="myTable2" style="width:100%;" class="table table-striped table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Channel Name</th>
+                                                    <th>Channel ID</th>
+                                                    <th>Network</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+
+                                        <p style="margin-top:50px;">User' Uploaded Files list</p>
+                                        <table id="myTable3" style="width:100%;" class="table table-striped table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>File Name</th>
+                                                    <th>Date/Time</th>
+                                                    <th>Get File</th>
+                                                    <th>Remove File</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+
+                                        @*<p style="margin-top:50px;">Release list</p>
+                    <table id="myTable4" style="width:100%;" class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>File Name</th>
+                                <th>Date Time</th>
+                                <th>Get File</th>
+                                <th>Remove File</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 alert alert-danger" id="alertDiv" style="font-size:20px; width:100%; display:none;">
+                        <center>
+                            <strong>Alert..!</strong> <span id="alertText">First Select User form User' Table (By Clicking on Details Link)</span>
+                        </center>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var userEmail = null;
+        $(document).ready(function () {
+            $('#myTable tr').dblclick(function () {
+                if (this.rowIndex > 0) {
+                    getLists($("#myTable").find('tr').eq(this.rowIndex).find('td').eq(2).text());
+                    userEmail = $("#myTable").find('tr').eq(this.rowIndex).find('td').eq(2).text();
+                }
+            });
+        });
+        function getLists(email) {
+            //alert(email)
+
+            userEmail = email;
+            $('#updateUserEmail').val(userEmail);
+            clear();
+
+            $.getJSON("/Admin/GetMusicChannelsList?email=" + email, function (data) {
+                //$("#MusicList option").remove();
+                if (data) {
+                    //$("#op").append('<option>-Select Channel-</option>');
+                    var check = 0;
+                    console.log(data);
+                    $.each(data, function (i, item) {
+                        check = check + 1;
+                        if (item.ChannelID != null) {
+                            $('#myTable2 tbody').append(`
+                                        <tr>
+                                            <td>${item.ChannelName}</td>
+                                            <td>${item.ChannelID}</td>
+                                            <td>Music</td>
+                                        </tr>
+                                     `);
+                        }
+                        //$("#MusicList").append('<option value=' + item.ChannelID + '>' + item.ChannelName + '  ---  ' + item.ChannelID + '</option>');
+                    });
+                    if (check == 0) {
+                        $('#myTable2 tbody').append(`
+                                        <tr>
+
+                                                <th colspan="3"><center>No Channel from Music!</center></th>
+
+                                        </tr>
+                                     `);
+                    }
+                    //$("#MusicList").append('<option>---  No Channel Found  ---</option>');
+                }
+            });
+
+            $.getJSON("/Admin/GetEntChannelsList?email=" + email, function (data) {
+                //$("#EntList option").remove();
+                if (data) {
+                    //$("#op").append('<option>-Select Channel-</option>');
+                    var check = 0;
+                    console.log(data);
+                    $.each(data, function (i, item) {
+                        check = check + 1;
+                        if (item.ChannelID != null) {
+                            $('#myTable2 tbody').append(`
+                                        <tr>
+                                            <td>${item.ChannelName}</td>
+                                            <td>${item.ChannelID}</td>
+                                            <td>Entertainment</td>
+                                        </tr>
+                                     `);
+                        }
+                        //$("#EntList").append('<option value=' + item.ChannelID + '>' + item.ChannelName + '  ---  ' + item.ChannelID + '</option>');
+                    });
+
+                    if (check == 0)
+                        $('#myTable2 tbody').append(`
+                                        <tr>
+
+                                                <th colspan="3"><center>No Channel from Entertainment!</center></th>
+
+                                        </tr>
+                                     `);
+                    //$("#EntList").append('<option>---  No Channel Found  ---</option>');
+                }
+            });
+
+            $.getJSON("/Admin/GetUserDetails?email=" + email, function (data) {
+                if (data) {
+                    console.log(data)
+                    //$('#userName').val(data.FirstName + " " + data.LastName);
+                    //$('#userEmail').val(data.Email);
+                    $('#BankName').val(data.BankName);
+                    $('#BankAddress').val(data.BankAddress);
+                    $('#BankCountry').val(data.BankCountry);
+                    $('#BankEmail').val(data.BankEmail);
+                    $('#CompanyName').val(data.CompanyName);
+                    $('#CompanyAddress').val(data.CompanyAddress);
+                    $('#ContactNumber').val(data.Contact);
+                    $('#PaypalEmail').val(data.Paypal);
+                    $('#UserShare').val(data.share);
+                }
+            });
+
+            $.getJSON("/Admin/GetUserFiles?email=" + email, function (data) {
+                if (data) {
+                    //$("#userFilesTable").find("tr:gt(0)").remove();
+                    $.each(data, function (i, item) {
+                        $("#myTable3 tbody").append(`
+                                        <tr>
+                                            <td style="text-align: center;">${item.FileName}</td>
+                                            <td style="text-align: center;">${item.DateTime}</td>
+                                            <td style="text-align: center;"><a download="download" href="${item.FileLink}">Get File</a></td>
+                                            <td style="text-align: center;"><a href="DeleteFile?fileName=${item.FileName}&email=${userEmail}">Delete File</a></td>
+                                        </tr>
+                                    `);
+                    });
+                }
+            });
+        }
+
+        function clear() {
+            $('#myTable2 tbody').empty();
+            $('#BankName').val('');
+            $('#BankAddress').val('');
+            $('#BankCountry').val('');
+            $('#BankEmail').val('');
+            $('#UserShare').val('');
+            $('#CompanyName').val('');
+            $('#CompanyAddress').val('');
+            $('#ContactNumber').val('');
+            $('#PaypalEmail').val('');
+            $('#myTable3 tbody').empty();
+        }
+
+        function uploadFileForm(event) {
+            if (userEmail == null) {
+                $('#alertDiv').show();
+                event.preventDefault();
+            }
+            else {
+                var email = document.createElement("input");
+                email.type = "hidden";
+                email.name = "email";
+                email.value = userEmail;
+                var f = document.getElementById("uploadFileForm");
+                f.appendChild(email);
+            }
+        }
+    </script>
+</body>
+
+</html>

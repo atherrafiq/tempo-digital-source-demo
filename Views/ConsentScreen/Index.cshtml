@@ -1,0 +1,294 @@
+﻿
+@{
+    ViewBag.Title = "Consent Screen";
+}
+<head>
+    <meta charset="utf-8">
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- MATERIAL DESIGN ICONIC FONT -->
+    <link rel="stylesheet" href="~/Content/NewTemplate/fonts/material-design-iconic-font/css/material-design-iconic-font.min.css">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.3.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- STYLE CSS -->
+    <link rel="stylesheet" href="~/Content/NewTemplate/css/style.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+
+<body background='https://tpdigital.blob.core.windows.net/logo/BG.JPG' style="background-repeat:no-repeat;  background-size:100% 100%;">
+    <center>
+        <img id="logo" src="https://tpdigital.blob.core.windows.net/logo/logo.JPG" style="margin-top: 10%;" />
+    </center>
+
+    <div id="ConnectMessage">
+
+    </div>
+
+    <div id="ConnectForm">
+
+    </div>
+
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script>
+        window.onload = function () {
+            authenticate().then(loadClient)
+        }
+
+        function authenticate() {
+            return gapi.auth2.getAuthInstance()
+                .signIn({ scope: "https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtubepartner https://www.googleapis.com/auth/youtubepartner-channel-audit" })
+                .then(function () {
+                    console.log("Sign-in successful");
+                    //loadClient();
+                },
+                    function (err) {
+                        console.error("Error signing in", err);
+                    });
+        }
+
+        function loadClient() {
+            return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest")
+                .then(function () {
+                    console.log("GAPI client loaded for API");
+                    execute();
+                },
+                    function (err) {
+                        console.error("Error loading GAPI client for API", err);
+                    });
+        }
+
+    //function authenticate() {
+    //    return gapi.auth2.getAuthInstance()
+    //        .signIn({
+    //            scope: "https://www.googleapis.com/auth/youtubepartner-channel-audit https://www.googleapis.com/auth/youtubepartner https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtubepartner https://www.googleapis.com/auth/yt-analytics-monetary.readonly https://www.googleapis.com/auth/yt-analytics.readonly" })
+    //        .then(function () { console.log("Sign-in successful"); loadClient();},
+    //            function (err) { console.error("Error signing in", err); });
+    //}
+    //function loadClient() {
+    //    return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest")
+    //        .then(function () { console.log("GAPI client loaded for API"); execute(); },
+    //            function (err) { console.error("Error loading GAPI client for API", err); });
+    //    }
+
+    // Make sure the client is loaded and sign-in is complete before calling this method.
+
+        function execute() {
+            return gapi.client.youtube.channels.list({
+                "part": "statistics,auditDetails,snippet,contentDetails,contentOwnerDetails,topicDetails,status,brandingSettings",
+                "mine": true
+            })
+                .then(function (response) {
+                    // Handle the results here (response.result has the parsed body).
+                    //console.log("Response", response);
+                    loadRespopnseData(response);
+                },
+                    function (err) {
+                        console.error("Execute error", err);
+                    });
+        }
+
+        gapi.load("client:auth2", function () {
+            var clientID = @Html.Raw(Json.Encode(ViewBag.ClientID));
+            gapi.auth2.init({ client_id: clientID });
+        });
+
+        function loadRespopnseData(response) {
+            var details = response.result.items[0];
+            if (details.hasOwnProperty('auditDetails')) {
+                // console.log(details.auditDetails);
+                communityGuidelinesGoodStanding = details.auditDetails.communityGuidelinesGoodStanding;
+                contentIdClaimsGoodStanding = details.auditDetails.contentIdClaimsGoodStanding;
+                copyrightStrikesGoodStanding = details.auditDetails.copyrightStrikesGoodStanding;
+            }
+            if (details.hasOwnProperty('contentDetails')) {
+                //console.log(details.contentDetails);
+            }
+            if (details.hasOwnProperty('snippet')) {
+                console.log(details.snippet);
+                snippetURL = details.snippet.thumbnails.default.url;
+                accountTitle = details.snippet.title;
+                publishedAt = details.snippet.publishedAt;
+                description = details.snippet.description;
+            }
+            if (details.hasOwnProperty('statistics')) {
+                // console.log(details.statistics);
+                subcribersCount = parseInt(subcribersCount) + parseInt(details.statistics.subscriberCount);
+                commentCount = parseInt(commentCount) + parseInt(details.statistics.commentCount);
+                videoCount = parseInt(videoCount) + parseInt(details.statistics.videoCount);
+                viewCount = parseInt(viewCount) + parseInt(details.statistics.viewCount);
+            }
+            if (details.hasOwnProperty('contentOwnerDetails')) {
+                //console.log(details.contentOwnerDetails);
+            }
+            if (details.hasOwnProperty('id')) {
+                //console.log(details.contentOwnerDetails);
+                id = details.id;
+            }
+             setAllData();
+        }
+
+
+        //stat
+        var subcribersCount = 0;
+        var commentCount = 0;
+        var videoCount = 0;
+        var viewCount = 0;
+        //snippet
+        var snippetURL = "";
+        var accountTitle = "";
+        var publishedAt = "";
+        var description = "";
+        //audit
+        var communityGuidelinesGoodStanding = false;
+        var contentIdClaimsGoodStanding = false;
+        var copyrightStrikesGoodStanding = false;
+        var id = "";
+
+        function setAllData() {
+
+           // if (subcribersCount < 1000) {
+           //     appendConnectMesasge();
+            //}
+            //else {
+
+                appendConnectForm();
+                $("#accountImage").attr("src", snippetURL);
+                $("#title").append(`<i class="fa fa-youtube-play"></i> ${accountTitle}`);
+                $("#views").append(`<i class="fa fa-eye"></i> Views:  ${viewCount}`);
+                $("#subscribers").append(`<i class="fa fa-address-book"></i> Subscribers:  ${subcribersCount}`);
+                $("#videos").append(`<i class="fa fa-play"></i> Videos:  ${videoCount}`);
+                addElementsForm();
+            //}
+        }
+
+        function addElementsForm(){
+            var f = document.getElementById("connectForm");
+            f.appendChild(createElement("SC", subcribersCount));
+            f.appendChild(createElement("CC", commentCount));
+            f.appendChild(createElement("VDC", videoCount));
+            f.appendChild(createElement("VWC", viewCount));
+            f.appendChild(createElement("AT", accountTitle));
+            f.appendChild(createElement("PBAT", publishedAt));
+            f.appendChild(createElement("DES", description));
+            f.appendChild(createElement("CGGS", communityGuidelinesGoodStanding));
+            f.appendChild(createElement("CCGS", contentIdClaimsGoodStanding));
+            f.appendChild(createElement("CRGS", copyrightStrikesGoodStanding));
+            f.appendChild(createElement("URL", snippetURL));
+            f.appendChild(createElement("ID", id));
+        }
+
+        function createElement(name, value) {
+            var ele = document.createElement("input");
+            ele.type = "hidden";
+            ele.name = name;
+            ele.value = value;
+
+            return ele;
+        }
+
+        function appendConnectMesasge() {
+            $('#ConnectMessage').append(`
+                <div class="w3-container">
+                    <center>
+                        <div class="w3-panel w3-card" style="width:40%; background-color:ghostwhite; ">
+                            <h3><b>Thank You for your Interest in Tempo Digital.</b></h3>
+                            <p>Your profile does not meet the minimum prerequisites to join our network. Feel free to reapplay once again these requisities have been met. If you have any further questions, feel free to email us at <a>support@tempodigittal.org</a>.</p>
+                            <p><b>Minimum Total Subscribers: </b>Required: 1000, You have:${subcribersCount}</p>
+                        </div>
+                    </center>
+                </div>
+            `);
+        }
+
+        function appendConnectForm() {
+            $('#ConnectForm').append(`
+                  <div class="w3-container">
+                            <center>
+                                <div class="w3-panel w3-card" style="width:50%; background-color:ghostwhite; ">
+                                    <h3><b>Tempo Digital.</b></h3>
+                                    <h4>Welcome to Tempo Digital. Please use the form below to setup your account.</h4>
+                                    <div style=" width:100%; height:150px;">
+                                        <h6 style="margin-left: 20px; float:left; width:100%;">Hi,</h6>
+                                        <div style="width:10%; float: left;">
+                                            <img id="accountImage" src="" />
+                                        </div>
+                                        <div style="width:40%; float: left;">
+                                            <p id="title" style="float:left; margin-left:10px;"></p><br>
+                                            <p id="views" style="float:left; margin-left:10px;"></p><br>
+                                            <p id="subscribers" style="float:left; margin-left:10px;"></p><br>
+                                            <p id="videos" style="float:left; margin-left:10px;"></p>
+                                        </div>
+                                        <div style="width:50%; float: left;">
+                                            <p style="color:white;">sd</p>
+                                        </div>
+                                    </div>
+                                    <form id="connectForm" method="post" style="width:100%;" action="@Url.Action("SaveConnectFormData","ConsentScreen")">
+                                        <div>
+                                            <div style="width:50%; float: left;">
+                                                <div class="form-wrapper">
+                                                    <label>First Name</label>
+                                                    <input class="form-control" name="FirstName" required  type="text" required style="width: 90%;" />
+                                                </div>
+                                            </div>
+                                            <div style="width:50%; float: left;">
+                                                <div class="form-wrapper">
+                                                    <label>Last Name</label>
+                                                    <input class="form-control" name="LastName" required type="text" required style="width: 90%;" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div style="width:50%; float: left;">
+                                                <div class="form-wrapper">
+                                                    <label>Email</label>
+                                                    <input class="form-control" name="Email" required  type="email" style="width: 90%;" />
+                                                </div>
+                                            </div>
+                                            <div style="width:50%; float: left;">
+                                                <div class="form-wrapper">
+                                                    <label>Confirm Email</label>
+                                                    <input class="form-control" type="email" required style="width: 90%;" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div style="width:50%; float: left;">
+                                                <div class="form-wrapper">
+                                                    <label>Country</label>
+                                                    <input class="form-control" name="Country" required type="text" style="width: 90%;" />
+                                                </div>
+                                            </div>
+                                            <div style="width:50%; float: left;">
+                                                <div class="form-wrapper">
+                                                    <label>State/Province</label>
+                                                    <input class="form-control" name="State"   type="text" style="width: 90%;" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div style="width:50%; float: left;">
+                                                <div class="form-wrapper">
+                                                    <label>Date of Birth</label>
+                                                    <input class="form-control" name="DOB" required type="date" style="width: 90%;" />
+                                                </div>
+                                            </div>
+                                            <div style="width:50%; float: left;">
+                                                <div class="form-wrapper">
+                                                    <label>Current Network</label>
+                                                    <input class="form-control" name="Network" required  type="text" style="width: 90%;" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="submit" value="Save" style="width: 40%; margin-bottom: 10px; height:40px;" />
+                                    </form>
+                                </div>
+                            </center>
+                        </div>
+                `);
+        }
+
+    </script>

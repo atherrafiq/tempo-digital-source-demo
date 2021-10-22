@@ -1,0 +1,170 @@
+﻿@model List<List<TempoDigitalApex3.Models.YT_Reports_Music_2020>>
+@{
+    ViewBag.Title = "DownloadReportHTML";
+}
+
+<head>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+            font-size: smaller;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+</head>
+<div class="wrapper">
+    <div class="main-panel">
+        <div class="main-content">
+            <div class="content-wrapper">
+
+                <center>
+                    @if (ViewBag.checkCount == 0)
+                    {
+                        <h2>No Channel Data Found</h2>
+                    }
+
+                    <h3>HTML Report for Youtube Channels</h3>
+                    @foreach (var channelList in Model)
+                    {
+
+                        if (channelList.Count > 0)
+                        {
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div style="margin-top:5%;" class="col-xl-12 col-lg-6 col-md-6 col-12">
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div style="margin-top:5%;" class="col-xl-12 col-lg-6 col-md-6 col-12">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <h1>@channelList[0].Custom_ID</h1>
+                            <h2>Share: $@channelList.Sum(i => i.Partner_Revenue)</h2>
+
+                            <table style="width:60%; margin-top:30px; margin-bottom:30px;">
+                                <tr>
+                                    <th>Channel Name</th>
+                                    <th>Channel ID</th>
+                                    <th>Label Name</th>
+                                    <th>Owned Views</th>
+                                    <th>Revenue</th>
+                                    <th>Share</th>
+                                </tr>
+                                @foreach (var channel in channelList)
+                                {
+                                    <tr>
+                                        <td>@channel.Asset_Title</td>
+                                        <td>@channel.Asset_Channel_ID</td>
+                                        <td>@channel.Asset_Labels</td>
+                                        <td>@channel.Owned_Views</td>
+                                        <td>@channel.Partner_Revenue</td>
+                                        <td>@channel.userShare</td>
+                                    </tr>
+                                }
+                                <tfoot>
+                                <td>Total</td>
+                                <td></td>
+                                <td></td>
+                                <td>@channelList.Sum(i => i.Owned_Views)</td>
+                                <td>$@channelList.Sum(i => i.Partner_Revenue)</td>
+                                <td>$@channelList.Sum(i => i.userShare)</td>
+                                </tfoot>
+                            </table>
+                        }
+
+                    }
+
+                    @if (ViewBag.CheckListENT == 1)
+                    {
+                        <h2>No Entertainment Channel Data Found</h2>
+                    }
+                    else
+                    {
+                        <h3>HTML Report for Youtube Entertainment Channels</h3>
+                    }
+
+
+                    @foreach (var channelList in ViewBag.finalListEnt)
+                    {
+
+                        if (channelList.Count > 0)
+                        {
+                            int OwedView = 0;
+                            double revenue = 0.00;
+                            double share = 0.00;
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div style="margin-top:5%;" class="col-xl-12 col-lg-6 col-md-6 col-12">
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div style="margin-top:5%;" class="col-xl-12 col-lg-6 col-md-6 col-12">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <h1>@channelList[0].Custom_ID</h1>
+                            foreach (var channel1 in channelList)
+                            { share = share + (double)channel1.userShare; }
+                            <h2>Share: $@share</h2>
+
+                            <table style="width:60%; margin-top:30px; margin-bottom:30px;">
+                                <tr>
+                                    <th>Channel Name</th>
+                                    <th>Channel ID</th>
+                                    <th>Label Name</th>
+                                    <th>Owned Views</th>
+                                    <th>Revenue</th>
+                                    <th>Share</th>
+                                </tr>
+
+                                @foreach (var channel in channelList)
+                                {
+                                    <tr>
+                                        <td>@channel.Asset_Title</td>
+                                        <td>@channel.Asset_Channel_ID</td>
+                                        <td>@channel.Asset_Labels</td>
+                                        <td>@channel.Owned_Views</td>
+                                        <td>@channel.Partner_Revenue</td>
+                                        <td>@channel.userShare</td>
+                                    </tr>
+                                    OwedView = OwedView + channel.Owned_Views;
+                                    revenue = revenue + (double)channel.Partner_Revenue;
+
+                                }
+                                <tfoot>
+                                <td>Total</td>
+                                <td></td>
+                                <td></td>
+                                <td>@OwedView</td>
+                                <td>$@revenue</td>
+                                <td>$@share</td>
+                                </tfoot>
+                            </table>
+                            OwedView = 0;
+                            revenue = 0.00;
+                            share = 0.00;
+                        }
+
+                    }
+
+                </center>
+            </div>
+        </div>
+    </div>
+</div>

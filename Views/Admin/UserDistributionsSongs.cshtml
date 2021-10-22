@@ -1,0 +1,214 @@
+﻿
+@{
+    ViewBag.Title = "Admin-User Management";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/NewTemplate/fonts/material-design-iconic-font/css/material-design-iconic-font.min.css" rel="stylesheet" />
+    <link href="~/Content/NewTemplate/css/style.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <style>
+        .pointer {
+            cursor: pointer;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="main-panel">
+        <div class="main-content">
+            <div class="content-wrapper">
+
+                <div class="col-md-12 alert alert-danger" id="alertDiv" style="font-size:20px; width:100%; display:none;">
+                    <center>
+                        <strong>Alert..!</strong> <span id="alertText">First Select User form User' Table (By Double Clicking on Row)</span>
+                    </center>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="row col-lg-12">
+
+                            <div class="row col-lg-4">
+                                <div class="col-lg-12">
+                                    <center><h3 style="margin-top:50px;"><b>User Details</b></h3></center>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="col-lg-12">
+                                        <h4 style="margin-top:50px; float:right;"><b>First Name:</b></h4>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <h4 style="margin-top:20px; float:right;"><b>Last Name:</b></h4>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <h4 style="margin-top:20px; float:right;"><b>Email:</b></h4>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="col-lg-12">
+                                        <h4 style="margin-top:50px; float:left;">@ViewBag.User.FirstName</h4>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <h4 style="margin-top:20px; float:left;">@ViewBag.User.LastName</h4>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <h4 style="margin-top:20px; float:left;">@ViewBag.User.Email</h4>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <center><a href="@Url.Action("ApproveDistribution", new { id = ViewBag.Dis.MusicReleaseId })"><button class="btn btn-success" style="width:50%;">Approve Distribution</button></a></center>
+                                </div>
+                            </div>
+
+                            <div class="row col-lg-4">
+                                <div class="col-lg-12">
+                                    <center><h3 style="margin-top:50px;"><b>Release Details</b></h3></center>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="col-lg-12">
+                                        <h4 style="margin-top:40px; float:right;"><b>Distribution Name:</b></h4>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <h4 style="margin-top:20px; float:right;"><b>UPCEAN:</b></h4>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <h4 style="margin-top:20px; float:right;"><b>Date/Time:</b></h4>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <h4 style="margin-top:20px; float:right;"><b>Primary Genre:</b></h4>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <h4 style="margin-top:20px; float:right;"><b>Second. Genre:</b></h4>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="col-lg-12">
+                                        <h4 style="margin-top:40px; float:left;">@ViewBag.Dis.ReleaseName</h4>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <h4 style="margin-top:20px; float:left;">@ViewBag.Dis.UPCEAN</h4>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <h4 style="margin-top:20px; float:left;">@ViewBag.Dis.Sales_Start_Date</h4>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <h4 style="margin-top:20px; float:left;">@ViewBag.Dis.PrimaryGenre</h4>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <h4 style="margin-top:20px; float:left;">@ViewBag.Dis.SecondaryGenre</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <center><h3 style="margin-top:50px;">Cover Image</h3></center>
+                                <div class="col-lg-12">
+                                    <center><img src="@ViewBag.Dis.CoverImage" height="250" width="250" /></center>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <center><h3 style="margin-top:50px;">Songs in Distribution</h3></center>
+                        <br />
+                        <center>
+                            <div>
+                                <table id="usersTable" style="width:60%;  ">
+                                    <tr>
+                                        <th style="text-align: center;">Song Title</th>
+                                        <th style="text-align: center;">Payment Status</th>
+                                        <th style="text-align: center;">ISRC</th>
+                                        <th style="text-align: center;">Song Play</th>
+                                    </tr>
+                                    @foreach (var res in ViewBag.songs)
+                                    {
+                                    <tr class="pointer">
+                                        <td style="text-align: center;" >@res.SongTitle</td>
+                                        <td style="text-align: center;">@ViewBag.Dis.PaymentStaus</td>
+                                        <td style="text-align: center;" >@res.isrc</td>
+                                        <td style="text-align: center;" >
+                                            <audio preload="auto" controls>
+                                                <source src="@res.SongPath">
+                                            </audio>
+                                        </td>
+                                    </tr>
+                                    }
+                                </table>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+
+    <script>
+        //$(document).ready(function () {
+        //    $('#usersTable tr').dblclick(function () {
+        //        if (this.rowIndex > 0) {
+        //            getLists($("#usersTable").find('tr').eq(this.rowIndex).find('td').eq(2).text());
+        //        }
+        //    });
+        //});
+        //function getLists(email) {
+        //    $.getJSON("/Admin/GetDistSongs?email=" + email, function (data) {
+        //        if (data) {
+        //            //alert(data);
+        //            $.each(data, function (i, item) {
+        //                alert(i);
+        //            });
+        //        }
+        //    }); 
+        //}
+        
+    </script>
+
+    <!-- ////////////////////////////////////////////////////////////////////////////-->
+    <!-- START Notification Sidebar-->
+    <!-- END Notification Sidebar-->
+    <!-- Theme customizer Starts-->
+    <!-- Theme customizer Ends-->
+    <!-- BEGIN VENDOR JS-->
+    <script src="~/Content/app-assets/vendors/js/core/jquery-3.2.1.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/core/popper.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/core/bootstrap.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/perfect-scrollbar.jquery.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/prism.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/jquery.matchHeight-min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/screenfull.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/pace/pace.min.js" type="text/javascript"></script>
+    <!-- BEGIN VENDOR JS-->
+    <!-- BEGIN PAGE VENDOR JS-->
+    <script src="~/Content/app-assets/vendors/js/chartist.min.js" type="text/javascript"></script>
+
+    <!-- END APEX JS-->
+    <!-- BEGIN PAGE LEVEL JS-->
+    <script src="~/Content/app-assets/js/dashboard1.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL JS-->
+    @*@Scripts.Render("~/bundles/jquery")*@
+</body>
+</html>

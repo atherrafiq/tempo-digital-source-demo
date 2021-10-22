@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "System Logs";
+    Layout = "~/Views/Shared/_LayoutPage_Admin.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+    <script>
+        $(document).ready(function () {
+            $('#syslog').DataTable({
+                "scrollX": true
+            });
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+
+</head>
+
+<body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
+    <div class="wrapper">
+        <div class="main-panel">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div class="row match-height">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:30px">                                        
+                                        <button onclick='location.reload();' style="width:100%;" type="submit" class="btn btn-danger">Refresh the table</button><br>
+                                        <table data-order='[[ 0, "desc" ]]' data-page-length='25' style="width:100%" id="syslog" class="table table-striped table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Id</th>
+                                                    <th>Date and Time</th>
+                                                    <th>Email</th>
+                                                    <th>Username</th>
+                                                    <th>Action Performed</th>
+                                                    <th>IP Address</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var x in ViewBag.LogList)
+                                                {
+                                                    <tr>
+                                                        <td>@x.Id</td>
+                                                        <td>@x.DateTime</td>
+                                                        <td>@x.UserEmail</td>
+                                                        <td>@x.UserName</td>
+                                                        <td>@x.ActionPerformed</td>
+                                                        <td>@x.ClientIP</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>   
+  
+</body>
+
+
+
+
+</html>

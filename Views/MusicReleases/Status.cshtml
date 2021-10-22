@@ -1,0 +1,108 @@
+﻿@{
+    ViewBag.Title = "Delivery Status";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script>
+        $(document).ready(function () {
+            
+        });
+    </script>
+ 
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+</head>
+<body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
+    <div class="wrapper">
+        <div class="main-panel">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div class="row match-height">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px">
+                                        <table data-order='[[ 0, "desc" ]]' data-page-length='15' id="myTable" style="width:100%;" class="table table-striped table-bordered table-hover display">
+                                            <thead>
+                                                <tr>
+                                                    <th>DSP</th>
+                                                    <th>Action</th>
+                                                    <th>Type</th>
+                                                    <th>Time</th>
+                                                    <th>Status</th>
+                                                    <th>Error</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                               @if (!ViewBag.Status)
+                                               {
+                                                   <tr>
+                                                       <td colspan="6">
+                                                           <center> 
+                                                                <b>
+                                                                    Please! Try Again Later!
+                                                                </b>
+                                                           </center>
+                                                        </td>
+                                                   </tr>
+                                               }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        window.onload = function () {
+
+            var status = @Html.Raw(Json.Encode(ViewBag.Status));
+
+            if (status == true) {
+                 var data = @Html.Raw(Json.Encode(ViewBag.StatusDetails));
+                //console.log(JSON.parse(data));
+                data = JSON.parse(data);
+
+                $('#myTable tbody').empty();
+                $.each(data, function (i, item) {
+                    $('#myTable tbody').append(
+                        `
+                            <tr>
+                                <td>${item.delivery_target}</td>
+                                <td>${item.delivery_action}</td>
+                                <td>${item.delivery_type}</td>
+                                <td>${item.delivery_time}</td>
+                                <td>${item.delivery_status}</td>
+                                <td>${item.delivery_error}</td>
+                            </tr>
+                        `
+                    );
+                });
+
+            }
+
+
+            $('#myTable').DataTable({
+                "scrollX": true
+            });
+        }
+
+    </script>
+
+</body>
+
+
+
+</html>

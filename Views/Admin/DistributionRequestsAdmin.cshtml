@@ -1,0 +1,71 @@
+﻿@{
+    ViewBag.Title = "Distribution Requests";
+    Layout = "~/Views/Shared/_LayoutPage_Admin.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script>
+        const FROM_PATTERN = 'YYYY-MM-DD';
+        const TO_PATTERN = 'DD/MM/YYYY HH:MM:SS';
+        $(document).ready(function () {
+            $.fn.dataTable.render.moment('DD/MM/YYYY HH:MM:SS');
+            $('#distribution_approval').DataTable({
+                "scrollX": true,
+                "order": [[2, "desc"]]
+            });            
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+</head>
+    <body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
+        <div class="wrapper">
+            <div class="main-panel">
+                <div class="main-content">
+                    <div class="content-wrapper">
+                        <div class="row match-height">
+                            <div class="col-xl-12 col-lg-12">
+                                <div class="card">
+                                    <div class="card-content">
+                                        <div class="card-body" style="padding:10px;">
+                                            <h5>Distributions Need Approval</h5>
+                                            <p>add cover at first column (width 100px)</p>
+                                            <p>fix sorting by date</p>
+                                            <p>if approved remove from the list</p>
+                                            <table data-page-length='30' id="distribution_approval" style="width:100%;" class="table table-striped table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Release Name</th>
+                                                        <th>UPCEAN</th>
+                                                        <th>Date/Time</th>
+                                                        <th>Payment Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var res in ViewBag.UserDistributions)
+                                                    {
+                                                        <tr>
+                                                            <td>@res.ReleaseName</td>
+                                                            <td>@res.UPCEAN</td>
+                                                            <td>@res.Sales_Start_Date</td>                                                           
+                                                            <td>@res.PaymentStaus</td>
+                                                            <td><a href="@Url.Action("DistributionReleaseDetails", new { id = res.MusicReleaseId })">Get Details</a></td>
+                                                        </tr>
+                                                    }
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

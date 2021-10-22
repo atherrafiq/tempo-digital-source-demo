@@ -1,0 +1,275 @@
+﻿@model TempoDigitalApex3.Models.MusicRelease
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+<style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+</head>
+<div class="wrapper">
+    <div class="main-panel">
+        <div class="main-content">
+            <div class="content-wrapper">
+
+                <h2>Report Details</h2>
+                <hr />
+                @if (ViewBag.reportCheck == "Spotify")
+                {
+                    <a href="~/MusicReleases/DownloadReport?month=@ViewBag.Month&year=@ViewBag.Year&upc=@ViewBag.UPC&reportName=Spotify">
+                        <button>Dowload Report</button>
+                    </a>
+                    <table>
+                        <tr>
+                            <th>Month</th>
+                            <th>Year</th>
+                            <th>Country</th>
+                            <th>Label</th>
+                            <th>URI</th>
+                            <th>UPC</th>
+                            <th>ISRC</th>
+                            <th>Track Name</th>
+                            <th>Artist Name</th>
+                            <th>Composer Name</th>
+                            <th>Album Name</th>
+                            <th>Quantity</th>
+                            <th>Revenue</th>
+                            <th>Share</th>
+                        </tr>
+                        @{
+                            double payable = 0.00;
+
+                        }
+                        @foreach (var x in ViewBag.report)
+                        {
+                            <tr>
+                                <td>@x.Month</td>
+                                <td>@x.Year</td>
+                                <td>@x.Country</td>
+                                <td>@x.Label</td>
+                                <td>@x.URI</td>
+                                <td>@x.UPC</td>
+                                <td>@x.ISRC</td>
+                                <td>@x.TrackName</td>
+                                <td>@x.Artist_Name</td>
+                                <td>@x.Composer_Name</td>
+                                <td>@x.Album_Name</td>
+                                <td>@x.Quantity</td>
+                                <td>$@Math.Round(x.USD_Payable, 2)</td>
+                                <td>$@Math.Round((x.USD_Payable / 100) * Int32.Parse(ViewBag.UserShare), 2)</td>
+                            </tr>
+                            payable = payable + (double)x.USD_Payable;
+                        }
+
+                        <tfoot>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Total</td>
+                        <td>$@Math.Round(payable, 2)</td>
+                        <td>$@Math.Round((payable / 100) * Int32.Parse(ViewBag.UserShare), 2)</td>
+                        </tfoot>
+
+                    </table>
+                }
+                @if (ViewBag.reportCheck == "Deezers")
+                {
+                    <a href="~/MusicReleases/DownloadReport?month=@ViewBag.Month&year=@ViewBag.Year&upc=@ViewBag.UPC&reportName=Deezers">
+                        <button>Dowload Report</button>
+                    </a>
+                    <table>
+                        <tr>
+                            <th>Month</th>
+                            <th>Year</th>
+                            <th>Country</th>
+                            <th>Label</th>
+                            <th>UPC</th>
+                            <th>ISRC</th>
+                            <th>Artist Name</th>
+                            <th>Album Name</th>
+                            <th>Quantity</th>
+                            <th>Revenue</th>
+                            <th>Share</th>
+                        </tr>
+                        @{
+                            double payable = 0.00;
+
+                        }
+                        @foreach (var x in ViewBag.report)
+                        {
+                            <tr>
+                                <td>@x.Month</td>
+                                <td>@x.Year</td>
+                                <td>@x.Country</td>
+                                <td>@x.Label</td>
+                                <td>@x.UPC</td>
+                                <td>@x.ISRC</td>
+                                <td>@x.Artist</td>
+                                <td>@x.Album</td>
+                                <td>@x.Nb_of_plays</td>
+                                <td>@Math.Round(x.Royalties, 2)</td>
+                                <td>$@Math.Round((x.Royalties / 100) * Int32.Parse(ViewBag.UserShare), 2)</td>
+                            </tr>
+                            payable = payable + (double)x.Royalties;
+                        }
+                        <tfoot>
+
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Total</td>
+                        <td>$@Math.Round(payable, 2)</td>
+                        <td>$@Math.Round((payable / 100) * Int32.Parse(ViewBag.UserShare), 2)</td>
+                        </tfoot>
+                    </table>
+                }
+                @if (ViewBag.reportCheck == "GooglePlay")
+                {
+                    <a href="~/MusicReleases/DownloadReport?month=@ViewBag.Month&year=@ViewBag.Year&upc=@ViewBag.UPC&reportName=GooglePlay">
+                        <button>Dowload Report</button>
+                    </a>
+                    <table>
+                        <tr>
+                            <th>Month</th>
+                            <th>Year</th>
+                            <th>Label</th>
+                            <th>UPC</th>
+                            <th>ISRC</th>
+                            <th>Total Plays</th>
+                            <th>Artist Name</th>
+                            <th>Container Title</th>
+                            <th>Product Title</th>
+                            <th>Quantity</th>
+                            <th>Revenue</th>
+                            <th>Share</th>
+                        </tr>
+                        @{
+                            double payable = 0.00;
+
+                        }
+                        @foreach (var x in ViewBag.report)
+                        {
+                            <tr>
+                                <td>@x.Month</td>
+                                <td>@x.Year</td>
+                                <td>@x.Label</td>
+                                <td>@x.UPC</td>
+                                <td>@x.ISRC</td>
+                                <td>@x.Total_Plays</td>
+                                <td>@x.Artist</td>
+                                <td>@x.Container_Title</td>
+                                <td>@x.Product_Title</td>
+                                <td>@x.Total_Plays</td>
+                                <td>@Math.Round(x.EUR_Amount, 2)</td>
+                                <td>$@Math.Round((x.EUR_Amount / 100) * Int32.Parse(ViewBag.UserShare), 2)</td>
+                            </tr>
+                            payable = payable + (double)x.EUR_Amount;
+                        }
+                        <tfoot>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Total</td>
+                        <td>$@Math.Round(payable, 2)</td>
+                        <td>$@Math.Round((payable / 100) * Int32.Parse(ViewBag.UserShare), 2)</td>
+                        </tfoot>
+                    </table>
+                }
+                @if (ViewBag.reportCheck == "SoundCloud")
+                {
+                    <a href="~/MusicReleases/DownloadReport?month=@ViewBag.Month&year=@ViewBag.Year&upc=@ViewBag.UPC&reportName=SoundCloud">
+                        <button>Dowload Report</button>
+                    </a>
+                    <table>
+                        <tr>
+                            <th>Month</th>
+                            <th>Year</th>
+                            <th>Label</th>
+                            <th>UPC</th>
+                            <th>ISRC</th>
+                            <th>Album Name</th>
+                            <th>Artist Name</th>
+                            <th>Track Name</th>
+                            <th>Version</th>
+                            <th>Quantity</th>
+                            <th>Revenue</th>
+                            <th>Share</th>
+                        </tr>
+                        @{
+                            double payable = 0.00;
+
+                        }
+                        @foreach (var x in ViewBag.report)
+                        {
+                            <tr>
+                                <td>@x.Month</td>
+                                <td>@x.Year</td>
+                                <td>@x.LabelName</td>
+                                <td>@x.UPC</td>
+                                <td>@x.ISRC</td>
+                                <td>@x.Album_Title</td>
+                                <td>@x.Artist_Name</td>
+                                <td>@x.Track_Name</td>
+                                <td>@x.Version</td>
+                                <td>@x.Total_Plays</td>
+                                <td>@Math.Round(x.Total_Revenue, 2)</td>
+                                <td>$@Math.Round((x.Total_Revenue / 100) * Int32.Parse(ViewBag.UserShare), 2)</td>
+                            </tr>
+                            payable = payable + (double)x.Total_Revenue;
+                        }
+                        <tfoot>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Total</td>
+                        <td>$@Math.Round(payable, 2)</td>
+                        <td>$@Math.Round((payable / 100) * Int32.Parse(ViewBag.UserShare), 2)</td>
+                        </tfoot>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

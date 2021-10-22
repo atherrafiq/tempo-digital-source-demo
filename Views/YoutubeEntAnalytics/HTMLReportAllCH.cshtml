@@ -1,0 +1,138 @@
+﻿@model List<List<TempoDigitalApex3.Models.YT_Reports_Ent_2020>>
+@{
+    ViewBag.Title = "DownloadReportHTML";
+}
+
+<head>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+            font-size: smaller;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+</head>
+<div class="wrapper">
+    <div class="main-panel">
+        <div class="main-content">
+            <div class="content-wrapper">
+
+                <center>
+                    @if (ViewBag.checkCount == 0)
+                    {
+                        <h2>No Channel Data Found</h2>
+                    }
+
+                    @if (Model.Count > 0)
+                    {
+                        <h2 style="margin-top: 30px;">@ViewBag.Month - @ViewBag.Year Earnings</h2>
+
+                        <h2>Summary</h2>
+                        <table style="width:60%; margin-top:30px; margin-bottom:30px;">
+                            <tr>
+                                <th>Channel ID</th>
+                                <th>Asset Title</th>
+                                <th>Asset Type</th>
+                                <th>Owned Views</th>
+                                <th>Revenue</th>
+                                <th>Share</th>
+                            </tr>
+
+                            @{
+                                int total_views = 0;
+                                double total_revenue = 0.00;
+                            }
+
+                            @foreach (var channelList in Model)
+                            {
+
+                                if (channelList.Count > 0)
+                                {
+                                    <tr>
+                                        <td>@channelList[0].Asset_Channel_ID</td>
+                                        <td><a href="#@channelList[0].Asset_Channel_ID">@channelList[0].Asset_Labels</a></td>
+                                        <td>@channelList[0].Asset_Type</td>
+                                        <td>@channelList.Sum(i => i.Owned_Views)</td>
+                                        <td>$@Math.Round(channelList.Sum(i => i.Partner_Revenue),2)</td>
+                                        @if (ViewBag.Share != null)
+                                        {
+                                            <td>$@Math.Round(((channelList.Sum(i => i.Partner_Revenue) / 100) * Int32.Parse(ViewBag.Share)), 2)</td>
+                                        }
+                                    </tr>
+                                    total_views = total_views + channelList.Sum(i => i.Owned_Views);
+                                    total_revenue = total_revenue + (double)channelList.Sum(i => i.Partner_Revenue);
+                                }
+
+                            }
+                            <tfoot>
+                            <td>Total</td>
+                            <td></td>
+                            <td></td>
+                            <td>@total_views</td>
+                            <td>$@Math.Round(total_revenue,2)</td>
+                            <td>$@Math.Round(((total_revenue / 100) * Int32.Parse(ViewBag.Share)), 2)</td>
+                            </tfoot>
+                        </table>
+                    }
+
+                    @foreach (var channelList in Model)
+                    {
+
+                        if (channelList.Count > 0)
+                        {
+                            <h1 id="@channelList[0].Asset_Channel_ID" style="margin-top: 30px;">@channelList[0].Asset_Labels</h1>
+
+                            <table style="width:60%; margin-top:30px; margin-bottom:30px;">
+                                <tr>
+                                    <th>Channel ID</th>
+                                    <th>Asset Title</th>
+                                    <th>Asset Type</th>
+                                    <th>Owned Views</th>
+                                    <th>Revenue</th>
+                                    <th>Share</th>
+                                </tr>
+                                @foreach (var channel in channelList)
+                                {
+                                    <tr>
+                                        <td>@channel.Asset_Channel_ID</td>
+                                        <td>@channel.Asset_Title</td>
+                                        <td>@channel.Asset_Type</td>
+                                        <td>@channel.Owned_Views</td>
+                                        <td>$@Math.Round(channel.Partner_Revenue,2)</td>
+                                        @if (ViewBag.Share != null)
+                                        {
+                                            <td>$@Math.Round(((channel.Partner_Revenue / 100) * Int32.Parse(ViewBag.Share)), 2)</td>
+                                        }
+
+
+                                    </tr>
+                                }
+                                <tfoot>
+                                <td>Total</td>
+                                <td></td>
+                                <td></td>
+                                <td>@channelList.Sum(i => i.Owned_Views)</td>
+                                <td>$@Math.Round(channelList.Sum(i => i.Partner_Revenue),2)</td>
+                                <td>$@Math.Round(((channelList.Sum(i => i.Partner_Revenue) / 100) * Int32.Parse(ViewBag.Share)), 2)</td>
+                                </tfoot>
+                            </table>
+                        }
+
+                    }
+
+                </center>
+            </div>
+        </div>
+    </div>
+</div>

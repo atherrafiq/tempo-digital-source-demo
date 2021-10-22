@@ -1,0 +1,162 @@
+﻿
+@{
+    ViewBag.Title = "Admin-User Distributions";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/NewTemplate/fonts/material-design-iconic-font/css/material-design-iconic-font.min.css" rel="stylesheet" />
+    <link href="~/Content/NewTemplate/css/style.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <style>
+        .pointer {
+            cursor: pointer;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="main-panel">
+        <div class="main-content">
+            <div class="content-wrapper">
+                <div class="col-lg-12">
+                    <a style="float:right; margin-right:30px;" href="~/Admin/Logout"><button type="button">Logout</button></a>
+                    <a style="float:right; margin-right:30px;" href="@Url.Action("UserDistributionsApproved")"><button type="button">Approved Releases</button></a>
+                </div>
+
+                <div class="col-md-12 alert alert-danger" id="alertDiv" style="font-size:20px; width:100%; display:none;">
+                    <center>
+                        <strong>Alert..!</strong> <span id="alertText">First Select User form User' Table (By Double Clicking on Row)</span>
+                    </center>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <center><h3 style="margin-top:50px;">Distributions Need Approval</h3></center>
+                        <br />
+                        <center>
+                            <div style="overflow-y: scroll; height: 800px; width:80%; ">
+                                <table id="usersTable" style="width:80%;  ">
+                                    <tr>
+                                        <th style="text-align: center;">Release Name</th>
+                                        <th style="text-align: center;">UPCEAN</th>
+                                        <th style="text-align: center;">Date/Time</th>
+                                        <th style="text-align: center;">Payment Status</th>
+                                        <th style="text-align: center;">Action</th>
+                                    </tr>
+                                    @foreach (var res in ViewBag.UserDistributions)
+                                    {
+                                <tr class="pointer">
+                                    <td style="text-align: center;">@res.ReleaseName</td>
+                                    <td style="text-align: center;">@res.UPCEAN</td>
+                                    <td style="text-align: center;">@res.Sales_Start_Date</td>
+                                    <td style="text-align: center;">@res.PaymentStaus</td>
+                                    <td style="text-align: center;"><a href="@Url.Action("UserDistributionsSongs", new { id = res.MusicReleaseId })">Get Details</a></td>
+                                </tr>
+                                    }
+                                </table>
+                            </div>
+                        </center>
+                    </div>
+                    <div class="col-lg-12">
+                        <center>
+                            <h3 style="margin-top:50px;">Deleted Music Releases</h3>
+                            <table style="width:60%; margin-top:10px; margin-bottom:30px;">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>UPC</th>
+                                    <th>Label Name</th>
+                                    <th>CopyRight Year</th>
+                                    <th>CopyRight Holder</th>
+                                    <th>Deletion Time</th>
+                                    <th>Action</th>
+                                </tr>
+                                @foreach (var release in ViewBag.DeleteReleaseList)
+                                {
+                                    <tr>
+                                        <td>@release.ReleaseName</td>
+                                        <td>@release.UPCEAN</td>
+                                        <td>@release.LabelName</td>
+                                        <td>@release.CopyrightYear</td>
+                                        <td>@release.CopyryghtHolder</td>
+                                        <td>@release.DeletionDate</td>
+                                        <td>@Html.ActionLink("Deleted Release All Data", "DeleteRelease", "Admin", new { id = release.MusicReleaseId }, null)</td>
+                                    </tr>
+                                }
+                            </table>
+                        </center>
+                    </div>
+                </div>
+
+            </div>
+    </div>
+
+    <script>
+        //$(document).ready(function () {
+        //    $('#usersTable tr').dblclick(function () {
+        //        if (this.rowIndex > 0) {
+        //            getLists($("#usersTable").find('tr').eq(this.rowIndex).find('td').eq(2).text());
+        //        }
+        //    });
+        //});
+        //function getLists(email) {
+        //    $.getJSON("/Admin/GetDistSongs?email=" + email, function (data) {
+        //        if (data) {
+        //            //alert(data);
+        //            $.each(data, function (i, item) {
+        //                alert(i);
+        //            });
+        //        }
+        //    }); 
+        //}
+        
+    </script>
+
+    <!-- ////////////////////////////////////////////////////////////////////////////-->
+    <!-- START Notification Sidebar-->
+    <!-- END Notification Sidebar-->
+    <!-- Theme customizer Starts-->
+    <!-- Theme customizer Ends-->
+    <!-- BEGIN VENDOR JS-->
+    <script src="~/Content/app-assets/vendors/js/core/jquery-3.2.1.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/core/popper.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/core/bootstrap.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/perfect-scrollbar.jquery.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/prism.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/jquery.matchHeight-min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/screenfull.min.js" type="text/javascript"></script>
+    <script src="~/Content/app-assets/vendors/js/pace/pace.min.js" type="text/javascript"></script>
+    <!-- BEGIN VENDOR JS-->
+    <!-- BEGIN PAGE VENDOR JS-->
+    <script src="~/Content/app-assets/vendors/js/chartist.min.js" type="text/javascript"></script>
+
+    <!-- END APEX JS-->
+    <!-- BEGIN PAGE LEVEL JS-->
+    <script src="~/Content/app-assets/js/dashboard1.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL JS-->
+    @*@Scripts.Render("~/bundles/jquery")*@
+</body>
+</html>

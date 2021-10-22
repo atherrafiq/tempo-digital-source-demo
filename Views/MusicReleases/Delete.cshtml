@@ -1,0 +1,124 @@
+﻿@model TempoDigitalApex3.Models.MusicRelease
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="wrapper">
+    <div class="main-panel">
+        <div class="main-content">
+            <div class="content-wrapper">
+
+                <h2>Delete</h2>
+
+                <h3>Are you sure you want to delete this?</h3>
+                <div>
+                    <h4>MusicRelease</h4>
+                    <hr />
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.ReleaseName)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.ReleaseName)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.MainArtist)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.MainArtist)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.FeaturedArtist)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.FeaturedArtist)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Language)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Language)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.PrimaryGenre)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.PrimaryGenre)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.SecondaryGenre)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.SecondaryGenre)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.CopyrightYear)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.CopyrightYear)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.CopyryghtHolder)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.CopyryghtHolder)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.LabelName)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.LabelName)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.UPCEAN)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.UPCEAN)
+                        </dd>
+
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.RecordingLocation)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.RecordingLocation)
+                        </dd>
+
+                    </dl>
+
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-actions no-color">
+                            <input type="submit" value="Delete" class="btn btn-default" /> |
+                            @Html.ActionLink("Back to List", "Index")
+                        </div>
+                    }
+                </div>
+                </div>
+            </div>
+        </div>
+

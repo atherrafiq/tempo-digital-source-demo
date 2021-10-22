@@ -1,0 +1,204 @@
+﻿@model TempoDigitalApex3.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Distribution Register";
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- MATERIAL DESIGN ICONIC FONT -->
+    <link rel="stylesheet" href="~/Content/NewTemplate/fonts/material-design-iconic-font/css/material-design-iconic-font.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- STYLE CSS -->
+    <link rel="stylesheet" href="~/Content/NewTemplate/css/style.css">
+
+    <script>
+        window.onload = function () {
+            $.getJSON('https://api.ipify.org?format=json', function (data) {
+                //console.log(data.ip);
+                //$('#loginForm').append("<input type='hidden' name='IP' value='" + data.ip + "' />");
+                $("#IP").val(data.ip);
+            });
+        };
+
+        function showReleatedField() {
+            if ($('#name').val() == "") {
+                document.getElementById("artistName").style.display = "none";
+                document.getElementById("labelName").style.display = "none";
+            }
+            else if ($('#name').val() == "label") {
+                document.getElementById("labelName").style.display = "block";
+                document.getElementById("artistName").style.display = "none";
+            }
+            else if ($('#name').val() == "artist") {
+                document.getElementById("artistName").style.display = "block";
+                document.getElementById("labelName").style.display = "none";
+            }
+        }
+
+        function showLabelField() {
+            document.getElementById("artistRadio").checked = false;
+            document.getElementById("labelName").style.display = "block";
+            document.getElementById("artistName").style.display = "none";
+        }
+
+        function showArtistField() {
+                document.getElementById("labelRadio").checked = false;
+                document.getElementById("labelName").style.display = "none";
+            document.getElementById("artistName").style.display = "block";
+        }
+
+
+        function validate(event) {
+            if ($('#name').val() == "label") {
+                if ($('#labelNameField').val() == "") {
+                    $('#alertMessageAR').empty();
+                    $('#alertMessageAR').append(`<label style="color:red;">Please Enter Label Name.</label>`);
+                    event.preventDefault();
+                }
+                else {
+                    $('#alertMessageAR').empty();
+                }
+            }
+
+            if ($('#name').val() == "artist") {
+                if ($('#artistNameField').val() == "") {
+                    $('#alertMessageAR').empty();
+                    $('#alertMessageAR').append(`<label style="color:red;">Please Enter Artist Name.</label>`);
+                    event.preventDefault();
+                }
+                else {
+                    $('#alertMessageAR').empty();
+                }
+            }
+            
+
+        }
+
+        function showReleatedAggrement(){
+            if ($('#service').val() == "Music") {
+                $("div.mArt").remove();
+                $(".aggrements").append(`
+                    <div class="mArt">
+                        <label>
+                            <input required type="checkbox"> I Agree with @Html.ActionLink("Distibutions' Terms and Conditions", "Distributions_Terms_Conditions", "Home").
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                `);
+            }
+            else if ($('#service').val() == "Youtube") {
+                $("div.mArt").remove();
+                $(".aggrements").append(`
+                    <div class="mArt">
+                        <label>
+                            <input required type="checkbox"> I Agree with @Html.ActionLink("Youtube' Terms and Conditions", "Youtube_Terms_Conditions", "Home").
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                `);
+            }
+            else if ($('#service').val() == "Both") {
+                $("div.mArt").remove();
+                $(".aggrements").append(`
+                    <div class="mArt">
+                        <label>
+                            <input required type="checkbox"> I Agree with @Html.ActionLink("Both Distibutions' & Youtube Terms and Conditions", "Both_Terms_Conditions", "Home")".
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                `);
+            }
+        }
+
+       
+
+    </script>
+</head>
+
+<body background='~/Content/NewTemplate/images/bg-registration-form-2.jpg' style="background-repeat:no-repeat;  background-size:100% 100%;">
+
+    <div class="wrapper">
+        <div class="inner">
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", id = "loginForm", role = "form", onsubmit = "validate(event)" }))
+            {
+                @Html.AntiForgeryToken()
+                <h3>Distribution Registration Form</h3>
+                @Html.ValidationSummary("", new { @class = "text-danger" })
+                <div class="form-group">
+                    <div class="form-wrapper">
+                        @Html.LabelFor(m => m.FirstName, new { })
+                        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+                    </div>
+                    <div class="form-wrapper">
+                        @Html.LabelFor(m => m.LastName, new { })
+                        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="form-wrapper" style="width: 100%; float:left;">
+                    <select onchange="showReleatedField();" required class="form-control" id="name" name="nameadd">
+                        <option value="">I am a</option>
+                        <option value="label">Label</option>
+                        <option value="artist">Artist</option>
+                    </select>
+                </div>
+                <input type='hidden' name='IP' id="IP" />
+                <input type='hidden' name='registerType' value='Distribution' />
+                <div class="form-wrapper" id="labelName" style="display:none;">
+                    @Html.LabelFor(m => m.LabelName, new { })
+                    @Html.TextBoxFor(m => m.LabelName, new { @class = "form-control", id = "labelNameField" })
+                </div>
+                <div class="form-wrapper" id="artistName" style="display:none;">
+                    @Html.LabelFor(m => m.ArtistName, new { })
+                    @Html.TextBoxFor(m => m.ArtistName, new { @class = "form-control", id = "artistNameField" })
+                </div>
+                <div class="form-wrapper" id="alertMessageAR">
+
+
+                </div>
+                <div class="form-wrapper">
+                    @Html.LabelFor(m => m.Email, new { })
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", id = "email" })
+                </div>
+                <div class="form-wrapper">
+                    @Html.LabelFor(m => m.Password, new { })
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                </div>
+                <div class="form-wrapper">
+                    @Html.LabelFor(m => m.ConfirmPassword, new { })
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input required type="checkbox"> I Agree with <a target="_blank" href="~/Home/Terms_Conditions"><u>Terms and Conditions</u></a> and <a target="_blank" href="~/Home/Privacy_Policy"><u>Privacy Policy</u></a>.
+                        <span class="checkmark"></span>
+                    </label>
+
+                </div>
+                <div class="aggrements checkbox">
+
+                </div>
+                <button type="submit">Register Now</button>
+                <br />
+                <div class="hint-text small" style="margin-left: 80px;">
+                    Have an account?
+
+                    @Html.ActionLink("Login Here", "Login")
+
+                </div>
+            }
+            @section Scripts {
+                @Scripts.Render("~/bundles/jqueryval")
+            }
+        </div>
+    </div>
+
+</body><
+</html>

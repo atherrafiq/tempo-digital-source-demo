@@ -1,0 +1,123 @@
+﻿@model List<TempoDigitalApex3.Models.YoutubeChannel>
+@{
+    ViewBag.Title = "Sumarized Reports";
+    Layout = "~/Views/Shared/_LayoutPage_Admin.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script>
+        $(document).ready(function () {
+            $('#monthly_paid').DataTable({
+                "scrollX": true
+            });
+        });
+
+        function downloadReportPDFAllCh() {
+            if ($('#yearAll').val() == "") {
+                alert('Select Year First.');
+            }
+            else if ($('#monthAll').val() == "") {
+                alert('Select Year First.');
+            }
+            else {
+                window.location.href = "PDFReportAllCH?M=" + $('#monthAll').val() + "&Y=" + $('#yearAll').val();
+                //$("#PDFALL").attr("href", "PDFReportAllCH?M=" + $('#monthAll').val() + "&Y=" + $('#yearAll').val());
+            }
+        }
+
+        function downloadReportHTMLAllCh() {
+            //alert($('#yearAll').val());
+            //alert($('#monthAll').val());
+            if ($('#yearAll').val() == "") {
+                alert('Select Year First.');
+            }
+            else if ($('#monthAll').val() == "") {
+                alert('Select Year First.');
+            }
+            else {
+                window.location.href = "HTMLReportAllCH?M=" + $('#monthAll').val() + "&Y=" + $('#yearAll').val();
+                //$("#HTMLALL").attr("href", "HTMLReportAllCH?M=" + $('#monthAll').val() + "&Y=" + $('#yearAll').val());
+            }
+        }
+    </script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+</head>
+<body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
+    <div class="wrapper">
+        <div class="main-panel">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div class="row match-height">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    @if (TempData["ReportAlert"] != null)
+                                    {
+                                        <div class="col-md-12 alert alert-danger" id="alertDiv" style="font-size:20px; width:100%; ">
+                                            <center>
+                                                <strong>Alert!</strong> <span id="alertText">@TempData["ReportAlert"]</span>
+                                            </center>
+                                        </div>
+                                        TempData["ReportAlert"] = null;
+                                    }
+                                    <div class="card-body" style="padding:10px;">
+                                        <h4 style="margin:20px;">Download Report Here</h4>
+
+                                        <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                                            <center>
+                                                <select style="width:50%; float:right;" id="yearAll" class="form-control">
+                                                    <option value="">-Select Year-</option>
+                                                    <option value="2019">2019</option>
+                                                    <option value="2020">2020</option>
+                                                </select>
+
+                                            </center>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                                            <center>
+                                                <select style="width:50%; float:left;" id="monthAll" class="form-control">
+                                                    <option value="">-Select Month-</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                    <option value="6">6</option>
+                                                    <option value="7">7</option>
+                                                    <option value="8">8</option>
+                                                    <option value="9">9</option>
+                                                    <option value="10">10</option>
+                                                    <option value="11">11</option>
+                                                    <option value="12">12</option>
+                                                </select>
+                                            </center>
+                                        </div>
+
+                                        <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                                            <center>
+                                                <a id="PDFALL" class="btn btn-success" onclick="downloadReportPDFAllCh()" href="javascript::" style="width:100%; margin-top:20px;">All Channels Report PDF</a>
+                                                @*<button  style="width:100%; margin-top:20px;" type="submit" ></button>*@<br>
+                                            </center>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                                            <center>
+                                                <a id="HTMLALL" style="width:100%; margin-top:20px;" class="btn btn-success" onclick="downloadReportHTMLAllCh()" href="javascript::">All Channels Report HTML</a>
+                                                @*<button value="Save Changes"  type="submit" ></button>*@<br>
+                                            </center>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

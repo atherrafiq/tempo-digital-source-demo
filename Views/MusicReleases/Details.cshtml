@@ -1,0 +1,401 @@
+﻿@model List<TempoDigitalApex3.Models.Song>
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<head>
+    <link href="~/assets/audio/css/audioplayer.css" rel="stylesheet" />
+
+    <style>
+        #myImg {
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            #myImg:hover {
+                opacity: 0.7;
+            }
+
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+        }
+
+        /* Modal Content (image) */
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+        }
+
+        /* Caption of Modal Image */
+        #caption {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            height: 150px;
+        }
+
+        /* Add Animation */
+        .modal-content, #caption {
+            -webkit-animation-name: zoom;
+            -webkit-animation-duration: 0.6s;
+            animation-name: zoom;
+            animation-duration: 0.6s;
+        }
+
+        @@-webkit-keyframes zoom {
+            from {
+                -webkit-transform: scale(0)
+            }
+
+            to {
+                -webkit-transform: scale(1)
+            }
+        }
+
+        @@keyframes zoom {
+            from {
+                transform: scale(0)
+            }
+
+            to {
+                transform: scale(1)
+            }
+        }
+
+        /* The Close Button */
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: #bbb;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+        /* 100% Image Width on Smaller Screens */
+        @@media only screen and (max-width: 700px) {
+            .modal-content {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<div class="main-panel">
+    <div class="main-content">
+
+
+        <div class="row">
+
+            <div class="col-lg-10">
+
+                <div class="card" style="margin-left:20%;">
+                    <div class="card-body">
+                        @*<div class="col-lg-12">
+                                <h6 class="card-title">Music Releaese Details are..!</h6>
+                            </div>*@
+
+                        <div class="col-lg-6">
+
+                            <div class="col-md-12">
+                                <center>
+                                    <img id="myImg" class="btn popup_image" src="@ViewBag.Release.CoverImage" style="border-radius: 15px 50px; width: 100%;  height: 100%;" />
+
+                                </center>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="col-md-12">
+                                <center><h2 style="font-weight:bolder;">@ViewBag.Release.ReleaseName</h2></center>
+                            </div>
+
+                            <div class="col-md-12 row">
+                                <div class="col-md-6" style="margin-bottom: 4px;">
+                                    <h6 style="margin: auto; font-weight:bold;">Main Artist:</h6>
+                                </div>
+                                <div class="col-md-6" style="margin-bottom: 4px;">
+                                    <h6 style="margin: auto; ">@ViewBag.Release.MainArtist</h6>
+                                </div>
+
+                                <div class="col-md-6" style="margin-bottom: 4px;">
+                                    <h6 style="margin: auto; font-weight:bold;">CopyRight Year:</h6>
+                                </div>
+                                <div class="col-md-6" style="margin-bottom: 4px;">
+                                    <h6 style="margin: auto; ">@ViewBag.Release.CopyrightYear</h6>
+                                </div>
+
+                                <div class="col-md-6" style="margin-bottom: 4px;">
+                                    <h6 style="margin: auto; font-weight:bold;">Label:</h6>
+                                </div>
+                                <div class="col-md-6" style="margin-bottom: 4px;">
+                                    <h6 style="margin: auto; ">@ViewBag.Release.LabelName</h6>
+                                </div>
+
+                                <div class="col-md-6" style="margin-bottom: 4px;">
+                                    <h6 style="margin: auto; font-weight:bold;">UPCEAN:</h6>
+                                </div>
+                                <div class="col-md-6" style="margin-bottom: 4px;">
+                                    <h6 style="margin: auto; ">@ViewBag.Release.UPCEAN</h6>
+                                </div>
+
+                                <div class="col-md-6" style="margin-bottom: 4px;">
+                                    <h6 style="margin: auto; font-weight:bold;">Release Date:</h6>
+                                </div>
+                                <div class="col-md-6" style="margin-bottom: 4px;">
+                                    <h6 style="margin: auto;  ">@ViewBag.Release.ReleaseDate</h6>
+                                </div>
+
+                                <div class="col-md-6" style="margin-bottom: 4px;">
+                                    <h6 style="margin: auto; font-weight:bold;">Recording Location:</h6>
+                                </div>
+                                <div class="col-md-6" style="margin-bottom: 4px;">
+                                    <h6 style="margin: auto;  ">@ViewBag.Release.RecordingLocation</h6>
+                                </div>
+
+                                <div class="col-md-6" style="margin-bottom: 4px;">
+                                    <h6 style="margin: auto; font-weight:bold;">Copy Right Holder:</h6>
+                                </div>
+                                <div class="col-md-6" style="margin-bottom: 4px;">
+                                    <h6 style="margin: auto; ">@ViewBag.Release.CopyryghtHolder</h6>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h6 style="margin: auto; font-weight:bold;">Copy Right Year:</h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 style="margin: auto; ">@ViewBag.Release.CopyrightYear</h6>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+                        <a href="@ViewBag.csv" class="float-right" download="download">Download Meta Data</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <center>
+            <div style="width:1000px;">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-block">
+                            <h6 class="card-title">Tracks list</h6>
+                        </div>
+                        @*
+                            @for (int i = 0; i < Model.Count; i++)
+                            {
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        @Model[i].SongTitle
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <audio preload="auto" controls>
+                                            <source src="@Model[i].SongPath">
+                                        </audio>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <span class="badge bg-primary float-right">@Model[i].isrc</span>
+                                    </div>
+                                </div>
+                            }
+                        *@
+                        <ul class="list-group">
+
+                            <li class="list-group-item">
+
+                                <span class=" float-right">SONG ISRC</span><p id="top1" style="float:left;">SONG TITLE </p>
+                            </li>
+                            @for (int i = 0; i < Model.Count; i++)
+                            {
+                                <li class="list-group-item">
+                                    <table style="width:100%;">
+                                        <tr>
+                                            <th style="text-align:left; width:35%;"><p id="top1">@Model[i].SongTitle </p></th>
+                                            <th style="text-align:center; width:40%;">
+                                                <audio preload="auto" controls controlsList="nodownload" style="width:100%;">
+                                                    <source src="@Model[i].SongPath">
+                                                </audio>
+
+                                            </th>
+                                            <th style="text-align:left; width:5%;">
+                                                <a target="_blank" download href="@Model[i].SongPath" style="float: right;"><i class="fa fa-downloadfa fa-download" style="font-size:24px"></i></a>
+                                            </th>
+                                            <th style="text-align:right; width:20%"><span class="badge bg-dark float-right">@Model[i].isrc</span></th>
+
+                                        </tr>
+                                    </table>
+                                </li>
+                            }
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+        </center>
+
+        <div class=" col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-block">
+                        <h6 class="card-title">Analytics</h6>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            @if (ViewBag.SpotifyReport != null)
+                            {
+                                <center><h4>Spotify Details</h4></center>
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <span class=" float-right">Payable</span><p>Year--Month</p>
+                                    </li>
+                                    @foreach (var data in ViewBag.SpotifyReport)
+                                    {
+                                        <a href="~/MusicReleases/ReportDetails?month=@data.Month&year=@data.Year&upc=@data.UPC&reportName=Spotify">
+                                            <li class="list-group-item">
+                                                <span class=" float-right">$@Math.Round(data.USD_Payable, 2)</span><p>@data.Year--@data.Month</p>
+                                            </li>
+                                        </a>
+                                    }
+                                </ul>
+
+                            }
+                        </div>
+
+                        <div class="col-lg-3">
+                            @if (ViewBag.DeezersReport != null)
+                            {
+                                <center>
+                                    <h4>Deezers Details</h4>
+                                </center>
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <span class=" float-right">Payable</span><p>Year--Month</p>
+                                    </li>
+                                    @foreach (var data in ViewBag.DeezersReport)
+                                    {
+                                        <a href="~/MusicReleases/ReportDetails?month=@data.Month&year=@data.Year&upc=@data.UPC&reportName=Deezers">
+                                            <li class="list-group-item">
+                                                <span class=" float-right">$@Math.Round(data.Royalties, 2)</span><p>@data.Year--@data.Month</p>
+                                            </li>
+                                        </a>
+                                    }
+                                </ul>
+
+                            }
+                        </div>
+
+                        <div class="col-lg-3">
+                            @if (ViewBag.GooglePlayReport != null)
+                            {
+                                <center><h4>Google Play Details</h4></center>
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <span class=" float-right">Payable</span><p>Year--Month</p>
+                                    </li>
+                                    @foreach (var data in ViewBag.GooglePlayReport)
+                                    {
+                                        <a href="~/MusicReleases/ReportDetails?month=@data.Month&year=@data.Year&upc=@data.UPC&reportName=GooglePlay">
+                                            <li class="list-group-item">
+                                                <span class=" float-right">$@Math.Round(data.EUR_Amount, 2)</span><p>@data.Year--@data.Month</p>
+                                            </li>
+                                        </a>
+                                    }
+                                </ul>
+
+                            }
+                        </div>
+
+                        <div class="col-lg-3">
+                            @if (ViewBag.SoundCloudReport != null)
+                            {
+                                <center><h4>Sound Cloud Details</h4></center>
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <span class=" float-right">Payable</span><p>Year--Month</p>
+                                    </li>
+                                    @foreach (var data in ViewBag.SoundCloudReport)
+                                    {
+                                        <a href="~/MusicReleases/ReportDetails?month=@data.Month&year=@data.Year&upc=@data.UPC&reportName=SoundCloud">
+                                            <li class="list-group-item">
+                                                <span class=" float-right">$@Math.Round(data.Total_Revenue, 2)</span><p>@data.Year--@data.Month</p>
+                                            </li>
+                                        </a>
+                                    }
+                                </ul>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal" style="z-index: 999;">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="img01">
+    <div id="caption"></div>
+</div>
+
+<script src="~/assets/audio/js/audioplayer.js"></script>
+<script src="~/assets/audio/js/audioplayer.min.js"></script>
+<script>$(function () { $('audio').audioPlayer(); });</script>
+<script>
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+    // Get the image and insert it inside the modal - use its "alt" text as a caption
+    var img = document.getElementById("myImg");
+    var modalImg = document.getElementById("img01");
+    var captionText = document.getElementById("caption");
+    img.onclick = function () {
+        modal.style.display = "block";
+        modalImg.src = this.src;
+        captionText.innerHTML = this.alt;
+    }
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+</script>

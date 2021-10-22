@@ -1,0 +1,2384 @@
+﻿@model TempoDigitalApex3.Models.MusicRelease
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <style>
+        body {
+            margin: 40px;
+        }
+
+        .stepwizard-step p {
+            margin-top: 10px;
+        }
+
+        .stepwizard-row {
+            display: table-row;
+        }
+
+        .stepwizard {
+            display: table;
+            width: 100%;
+            position: relative;
+        }
+
+        .stepwizard-step button[disabled] {
+            opacity: 1 !important;
+            filter: alpha(opacity=100) !important;
+        }
+
+        .stepwizard-row:before {
+            top: 14px;
+            bottom: 0;
+            position: absolute;
+            content: " ";
+            width: 100%;
+            height: 1px;
+            background-color: #ccc;
+            z-order: 0;
+        }
+
+        .stepwizard-step {
+            display: table-cell;
+            text-align: center;
+            position: relative;
+        }
+
+        .btn-circle {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 12px;
+            line-height: 1.428571429;
+            border-radius: 15px;
+        }
+        /* Popup box BEGIN */
+        .hover_bkgr_fricc {
+            background: rgba(0,0,0,.4);
+            cursor: pointer;
+            height: 100%;
+            display: none;
+            position: fixed;
+            text-align: center;
+            overflow: auto;
+            top: 0;
+            width: 100%;
+            z-index: 10000;
+        }
+
+            .hover_bkgr_fricc .helper {
+                display: inline-block;
+                height: 100%;
+                vertical-align: middle;
+            }
+
+            .hover_bkgr_fricc > div {
+                background-color: #fff;
+                box-shadow: 10px 10px 60px #555;
+                display: inline-block;
+                height: auto;
+                max-width: 551px;
+                min-height: 100px;
+                vertical-align: middle;
+                width: 60%;
+                position: relative;
+                border-radius: 8px;
+            }
+
+        .popupCloseButton {
+            background-color: #fff;
+            border: 3px solid #999;
+            border-radius: 50px;
+            cursor: pointer;
+            display: inline-block;
+            font-family: arial;
+            font-weight: bold;
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 25px;
+            line-height: 30px;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+        }
+
+            .popupCloseButton:hover {
+                background-color: #ccc;
+            }
+
+        .trigger_popup_fricc {
+            cursor: pointer;
+            font-size: 20px;
+            margin: 20px;
+            display: inline-block;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<div class="main-panel">
+    <div class="main-content">
+        <div class="content-wrapper">
+            <div class="container" style="box-shadow: 5px 10px 40px grey; width:100%;">
+                <h4>Edit Your Distribution</h4>
+                <br />
+                @using (Html.BeginForm("Edit", "MusicReleases", FormMethod.Post, new { enctype = "multipart/form-data", style = "width:100%;", onsubmit = "add_part_fields(event)", id = "musicForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div id="smartwizard" class="col-md-12">
+                        <div class="stepwizard col-md-12" style="margin-bottom:30px;" s>
+                            <div class="stepwizard-row ">
+                                <div class="stepwizard-step">
+                                    <a href="javascript::" onclick="stepOne()" class="btn btn-primary btn-circle" style="background-color: red; color:white;">1</a>
+                                    <p>Release Info</p>
+                                </div>
+                                <div class="stepwizard-step">
+                                    <a href="javascript::" onclick="stepTwo()" class="btn btn-primary btn-circle" style="background-color: red; color:white;">2</a>
+                                    <p>Cover Art Upload</p>
+                                </div>
+                                <div class="stepwizard-step">
+                                    <a href="javascript::" onclick="stepThree()" class="btn btn-primary btn-circle" style="background-color: red; color:white;">3</a>
+                                    <p>Upload Tracks</p>
+                                </div>
+                                <div class="stepwizard-step">
+                                    <a href="javascript::" onclick="stepFour()" class="btn btn-primary btn-circle" style="background-color: red; color:white;">4</a>
+                                    <p>Add Stores</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div id="step1" class="" style="margin-bottom:20px;">
+                                <div class="form row">
+                                    <div class="col-md-12" style="margin-bottom: 10px;">
+                                        <div class="col-md-12">
+                                            @Html.EditorFor(model => model.MusicReleaseId, new { htmlAttributes = new { @class = "form-control", @type = "hidden" } })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" style="margin-bottom: 10px;">
+                                        <div class="col-md-12">
+                                            <label class="control-label" rel='tooltip' data-original-title='<h1>big tooltip</h1>'>Release Name</label>
+                                            @* @Html.LabelFor(model => model.ReleaseName, new { @class = "control-label" }) *@
+                                            @Html.EditorFor(model => model.ReleaseName, new { htmlAttributes = new { @class = "form-control", id = "releaseName", disabled="disabled", required = "required", placeholder = "Purple Rain" } })
+                                            @Html.ValidationMessageFor(model => model.ReleaseName, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mArtistDiv" style=" margin-bottom:15px;">
+                                        <div class="col-md-8">
+                                            <label class="control-label" data-toggle="tooltip" title="Add display artist for the release. You can add more participants. If the release is an compilation, select the check box and the artist name will became Various Artist" data-placement="top">Main Artist</label>
+                                            @*<input type="text" name="MainArtist" id="mainArtist" class="form-control" required placeholder="Prince" />*@
+                                            @Html.EditorFor(model => model.MainArtist, new { htmlAttributes = new { @class = "form-control", id = "mainAtrist", placeholder = "Prince" } })
+                                            @if (Model.artistToAllSongs)
+                                            {
+                                                <input type="checkbox" checked name="artist_to_all_songs" id="artist_to_all_songs" />
+                                            }
+                                            else
+                                            {
+                                                <input type="checkbox" name="artist_to_all_songs" id="artist_to_all_songs" />
+                                            }
+                                            <label class="form-check-label">Add this artist to all songs</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <br />
+                                            <a href="javascript::" onclick="show_participents()" class="btn btn-primary" id="addMArtist"><i class="glyphicon glyphicon-plus"></i> Add Participants</a>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-12" style="margin-bottom:40px;">
+                                        <label>Participant Details</label>
+                                        <table class="table table-hover" id="participents_table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Type</th>
+                                                    <th>Role</th>
+                                                    <th>Instrument</th>
+                                                    <th>IPI Code</th>
+                                                    <th>IPN Code</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                
+                                                @foreach (var item in Model.Participants)
+                                                {
+                                                    <tr>
+                                                        <td>@item.ParticipantName</td>
+                                                        <td>@item.ParticipantRole</td>
+                                                        <td>@item.RoleType</td>
+                                                        <td>@item.Instrument</td>
+                                                        <td>@item.IPICode</td>
+                                                        <td>@item.IPNCode</td>
+                                                        <td><a href="javascript::" onclick="removeTableRow(this)" class="remMArtist btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></td>
+                                                    </tr>
+                                                }
+                                                
+                                            </tbody>
+                                        </table>
+                                        <input type="checkbox" name="participent_songs" id="participent_songs_check" />
+                                        <label class="form-check-label">Add participant's to all songs</label>
+                                    </div>
+                                    <div class="col-md-3" style=" margin-bottom:15px;">
+                                        <div class="col-md-12">
+                                            <label class="control-label" data-toggle="tooltip" title="Feel free to insert the release name" data-placement="top">Release Version</label>
+                                            @Html.EditorFor(model => model.ReleaseVersion, new { htmlAttributes = new { @class = "form-control", id = "releaseVersion", placeholder = "'Remix', 'Remastered', Live" } })
+                                            @*<input type="text" name="ReleaseVersion" id="releaseVersion" class="form-control" placeholder="'Remix', 'Remastered', Live'" />*@
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="col-md-12">
+                                            <label class="control-label">Country</label>
+                                            <select class="form-control" name="Country">
+                                                @foreach (var x in ViewBag.Countries)
+                                                {
+                                                    if (x.Equals(Model.RecordingLocation))
+                                                    {
+                                                        <option selected value="@x">@x</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@x">@x</option>
+                                                    }
+                                                }
+                                            </select>
+                                            @*@Html.LabelFor(model => model.RecordingLocation, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                           @* @Html.EditorFor(model => model.RecordingLocation, new { htmlAttributes = new { @class = "form-control", id = "recordingLocation", placeholder = "US - United States" } })*@
+                                            @*@Html.ValidationMessageFor(model => model.RecordingLocation, "", new { @class = "text-danger" })*@
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3" style="margin-bottom: 20px;">
+                                        <div class="col-md-12">
+                                            <label class="control-label" data-toggle="tooltip" data-html="true" title="Single, EP or Album">Release Format</label>
+                                            <select class="form-control" name="ReleaseFormat">
+                                                @foreach (var x in ViewBag.Release_Format)
+                                                {
+                                                    if (x.Equals(Model.ReleaseFormat))
+                                                    {
+                                                        <option selected value="@x">@x</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@x">@x</option>
+                                                    }
+                                                }
+                                            </select>
+                                            @*@{
+                                                List<SelectListItem> formatList = new List<SelectListItem>();
+                                                formatList.Add(new SelectListItem
+                                                {
+                                                    Text = "Digital",
+                                                    Value = "Digital"
+                                                });
+                                                formatList.Add(new SelectListItem
+                                                {
+                                                    Text = "Single",
+                                                    Value = "Single"
+                                                });
+                                                formatList.Add(new SelectListItem
+                                                {
+                                                    Text = "Single",
+                                                    Value = "Single"
+                                                });
+                                            }
+                                            @Html.DropDownListFor(model => model.ReleaseFormat, formatList, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.ReleaseFormat, "", new { @class = "text-danger" })*@
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="margin-bottom: 20px;">
+                                        <div class="col-md-12">
+                                            <label class="control-label" data-toggle="tooltip" data-html="true" title="Explicit tracks must be marked in Advisory field. If there is a clean version of the explicit content, the clean version must be marked with the 'Clean' Advisory tag. Do not use the 'Clean' tag unless there is a corresponding 'Explicit' version of the release/track. Leave the Advisory field blank if there is no 'Explicit' version.">Advisory</label>
+                                            <select class="form-control" name="ReleaseAdvisory">
+                                                @foreach (var x in ViewBag.Advisory)
+                                                {
+                                                    if (x.Equals(Model.ReleaseAdvisory))
+                                                    {
+                                                        <option selected value="@x">@x</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@x">@x</option>
+                                                    }
+                                                }
+                                            </select>
+                                            @*@{
+                                                List<SelectListItem> advisoryList = new List<SelectListItem>();
+                                                advisoryList.Add(new SelectListItem
+                                                {
+                                                    Text = "None",
+                                                    Value = "None"
+                                                });
+                                                advisoryList.Add(new SelectListItem
+                                                {
+                                                    Text = "Clean",
+                                                    Value = "Clean"
+                                                });
+                                                advisoryList.Add(new SelectListItem
+                                                {
+                                                    Text = "Explicit",
+                                                    Value = "Explicit"
+                                                });
+                                            }
+                                            @Html.DropDownListFor(model => model.ReleaseAdvisory, advisoryList, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.ReleaseAdvisory, "", new { @class = "text-danger" })*@
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-3">
+                                        @* Languages *@
+                                        <div class="col-md-12">
+                                            @{
+                                                List<SelectListItem> langList = new List<SelectListItem>();
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "English",
+                                                    Value = "Eng"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "French",
+                                                    Value = "Fr"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Afrikang servenns",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Albanian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Arabic",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Armenian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Basque",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Bengali",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Bosnian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Bulgarian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Catalan",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Cambodian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Chinese (Mandarin)",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Croatian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Czech",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Danish",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Dutch",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Estonian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Fiji",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Finnish",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "French",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Georgian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "German",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Greek",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Gujarati",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Hebrew",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Hindi",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Hungarian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Icelandic",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Indonesian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Irish",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Italian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Japanese",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Javanese",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Korean",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Latin",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Latvian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Lithuanian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Macedonian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Malay",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Malayalam",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Maltese",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Maori",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Marathi",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Mongolian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Montenegrin",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Nepali",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Norwegian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Persian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Polish",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Portuguese",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Punjabi",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Quechua",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Romanian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Russian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Samoan",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Serbian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Slovak",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Slovenian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Spanish",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Swahili",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Swedish",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Tamil",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Tatar",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Telugu",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Thai",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Tibetan",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Tonga",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Turkish",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Ukranian",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Urdu",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Uzbek",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Vietnamese",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Welsh",
+                                                    Value = "Ur"
+                                                });
+                                                langList.Add(new SelectListItem
+                                                {
+                                                    Text = "Xhosa",
+                                                    Value = "Ur"
+                                                });
+                                            }
+                                            @Html.LabelFor(model => model.Language, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.DropDownListFor(model => model.Language, langList, "-- Select Language --", new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.Language, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3" style="margin-bottom: 20px;">
+                                        <div class="col-md-12">
+                                            <label class="control-label">Year</label>
+                                            @*@Html.LabelFor(model => model.CopyrightYear, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                            @Html.EditorFor(model => model.CopyrightYear, new { htmlAttributes = new { @class = "form-control", id = "copyRightYear", placeholder = "2020" } })
+                                            @Html.ValidationMessageFor(model => model.CopyrightYear, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style=" margin-bottom:15px;">
+                                        <div class="col-md-12">
+                                            <label class="control-label">Release Date</label>
+                                            @Html.EditorFor(model => model.ReleaseDate, new { htmlAttributes = new { @class = "form-control", id = "releasedate", placeholder = "YYYY-MM-DD" } })
+                                            @*<input class="form-control" id="releasedate" name="Releasedate" placeholder="YYYY-MM-DD" type="text" />*@
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style=" margin-bottom:15px;">
+                                        <div class="col-md-12">
+                                            <label class="control-label">Original Release Date</label>
+                                            @Html.EditorFor(model => model.OriginalReleaseDate, new { htmlAttributes = new { @class = "form-control", id = "originalreleasedate", placeholder = "YYYY-MM-DD" } })
+                                            @* <input type="text" name="OriginalReleaseDate" id="originalreleasedate" class="form-control" placeholder="YYYY-MM-DD" />*@
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3" style="margin-bottom: 20px;">
+                                        <div class="col-md-12">
+                                            <label class="control-label">UCP/EAN</label>
+                                            @*@Html.LabelFor(model => model.UPCEAN, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                            @Html.EditorFor(model => model.UPCEAN, new { htmlAttributes = new { @class = "form-control", id = "hereUPC", placeholder = "7340190904522", disabled="disabled" } })
+                                            @Html.ValidationMessageFor(model => model.UPCEAN, "", new { @class = "text-danger" })
+                                            @*@Html.CheckBoxFor(model => model.needUPC, new { htmlAttributes = new { @class = "form-control", disabled="disabled", id = "needUPC", onchange = "checkboxId();" } })*@
+                                            @*<label class="form-check-label" for="exampleCheck1">I need an UPC code.</label>*@
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3" style="margin-bottom: 20px;">
+                                        <div class="col-md-12">
+                                            <label class="control-label">Label Name</label>
+                                            @*@Html.LabelFor(model => model.LabelName, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                            @Html.EditorFor(model => model.LabelName, new { htmlAttributes = new { @class = "form-control", id = "labelName", placeholder = "Tempo Production" } })
+                                            @Html.ValidationMessageFor(model => model.LabelName, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3" style="margin-bottom: 20px;">
+                                        <div class="col-md-12">
+                                            <label class="control-label">Category/Genre</label>
+                                            <select class="form-control" name="Genre">
+                                                @foreach (var x in ViewBag.Genre)
+                                                {
+                                                    if (x.Equals(Model.ReleaseCategory))
+                                                    {
+                                                        <option selected value="@x">@x</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@x">@x</option>
+                                                    }
+                                                }
+                                            </select>
+                                            @*@{
+                                                List<SelectListItem> categoryList = new List<SelectListItem>();
+                                                categoryList.Add(new SelectListItem
+                                                {
+                                                    Text = "Pop",
+                                                    Value = "Album"
+                                                });
+                                                categoryList.Add(new SelectListItem
+                                                {
+                                                    Text = "EP",
+                                                    Value = "EP"
+                                                });
+                                                categoryList.Add(new SelectListItem
+                                                {
+                                                    Text = "Single",
+                                                    Value = "Single"
+                                                });
+                                            }
+                                            @Html.DropDownListFor(model => model.ReleaseCategory, categoryList, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.ReleaseCategory, "", new { @class = "text-danger" })*@
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="margin-bottom: 20px;">
+                                        <div class="col-md-12">
+                                            <label class="control-label">Territory</label>
+                                            <select class="form-control" name="TerritoryAvailability">
+                                                @foreach (var x in ViewBag.Advisory)
+                                                {
+                                                    if (x.Equals(Model.TerritoryAvailability))
+                                                    {
+                                                        <option selected value="@x">@x</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@x">@x</option>
+                                                    }
+                                                }
+                                            </select>
+                                            @*@{
+                                                List<SelectListItem> teritoryList = new List<SelectListItem>();
+                                                teritoryList.Add(new SelectListItem
+                                                {
+                                                    Text = "World Wide",
+                                                    Value = "None"
+                                                });
+                                                teritoryList.Add(new SelectListItem
+                                                {
+                                                    Text = "Clean",
+                                                    Value = "Clean"
+                                                });
+                                                teritoryList.Add(new SelectListItem
+                                                {
+                                                    Text = "Explicit",
+                                                    Value = "Explicit"
+                                                });
+                                            }
+                                            @Html.DropDownListFor(model => model.TerritoryAvailability, teritoryList, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.TerritoryAvailability, "", new { @class = "text-danger" })*@
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-3" style=" margin-bottom:15px;">
+                                        <div class="col-md-12">
+                                            <label class="control-label" data-toggle="tooltip" data-html="true" title="Input the (C) and (P) line information in the respective fields along with the Rights Holders of the release. If the corresponding information is consistent across all of the release's tracks, select the 'Set rights to all tracks' box. Uncheck this box when the rights information varies per track -- the (C), (P) and Rights Holders info can then be edited at the track level.">(C) Info</label>
+                                            @*<input type="text" name="Cinfo" id="cinfo" class="form-control" placeholder="Tempo Production" />*@
+                                            @Html.EditorFor(model => model.CInfo, new { htmlAttributes = new { @class = "form-control", id = "cinfo", placeholder = "Tempo Production" } })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style=" margin-bottom:15px;">
+                                        <div class="col-md-12">
+                                            <label class="control-label" data-toggle="tooltip" data-html="true" title="Input the (C) and (P) line information in the respective fields along with the Rights Holders of the release. If the corresponding information is consistent across all of the release's tracks, select the 'Set rights to all tracks' box. Uncheck this box when the rights information varies per track -- the (C), (P) and Rights Holders info can then be edited at the track level.">(C) Year</label>
+                                            @Html.EditorFor(model => model.CYear, new { htmlAttributes = new { @class = "form-control", id = "cyear", placeholder = "2020" } })
+                                            @*<input type="text" name="CYear" id="cyear" class="form-control" placeholder="2020" />*@
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style=" margin-bottom:15px;">
+                                        <div class="col-md-12">
+                                            <label class="control-label" data-toggle="tooltip" data-html="true" title="Input the (C) and (P) line information in the respective fields along with the Rights Holders of the release. If the corresponding information is consistent across all of the release's tracks, select the 'Set rights to all tracks' box. Uncheck this box when the rights information varies per track -- the (C), (P) and Rights Holders info can then be edited at the track level.">(P) Info</label>
+                                            @Html.EditorFor(model => model.PInfo, new { htmlAttributes = new { @class = "form-control", id = "pinfo", placeholder = "Tempo Production" } })
+                                            @*<input type="text" name="Pinfo" id="pinfo" class="form-control" placeholder="Tempo Production" />*@
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style=" margin-bottom:15px;">
+                                        <div class="col-md-12">
+                                            <label class="control-label" data-toggle="tooltip" data-html="true" title="Input the (C) and (P) line information in the respective fields along with the Rights Holders of the release. If the corresponding information is consistent across all of the release's tracks, select the 'Set rights to all tracks' box. Uncheck this box when the rights information varies per track -- the (C), (P) and Rights Holders info can then be edited at the track level.">(P) Year</label>
+                                            @Html.EditorFor(model => model.PYear, new { htmlAttributes = new { @class = "form-control", id = "pyear", placeholder = "2020" } })
+                                            @*<input type="text" name="PYear" id="pyear" class="form-control" placeholder="2020" />*@
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6" style="margin-bottom: 20px;">
+                                        <div class="col-md-12">
+                                            <label class="control-label" data-toggle="tooltip" data-html="true" title="Input the (C) and (P) line information in the respective fields along with the Rights Holders of the release. If the corresponding information is consistent across all of the release's tracks, select the 'Set rights to all tracks' box. Uncheck this box when the rights information varies per track -- the (C), (P) and Rights Holders info can then be edited at the track level.">Copyright Holder</label>
+                                            @* @Html.LabelFor(model => model.CopyryghtHolder, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                            @Html.EditorFor(model => model.CopyryghtHolder, new { htmlAttributes = new { @class = "form-control", id = "copyRightHolder", placeholder = "Tempo Production" } })
+                                            @Html.ValidationMessageFor(model => model.CopyryghtHolder, "", new { @class = "text-danger" })
+                                            @if (Model.copyRightToAllSongs)
+                                            {
+                                                <input type="checkbox" checked name="SetToAllTracks" id="setCopyRightsToAllTracks" />
+                                            }
+                                            else
+                                            {
+                                                <input type="checkbox" name="SetToAllTracks" id="setCopyRightsToAllTracks" />
+                                            }
+
+                                            <label class="form-check-label">Set rights to all tracks. Uncheck to set rights to every track separately.</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="col-md-12">
+                                            <label class="control-label" data-toggle="tooltip" data-html="true" title="Any songwriter or record label can apply to Tempo and have us administrate your royalty collection, publishing & sync-licensing.
+
+                                                    Through our many years working in the music industry, Tempo Digital has a huge network of partners to help your music get the opportunities it deserves.
+
+                                                    Once your application is accepted, we’ll contact you to decide on the best plan to get your catalogue earning you more money. We can supply you with any agreements so you can concentrate on what you do best – Making & singing great music.">Publisher</label>
+                                            @*@Html.LabelFor(model => model.Publisher, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                            @Html.EditorFor(model => model.Publisher, new { htmlAttributes = new { @class = "form-control", id = "publisher", placeholder = "TP Digital AB" } })
+                                            @Html.ValidationMessageFor(model => model.Publisher, "", new { @class = "text-danger" })
+                                            <input type="checkbox" name="publishing" id="publishing" />
+                                            <label class="form-check-label" for="exampleCheck1">I want to apply for publishing</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <button style="float:right;" onclick="stepTwo(event)">NEXT</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="step2" class="" style="display:none;">
+                                <div class="row">
+                                    <div class="col-md-12" style="margin-bottom: 20px;">
+                                        <h4 class="text-center">Cover Art Design</h4>
+                                    </div>
+                                    <br />
+                                    <div class="col-md-6">
+                                        <div class="insDiv">
+                                            <h6>Instructions</h6>
+                                            <p>To fit the requirements this image needs to be:</p>
+                                            <ul>
+                                                <li>At least 1400 x 1400 pixels in size</li>
+                                                <li>In JPG or PNG format</li>
+                                            </ul>
+                                        </div>
+                                        <br /><br />
+                                        <h5>Cover Art Uploader</h5>
+                                        <div class="upload-btn-wrapper">
+                                            <input type="file" name="coverImage" id="FileUpload" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="imgDiv">
+                                            @if (Model.CoverImage != null)
+                                            {
+                                                <img src="@Model.CoverImage" id="PreviewPicture" alt="" style="width: 350px; height: 300px;">
+                                            }
+                                            else
+                                            {
+                                                <img src="~/assets/img/img-placeholder.jpg" id="PreviewPicture" alt="" style="width: 350px; height: 300px;">
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <button style="float:right;" onclick="stepThree(event)">NEXT</button>
+                                        <button style="float:right;" onclick="stepOne(event)">BACK</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="step3" class="" style="display:none;">
+                                <div class="row">
+                                    <div class="col-md-12 text-center" style="margin-bottom: 20px;">
+                                        <h4>Track Upload</h4>
+                                        <p>Please clik on "Add Song Track" button to Upload Single or Multiple Songs</p>
+                                        <p>Audio Files must be WAV format 44.1khz, 16 bit, Stereo</p>
+                                    </div>
+                                    <div class="col-md-12 text-center">
+                                        <!--@if (Model.isVA)
+                                        {
+                                            <input checked id="isVA" type="checkbox" disabled />
+                                        }
+                                        else
+                                        {
+                                            <input id="isVA" type="checkbox" disabled />
+                                        }-->
+                                        @*@Html.CheckBoxFor(model => model.isVA, new { htmlAttributes = new { @class = "form-control", id = "VAR", name = "IS_VAR" } })*@
+                                        <!--<label>Various Artist Release</label>-->
+
+                                        <br />
+                                        <a href="javascript::" onclick="addSong()" class="btn btn-primary addRow">Add Song Track</a>
+                                    </div>
+                                    <div class="col-md-12 songs-div" id="songs" style="margin-bottom:15px;">
+                                        @if (Model.Songs.Count != 0)
+                                        {
+                                            foreach (var item in Model.Songs)
+                                            {
+                                        <div class="form-group song-row row" style="margin-top: 20px;">
+                                            <div class="col-md-12">
+                                                <div class="col-md-11"> </div>
+                                                <div class="col-md-1">
+                                                    <span><a href="javascript:void(0);" onclick="removeRow(this)" class="remRow btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12" style="margin-top: 10px;">
+                                                <div class="col-md-5">
+                                                    <audio controls>
+                                                        <source src="@item.SongPath" type="audio/mpeg" />
+                                                    </audio>
+                                                    <input type="file" name="songs" src="@item.SongPath" id="file" multiple="multiple" style="display:none;" />
+                                                    <input type="hidden" value="@item.SongId" name="SongId" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" value="@item.SongTitle" id="title" name="Title" placeholder="Track Title" class="form-control Title" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="text" value="@item.ArtistName" name="SongArtistName" placeholder="Artist Name" class="form-control Title" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12" style="margin-top: 20px;">
+                                                <div class="col-md-4">
+                                                    <input type="text" value="@item.isrc" name="ISrc" id="isrc" placeholder="ISRC code" class="form-control ISrc" />
+
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" value="@item.version" name="TrackVersion" class="form-control Title" placeholder="Track Version" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" value="@item.ISWC" name="ISWCcode" class="form-control Title" placeholder="ISWC code" />
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12" style="margin-top: 10px;">
+                                                <div class="col-md-3">
+                                                    <input type="text" disabled  value="@item.CInfo" name="SongCinfo" class="form-control Title" placeholder="C Info" />
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <input type="text" disabled value="@item.CYear" name="SongCyear" class="form-control Title" placeholder="Year" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="text" disabled value="@item.PInfo" name="SongPinfo" class="form-control Title" placeholder="P Info" />
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <input type="text" disabled value="@item.PYear" name="SongPyear" class="form-control Title" placeholder="Year" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" disabled value="@item.CopyRightHolder" name="SongCopyright_holder" class="form-control Title" placeholder="Copyright Holder" />
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12" style="margin-top: 10px;">
+                                                <label>Participant Details</label>
+                                                <table class="table table-hover songs_participents_table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Type</th>
+                                                            <th>Role</th>
+                                                            <th>Instrument</th>
+
+                                                            <th>IPI Code</th>
+                                                            <th>IPN Code</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @{
+                                                            foreach(var part_song in ViewBag.SongsParticipants)
+                                                            {
+                                                                if (part_song.SongId == item.SongId)
+                                                                {
+                                                                    <tr>
+                                                                        <td>@part_song.ParticipantName</td>
+                                                                        <td>@part_song.ParticipantRole</td>
+                                                                        <td>@part_song.RoleType</td>
+                                                                        <td>@part_song.Instrument</td>
+                                                                        <td>@part_song.IPICode</td>
+                                                                        <td>@part_song.IPNCode</td>
+                                                                        <td><a href="javascript::" onclick="removeTableRow(this)" class="remMArtist btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div class="col-md-12" style="margin-top: 5px;">
+                                                <a href="javascript::" onclick="show_song_participents(this)" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> Add Participants</a>
+                                            </div>
+
+                                        </div>
+
+                                                
+                                            }
+                                        }
+                                    </div>
+
+                                    <div class="col-md-12">
+
+                                        <button style="float:right;" onclick="stepFour(event)">NEXT</button>
+                                        <button style="float:right;" onclick="stepTwo(event)">BACK</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="step4" class="" style="display:none;">
+                                <div class="row">
+                                    <div class="col-md-12 text-center" style="margin-bottom: 10px;">
+                                        <h4>Stores/Services Collection</h4>
+                                        <p>Select a package below to get started</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="check-container">
+                                            <input type="checkbox" onchange="test()" id="selectAll" />
+                                            Select All Stores
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                @* Stores *@
+                                <div class="row">
+                                    <div class="col-md-12 insDiv" style="margin-bottom:25px;">
+
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/spotify.jpg" alt="Spotify" />
+                                                    @{
+                                                        var store1 = Model.Stores.Where(a => a.StoreName.Equals("Spotify")).FirstOrDefault();
+                                                        if (store1 != null)
+                                                        {
+                                                            <input type="checkbox" id="1" name="Store" value="Spotify" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="1" name="Store" value="Spotify">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/itunes.jpg" alt="iTunesap" />
+
+                                                    @{
+                                                        var store2 = Model.Stores.Where(a => a.StoreName.Equals("Itunes")).FirstOrDefault();
+                                                        if (store2 != null)
+                                                        {
+                                                            <input type="checkbox" id="2" name="Store" value="Itunes" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="2" name="Store" value="Itunes">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/imusic.jpg" alt="iMusic" />
+
+                                                    @{
+                                                        var store3 = Model.Stores.Where(a => a.StoreName.Equals("Imusic")).FirstOrDefault();
+                                                        if (store3 != null)
+                                                        {
+                                                            <input type="checkbox" id="3" name="Store" value="Imusic" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="3" name="Store" value="Imusic">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/shazam.jpg" alt="Shazam" />
+
+                                                    @{
+                                                        var store4 = Model.Stores.Where(a => a.StoreName.Equals("Shazam")).FirstOrDefault();
+                                                        if (store4 != null)
+                                                        {
+                                                            <input type="checkbox" id="4" name="Store" value="Shazam" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="4" name="Store" value="Shazam">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/napster.jpg" alt="Napster" />
+
+                                                    @{
+                                                        var store5 = Model.Stores.Where(a => a.StoreName.Equals("Napster")).FirstOrDefault();
+                                                        if (store5 != null)
+                                                        {
+                                                            <input type="checkbox" id="5" name="Store" value="Napster" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="5" name="Store" value="Napster">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/tidal.jpg" alt="Tidal" />
+
+                                                    @{
+                                                        var store6 = Model.Stores.Where(a => a.StoreName.Equals("Tidal")).FirstOrDefault();
+                                                        if (store6 != null)
+                                                        {
+                                                            <input type="checkbox" id="6" name="Store" value="Tidal" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="6" name="Store" value="Tidal">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/youtube-music.jpg" alt="Youtube Music" />
+
+                                                    @{
+                                                        var store7 = Model.Stores.Where(a => a.StoreName.Equals("Youtube")).FirstOrDefault();
+                                                        if (store7 != null)
+                                                        {
+                                                            <input type="checkbox" id="7" name="Store" value="Youtube" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="7" name="Store" value="Youtube">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/gplay.jpg" alt="Google Play" />
+
+                                                    @{
+                                                        var store8 = Model.Stores.Where(a => a.StoreName.Equals("Google Play")).FirstOrDefault();
+                                                        if (store8 != null)
+                                                        {
+                                                            <input type="checkbox" id="8" name="Store" value="Google Play" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="8" name="Store" value="Google Play">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/fb-instagram.jpg" alt="Facebook and Instagram" />
+
+                                                    @{
+                                                        var store9 = Model.Stores.Where(a => a.StoreName.Equals("FB-Instagram")).FirstOrDefault();
+                                                        if (store9 != null)
+                                                        {
+                                                            <input type="checkbox" id="9" name="Store" value="FB-Instagram" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="9" name="Store" value="FB-Instagram">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/tiktok.jpg" alt="TikTok" />
+
+                                                    @{
+                                                        var store10 = Model.Stores.Where(a => a.StoreName.Equals("Tiktok")).FirstOrDefault();
+                                                        if (store10 != null)
+                                                        {
+                                                            <input type="checkbox" id="10" name="Store" value="Tiktok" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="10" name="Store" value="Tiktok">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/pandora-new.jpg" alt="Pandora" />
+
+                                                    @{
+                                                        var store11 = Model.Stores.Where(a => a.StoreName.Equals("Pandora")).FirstOrDefault();
+                                                        if (store11 != null)
+                                                        {
+                                                            <input type="checkbox" id="11" name="Store" value="Pandora" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="11" name="Store" value="Pandora">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/deezer.jpg" alt="Deezer" />
+
+                                                    @{
+                                                        var store12 = Model.Stores.Where(a => a.StoreName.Equals("Deezer")).FirstOrDefault();
+                                                        if (store12 != null)
+                                                        {
+                                                            <input type="checkbox" id="12" name="Store" value="Deezer" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="12" name="Store" value="Deezer">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/soundcloud.jpg" alt="SoundCloud" />
+
+                                                    @{
+                                                        var store13 = Model.Stores.Where(a => a.StoreName.Equals("Sound Cloud")).FirstOrDefault();
+                                                        if (store13 != null)
+                                                        {
+                                                            <input type="checkbox" id="13" name="Store" value="Sound Cloud" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="13" name="Store" value="Sound Cloud">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/7digital.jpg" alt="7Digital" />
+
+                                                    @{
+                                                        var store14 = Model.Stores.Where(a => a.StoreName.Equals("7Digital")).FirstOrDefault();
+                                                        if (store14 != null)
+                                                        {
+                                                            <input type="checkbox" id="14" name="Store" value="7Digital" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="14" name="Store" value="7Digital">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/awa.jpg" alt="Awa" width="50" />
+
+                                                    @{
+                                                        var store15 = Model.Stores.Where(a => a.StoreName.Equals("AWA")).FirstOrDefault();
+                                                        if (store15 != null)
+                                                        {
+                                                            <input type="checkbox" id="15" name="Store" value="AWA" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="15" name="Store" value="AWA">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/medianet.jpg" alt="MediaNet" />
+
+                                                    @{
+                                                        var store16 = Model.Stores.Where(a => a.StoreName.Equals("Medianet")).FirstOrDefault();
+                                                        if (store16 != null)
+                                                        {
+                                                            <input type="checkbox" id="16" name="Store" value="Medianet" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="16" name="Store" value="Medianet">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/kkbox.jpg" alt="KKBOX" />
+
+                                                    @{
+                                                        var store17 = Model.Stores.Where(a => a.StoreName.Equals("KKBOX")).FirstOrDefault();
+                                                        if (store17 != null)
+                                                        {
+                                                            <input type="checkbox" id="17" name="Store" value="KKBOX" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="17" name="Store" value="KKBOX">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/akazoo.jpg" alt="Akazoo" />
+
+                                                    @{
+                                                        var store18 = Model.Stores.Where(a => a.StoreName.Equals("Akazoo")).FirstOrDefault();
+                                                        if (store18 != null)
+                                                        {
+                                                            <input type="checkbox" id="18" name="Store" value="Akazoo" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="18" name="Store" value="Akazoo">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/saavn.jpg" alt="Saavn" />
+
+                                                    @{
+                                                        var store19 = Model.Stores.Where(a => a.StoreName.Equals("Saavn")).FirstOrDefault();
+                                                        if (store19 != null)
+                                                        {
+                                                            <input type="checkbox" id="19" name="Store" value="Saavn" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="19" name="Store" value="Saavn">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/mixbank.jpg" alt="MixBank" />
+
+                                                    @{
+                                                        var store20 = Model.Stores.Where(a => a.StoreName.Equals("Mixbank")).FirstOrDefault();
+                                                        if (store20 != null)
+                                                        {
+                                                            <input type="checkbox" id="20" name="Store" value="Mixbank" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="20" name="Store" value="Mixbank">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/gracenote.jpg" alt="Gracenote" />
+
+                                                    @{
+                                                        var store21 = Model.Stores.Where(a => a.StoreName.Equals("Gracenote")).FirstOrDefault();
+                                                        if (store21 != null)
+                                                        {
+                                                            <input type="checkbox" id="21" name="Store" value="Gracenote" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="21" name="Store" value="Gracenote">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/iheart.jpg" alt="iHeart" />
+
+                                                    @{
+                                                        var store22 = Model.Stores.Where(a => a.StoreName.Equals("I Heart Radio")).FirstOrDefault();
+                                                        if (store22 != null)
+                                                        {
+                                                            <input type="checkbox" id="22" name="Store" value="I Heart Radio" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="22" name="Store" value="I Heart Radio">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/uma.jpg" alt="UMA" />
+
+                                                    @{
+                                                        var store23 = Model.Stores.Where(a => a.StoreName.Equals("United Media Agencies")).FirstOrDefault();
+                                                        if (store23 != null)
+                                                        {
+                                                            <input type="checkbox" id="23" name="Store" value="United Media Agencies" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="23" name="Store" value="United Media Agencies">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/anghami.jpg" alt="Anghami" />
+
+                                                    @{
+                                                        var store24 = Model.Stores.Where(a => a.StoreName.Equals("Anghami")).FirstOrDefault();
+                                                        if (store24 != null)
+                                                        {
+                                                            <input type="checkbox" id="24" name="Store" value="Anghami" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="24" name="Store" value="Anghami">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/audible-magic.jpg" alt="Audible-Magic" />
+
+                                                    @{
+                                                        var store25 = Model.Stores.Where(a => a.StoreName.Equals("Audible Magic")).FirstOrDefault();
+                                                        if (store25 != null)
+                                                        {
+                                                            <input type="checkbox" id="25" name="Store" value="Audible Magic" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="25" name="Store" value="Audible Magic">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/audiomack.jpg" alt="AudioMack" />
+
+                                                    @{
+                                                        var store26 = Model.Stores.Where(a => a.StoreName.Equals("Audiomack")).FirstOrDefault();
+                                                        if (store26 != null)
+                                                        {
+                                                            <input type="checkbox" id="26" name="Store" value="Audiomack" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="26" name="Store" value="Audiomack">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/boomplay.jpg" alt="BoomPlay" />
+
+                                                    @{
+                                                        var store27 = Model.Stores.Where(a => a.StoreName.Equals("Boomplay")).FirstOrDefault();
+                                                        if (store27 != null)
+                                                        {
+                                                            <input type="checkbox" id="27" name="Store" value="Boomplay" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="27" name="Store" value="Boomplay">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/jaxta.jpg" alt="Jaxta" />
+
+                                                    @{
+                                                        var store28 = Model.Stores.Where(a => a.StoreName.Equals("Jaxta")).FirstOrDefault();
+                                                        if (store28 != null)
+                                                        {
+                                                            <input type="checkbox" id="28" name="Store" value="Jaxta" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="28" name="Store" value="Jaxta">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/netaease.jpg" alt="NetEase" />
+
+                                                    @{
+                                                        var store29 = Model.Stores.Where(a => a.StoreName.Equals("Netease")).FirstOrDefault();
+                                                        if (store29 != null)
+                                                        {
+                                                            <input type="checkbox" id="29" name="Store" value="Netease" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="29" name="Store" value="Netease">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="icon">
+                                                <label class="check-container">
+                                                    <img class="card-img img-fluid" src="~/assets/img/stores/slacker.jpg" alt="Slacker" />
+                                                    @{
+                                                        var store30 = Model.Stores.Where(a => a.StoreName.Equals("Slacker")).FirstOrDefault();
+                                                        if (store30 != null)
+                                                        {
+                                                            <input type="checkbox" id="30" name="Store" value="Slacker" checked>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="30" name="Store" value="Slacker">
+                                                        }
+                                                    }
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 " style="margin-bottom:25px;">
+                                        <div class="col-md-12">
+                                            <div class="icon">
+                                                <div class="form-group">
+                                                    <img class="" width="140" src="~/assets/img/stores/youtube.jpg" alt="Youtube Content ID" />
+                                                    @Html.CheckBoxFor(model => model.wantYoutube, new { htmlAttributes = new { @class = "form-control" } })
+                                                    <label class="form-check-label" for="exampleCheck2">I need a Youtube Content ID Distribution.</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <input type="submit" value="Update Release" class="btn btn-success pull-right" />
+                                </div>
+                                <div class="col-md-12">
+                                    <button style="float:right;" onclick="stepThree(event)">BACK</button>
+                                </div>
+                            </div>
+                            <!--
+                            <input type="submit" value="Save" class="btn btn-success pull-right" />
+                            -->
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hover_bkgr_fricc participents">
+    <span class="helper"></span>
+    <div class="col-12" style="padding-left: 0;">
+        <div class="col-12" style="padding-left: 0;">
+            <div class="col-md-6" style="margin-top:20px;">
+                <label>Participant Name</label>
+                <input type="text" id="PartName" name="PartName" class="form-control" placeholder="Participant Name" />
+
+            </div>
+            <div class="col-md-6" style="margin-top:20px;">
+                <label>Participant Type</label>
+                <select class="form-control" name="PartType" id="PartType">
+                    <option value="Featured Artist" selected>Featured Artist</option>
+                    <option value="Vocalist">Vocalist</option>
+                    <option value="Producer">Producer</option>
+                    <option value="Remixer">Remixer</option>
+                    <option value="Mixer">Mixer</option>
+                    <option value="Composer">Composer</option>
+                    <option value="Conductor">Conductor</option>
+                    <option value="Solist">Solist</option>
+                    <option value="Performer">Performer</option>
+                    <option value="Arranger">Arranger</option>
+                    <option value="Song Write">Song Writer</option>
+                    <option value="Engineer">Engineer</option>
+                    <option value="Mastering Engineer">Mastering Engineer</option>
+                    <option value="Choir">Choir</option>
+                    <option value="Orchestra">Orchestra</option>
+                    <option value="Ensemble">Ensemble</option>
+                    <option value="Lyricist">Lyricist</option>
+                    <option value="Publisher">Publisher</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <br>
+            <div class="col-md-6" style="margin-top:20px;">
+                <label>Participant Role</label>
+                <input type="text" id="PartRole" name="PartRole" class="form-control" placeholder="Role Type" />
+            </div>
+            <div class="col-md-6" style="margin-top:20px;">
+                <label>Participant Instrument</label>
+                <input type="text" id="PartInstrument" name="PartInstrument" class="form-control" placeholder="Instrument" />
+            </div>
+            <div class="col-md-6" style="margin-top:20px;">
+                <label>Participant IPI</label>
+                <input type="text" id="PartIPICode" name="PartIPICode" class="form-control" placeholder="IPI code" />
+            </div>
+            <div class="col-md-6" style="margin-top:20px;">
+                <label>Participant IPN</label>
+                <input type="text" id="PartIPNCode" name="PartIPNCode" class="form-control" placeholder="IPN code" />
+            </div>
+            <div class="col-md-6" style="margin-top:20px; margin-bottom: 20px;">
+                <button class="btn btn-success" style="width:100%;" onclick="add_participent()">
+                    Add Participant
+                </button>
+            </div>
+            <div class="col-md-6" style="margin-top:20px; margin-bottom: 20px;">
+                <button class="btn btn-danger" style="width:100%;" onclick="hide_participents()">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="hover_bkgr_fricc song_participents">
+    <span class="helper"></span>
+    <div class="col-12" style="padding-left: 0;">
+        <div class="col-12" style="padding-left: 0;">
+            <div class="col-md-6" style="margin-top:20px;">
+                <label>Participant Name</label>
+                <input type="text" id="SongPartName" name="PartName" class="form-control" placeholder="Participant Name" />
+
+            </div>
+            <div class="col-md-6" style="margin-top:20px;">
+                <label>Participant Type</label>
+                <select class="form-control" name="PartType" id="SongPartType">
+                    <option value="Featured Artist" selected>Featured Artist</option>
+                    <option value="Vocalist">Vocalist</option>
+                    <option value="Producer">Producer</option>
+                    <option value="Remixer">Remixer</option>
+                    <option value="Mixer">Mixer</option>
+                    <option value="Composer">Composer</option>
+                    <option value="Conductor">Conductor</option>
+                    <option value="Solist">Solist</option>
+                    <option value="Performer">Performer</option>
+                    <option value="Arranger">Arranger</option>
+                    <option value="Song Write">Song Writer</option>
+                    <option value="Engineer">Engineer</option>
+                    <option value="Mastering Engineer">Mastering Engineer</option>
+                    <option value="Choir">Choir</option>
+                    <option value="Orchestra">Orchestra</option>
+                    <option value="Ensemble">Ensemble</option>
+                    <option value="Lyricist">Lyricist</option>
+                    <option value="Publisher">Publisher</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <br>
+            <div class="col-md-6" style="margin-top:20px;">
+                <label>Participant Role</label>
+                <input type="text" id="SongPartRole" name="PartRole" class="form-control" placeholder="Role Type" />
+            </div>
+            <div class="col-md-6" style="margin-top:20px;">
+                <label>Participant Instrument</label>
+                <input type="text" id="SongPartInstrument" name="PartInstrument" class="form-control" placeholder="Instrument" />
+            </div>
+            <div class="col-md-6" style="margin-top:20px;">
+                <label>Participant IPI</label>
+                <input type="text" id="SongPartIPICode" name="PartIPICode" class="form-control" placeholder="IPI code" />
+            </div>
+            <div class="col-md-6" style="margin-top:20px;">
+                <label>Participant IPN</label>
+                <input type="text" id="SongPartIPNCode" name="PartIPNCode" class="form-control" placeholder="IPN code" />
+            </div>
+            <div class="col-md-6" style="margin-top:20px; margin-bottom: 20px;">
+                <button class="btn btn-success" style="width:100%;" onclick="add_song_participent()">
+                    Add Participant
+                </button>
+            </div>
+            <div class="col-md-6" style="margin-top:20px; margin-bottom: 20px;">
+                <button class="btn btn-danger" style="width:100%;" onclick="hide_song_participents()">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script src="~/Scripts/jquery.smartWizard.js"></script>
+    <script type="text/javascript">
+        function test() {
+            if ($('#selectAll').is(":checked")) {
+                for (i = 1; i < 31; i++) {
+                    document.getElementById(i).checked = true;
+                }
+            }
+            else {
+                for (i = 1; i < 31; i++) {
+                    document.getElementById(i).checked = false;
+                }
+            }
+        }
+
+        function show_participents() {
+            $('.participents').show();
+        }
+
+        function hide_participents() {
+            $('.participents').hide();
+        }
+
+        var refrence = null;
+        function show_song_participents(div) {
+            refrence = div;
+            $('.song_participents').show();
+        }
+
+        function hide_song_participents() {
+            $('.song_participents').hide();
+        }
+
+        function add_song_participent() {
+
+            $(refrence).parent().siblings().find('.songs_participents_table tbody').append(
+                `
+                        <tr>
+                            <td>${$('#SongPartName').val()}</td>
+                            <td>${$('#SongPartType').val()}</td>
+                            <td>${$('#SongPartRole').val()}</td>
+                            <td>${$('#SongPartInstrument').val()}</td>
+                            <td>${$('#SongPartIPICode').val()}</td>
+                            <td>${$('#SongPartIPNCode').val()}</td>
+                            <td><a href="javascript::" onclick="removeTableRow(this)" class="remMArtist btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></td>
+                        </tr>
+                    `
+            );
+
+            $('#SongPartName').val("");
+            $('#SongPartType').val("Featured Artist");
+            $('#SongPartRole').val("");
+            $('#SongPartInstrument').val("");
+            $('#SongPartIPICode').val("");
+            $('#SongPartIPNCode').val("");
+
+            hide_song_participents();
+        }
+
+        function add_participent() {
+
+            $('#participents_table tbody').append(
+                `
+                        <tr>
+                            <td>${$('#PartName').val()}</td>
+                            <td>${$('#PartType').val()}</td>
+                            <td>${$('#PartRole').val()}</td>
+                            <td>${$('#PartInstrument').val()}</td>
+                            <td>${$('#PartIPICode').val()}</td>
+                            <td>${$('#PartIPNCode').val()}</td>
+                            <td><a href="javascript::" onclick="removeTableRow(this)" class="remMArtist btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></td>
+                        </tr>
+                    `
+            );
+
+            $('#PartName').val("");
+            $('#PartType').val("Featured Artist");
+            $('#PartRole').val("");
+            $('#PartInstrument').val("");
+            $('#PartIPICode').val("");
+            $('#PartIPNCode').val("");
+
+            hide_participents();
+        }
+
+        function removeTableRow(row) {
+            $(row).closest('tr').remove();
+        }
+
+        function HideAllSteps() {
+            $('#step1').hide();
+            $('#step2').hide();
+            $('#step3').hide();
+            $('#step4').hide();
+        }
+
+        function stepOne(event) {
+            HideAllSteps();
+            $('#step1').show();
+            event.preventDefault();
+        }
+
+        function stepTwo(event) {
+            HideAllSteps();
+            $('#step2').show();
+            event.preventDefault();
+        }
+
+        function stepThree(event) {
+            HideAllSteps();
+            $('#step3').show();
+            event.preventDefault();
+        }
+
+        function stepFour(event) {
+            HideAllSteps();
+            $('#step4').show();
+            event.preventDefault();
+        }
+
+        $(document).ready(function () {
+            $('#smartwizard').smartWizard({
+                selected: 0,
+                theme: 'circles',
+                transitionEffect: 'fade'
+            });
+
+            //To add new song file control
+            $(".addRow").click(function () {
+                $(".songs-div").append(`<div class="form-group song-row row" style="margin-top: 20px;">
+                                                    <div class="col-md-5" style="margin-top: 10px;">
+                                                        <input type="hidden" name="SongId" />
+                                                        <input type="file" name="songs" id="file" multiple="multiple" />
+                                                    </div>
+                                                    <div class="col-md-4" style="margin-top: 10px;">
+                                                        <input type="text" name="Title" placeholder="Enter Title.." class="form-control Title" />
+                                                    </div>
+                                                    <div class="col-md-2" style="margin-top: 10px;">
+                                                        <input type="text" name="ISrc" placeholder="Enter Isrc.." class="form-control ISrc" />
+                                                    </div>
+                                                    <div class="col-md-1" style="margin-top: 10px;">
+                                                        <span><a href="javascript:void(0);" onclick="removeRow(this)" class="remRow btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></span>
+                                                    </div>
+                                                </div>`);
+            });
+            //To remove song file control
+            $(".songs-div").on('click', '.remRow', function () {
+                $(this).closest('.song-row').remove();
+            });
+            //To add main artist input control
+            //$("#addMArtist").click(function () {
+            //    $(".mArtistDiv").append(`
+            //                                <div class="mArt">
+            //                                    <br>
+            //                                    <div class="col-md-11" style="margin-top:10px;">
+            //                                        <input type="text" name="MainArtist" class="form-control" />
+            //                                    </div>
+            //                                    <br>
+            //                                    <div class="col-md-1" style="margin-top:10px;">
+            //                                        <span><a href="javascript::" class="remMArtist btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></span>
+            //                                    </div>
+
+            //                                </div>
+            //                                `);
+            //});
+            //$("#addFArtist").click(function () {
+            //    $(".fArtistDiv").append(`
+            //                                <div class="fArt">
+            //                                    <div class="col-md-11" style="margin-top:10px;">
+            //                                        <input type="text" name="FeaturedArtist" class="form-control" />
+            //                                    </div>
+            //                                    <div class="col-md-1" style="margin-top:10px;">
+            //                                        <span><a href="javascript::" class="remFArtist btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></span>
+            //                                    </div>
+            //                                </div>
+            //                                `);
+            //});
+            ////To remove main artist input control
+            //$(".mArtistDiv").on('click', '.remMArtist', function () {
+            //    $(this).closest('.mArt').remove();
+            //});
+            ////To remove featured artist input control
+            //$(".fArtistDiv").on('click', '.remFArtist', function () {
+            //    $(this).closest('.fArt').remove();
+            //});
+        });
+
+        function add_artist_to_all_songs() {
+            $("[name='SongArtistName']").each(function () {
+                $(this).val($('#mainAtrist').val());
+                $(this).prop("disabled", true);
+            });
+        }
+
+        function set_CopyRights_To_All_Tracks() {
+            $("[name='SongCinfo']").each(function () {
+                $(this).val($('#cinfo').val());
+                $(this).prop("disabled", true);
+            });
+            $("[name='SongCyear']").each(function () {
+                $(this).val($('#cyear').val());
+                $(this).prop("disabled", true);
+            });
+            $("[name='SongPinfo']").each(function () {
+                $(this).val($('#pinfo').val());
+                $(this).prop("disabled", true);
+            });
+            $("[name='SongPyear']").each(function () {
+                $(this).val($('#pyear').val());
+                $(this).prop("disabled", true);
+            });
+            $("[name='SongCopyright_holder']").each(function () {
+                $(this).val($('#copyRightHolder').val());
+                $(this).prop("disabled", true);
+            });
+        }
+
+        function addSong() {
+
+            if ($('#participent_songs_check').is(":checked")) {
+                $(".songs-div").append(`
+                <div class="form-group song-row row" style="margin-top: 20px;">
+                    <div class="col-md-12">
+                        <div class="col-md-11" > </div>
+                        <div class="col-md-1" >
+                            <span><a href="javascript:void(0);" onclick="removeRow(this)" class="remRow btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-top: 10px;">
+                        <div class="col-md-3">
+                            <input type="file" type="audio/*" onchange="javascript: validateFile(this)" name="songs" id="file" multiple="multiple" />
+                            <input type="hidden" value="0" name="SongId" />                    
+                        </div>
+                        <div class="col-md-5">
+                            <input type="text" id="title" name="Title" placeholder="Track Title" class="form-control Title" />
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="SongArtistName" placeholder="Artist Name" class="form-control Title" />
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-top: 20px;">
+                        <div class="col-md-4">
+                            <input type="text" name="ISrc" id="isrc"  placeholder="ISRC code" class="form-control ISrc" />
+                            
+                        </div>
+                        <div class="col-md-4" >
+                            <input type="text" name="TrackVersion" class="form-control Title" placeholder="Track Version" /> 
+                        </div>
+                        <div class="col-md-4" >
+                            <input type="text" name="ISWCcode" class="form-control Title" placeholder="ISWC code" /> 
+                        </div> 
+                    </div>
+
+                    <div class="col-md-12" style="margin-top: 10px;">
+                        <div class="col-md-3" >
+                            <input type="text" name="SongCinfo" class="form-control Title" placeholder="C Info" />
+                        </div>
+                        <div class="col-md-1" >
+                            <input type="text" name="SongCyear" class="form-control Title" placeholder="Year" />
+                        </div>
+                        <div class="col-md-3" >
+                            <input type="text" name="SongPinfo" class="form-control Title" placeholder="P Info" />
+                        </div>
+                        <div class="col-md-1" >
+                            <input type="text" name="SongPyear" class="form-control Title" placeholder="Year" />   
+                        </div>
+                        <div class="col-md-4" >
+                            <input type="text" name="SongCopyright_holder" class="form-control Title" placeholder="Copyright Holder" />   
+                        </div>
+                    </div>
+                </div>
+            `);
+
+            } else {
+                $(".songs-div").append(`
+                <div class="form-group song-row row" style="margin-top: 20px;">
+                    <div class="col-md-12">
+                        <div class="col-md-11" > </div>
+                        <div class="col-md-1" >
+                            <span><a href="javascript:void(0);" onclick="removeRow(this)" class="remRow btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-top: 10px;">
+                        <div class="col-md-3">
+                            <input type="file" type="audio/*" onchange="javascript: validateFile(this)" name="songs" id="file" multiple="multiple" />
+                                <input type="hidden" value="0" name="SongId" />                    
+                            </div>
+                        <div class="col-md-5">
+                            <input type="text" id="title" name="Title" placeholder="Track Title" class="form-control Title" />
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="SongArtistName" placeholder="Artist Name" class="form-control Title" />
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-top: 20px;">
+                        <div class="col-md-4">
+                            <input type="text" name="ISrc" id="isrc"  placeholder="ISRC code" class="form-control ISrc" />
+                            <input type="checkbox" onclick="javascript: getISRC(this)" /><label> I Need ISRC code</label>
+                        </div>
+                        <div class="col-md-4" >
+                            <input type="text" name="TrackVersion" class="form-control Title" placeholder="Track Version" /> 
+                        </div>
+                        <div class="col-md-4" >
+                            <input type="text" name="ISWCcode" class="form-control Title" placeholder="ISWC code" /> 
+                        </div> 
+                    </div>
+
+                    <div class="col-md-12" style="margin-top: 10px;">
+                        <div class="col-md-3" >
+                            <input type="text" name="SongCinfo" class="form-control Title" placeholder="C Info" />
+                        </div>
+                        <div class="col-md-1" >
+                            <input type="text" name="SongCyear" class="form-control Title" placeholder="Year" />
+                        </div>
+                        <div class="col-md-3" >
+                            <input type="text" name="SongPinfo" class="form-control Title" placeholder="P Info" />
+                        </div>
+                        <div class="col-md-1" >
+                            <input type="text" name="SongPyear" class="form-control Title" placeholder="Year" />   
+                        </div>
+                        <div class="col-md-4" >
+                            <input type="text" name="SongCopyright_holder" class="form-control Title" placeholder="Copyright Holder" />   
+                        </div>
+                    </div>
+              
+
+                    <div class="col-md-12">
+                        <label>Participant Details</label>
+                        <table class="table table-hover songs_participents_table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Role</th>
+                                    <th>Instrument</th>
+
+                                    <th>IPI Code</th>
+                                    <th>IPN Code</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="col-md-12" style="margin-top: 5px;">
+                         <a href="javascript::" onclick="show_song_participents(this)" class="btn btn-primary" ><i class="glyphicon glyphicon-plus"></i> Add Participants</a>
+                    </div>
+                </div>
+            `);
+            }
+
+            if ($('#artist_to_all_songs').is(":checked")) {
+                add_artist_to_all_songs();
+            }
+
+            if ($('#setCopyRightsToAllTracks').is(":checked")) {
+                set_CopyRights_To_All_Tracks()
+            }
+        }
+
+        function removeRow(get) {
+            get.closest('.song-row').remove();
+
+        }
+
+        function addMArtist() {
+            $(".mArtistDiv").append(`
+                                    <div class="mArt">
+                                        <br>
+                                       <div class="col-md-5" style="margin-top:20px;">
+                                            <input type="text" name="PartName" class="form-control" placeholder="Main Artist Name"  />
+
+                                       </div>
+                                        <div class="col-md-5" style="margin-top:20px;">
+                                            <select class="form-control" name="PartType">
+                                                <option value="Main Artist" selected>Main Artist</option>
+                                                <option value="FeaturedArtist">Featured Artist</option>
+                                                <option value="Vocalist">Vocalist</option>
+                                                <option value="Producer">Producer</option>
+                                                <option value="Remixer">Remixer</option>
+                                            </select>
+                                       </div>
+                                        <br>
+                                        <div class="col-md-5" style="margin-top:20px;">
+                                            <input type="text" name="PartRole" class="form-control" placeholder="Role Type"  />
+                                       </div>
+                                        <div class="col-md-5" style="margin-top:20px;">
+                                            <input type="text" name="PartInstrument" class="form-control" placeholder="Instrument"  />
+                                       </div>
+                                        <div class="col-md-5" style="margin-top:20px;">
+                                            <input type="text" name="PartIPICode" class="form-control" placeholder="IPI code"  />
+                                       </div>
+                                        <div class="col-md-5" style="margin-top:20px;">
+                                            <input type="text" name="PartIPNCode" class="form-control" placeholder="IPN code"  />
+                                       </div>
+                                       <div class="col-md-2" style="margin-top:20px;">
+                                            <span><a href="javascript::" onclick="remomveMAtrist(this)" class="remMArtist btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></span>
+                                       </div>
+                                   </div>
+
+                        `);
+        }
+
+        function addFArtist() {
+            $(".fArtistDiv").append(`
+                <div class="fArt">
+                    <div class="col-md-11" style="margin-top:10px;">
+                        <input type="text" name="FeaturedArtist" class="form-control" />
+                    </div>
+                    <div class="col-md-1" style="margin-top:10px;">
+                        <span><a href="javascript::" onclick="removeFArtist(this)" class="remFArtist btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></span>
+                    </div>
+                </div>
+                `);
+        }
+
+        function remomveMAtrist(get) {
+            get.closest('.mArt').remove();
+        }
+
+        function removeFArtist(get) {
+            get.closest('.fArt').remove();
+        }
+
+        function add_additional_songs_fields() {
+            $("[name='SongArtistName']").each(function () {
+                $('#musicForm').append("<input type='hidden' name='artist_song' value='" + $(this).val() + "' />");
+            });
+            $("[name='TrackVersion']").each(function () {
+                $('#musicForm').append("<input type='hidden' name='trackversion_song' value='" + $(this).val() + "' />");
+            });
+            $("[name='ISWCcode']").each(function () {
+                $('#musicForm').append("<input type='hidden' name='iswc_song' value='" + $(this).val() + "' />");
+            });
+            $("[name='SongCinfo']").each(function () {
+                $('#musicForm').append("<input type='hidden' name='cinfo_song' value='" + $(this).val() + "' />");
+            });
+            $("[name='SongCyear']").each(function () {
+                $('#musicForm').append("<input type='hidden' name='cyear_song' value='" + $(this).val() + "' />");
+            });
+            $("[name='SongPinfo']").each(function () {
+                $('#musicForm').append("<input type='hidden' name='pinfo_song' value='" + $(this).val() + "' />");
+            });
+            $("[name='SongPyear']").each(function () {
+                $('#musicForm').append("<input type='hidden' name='pyear_song' value='" + $(this).val() + "' />");
+            });
+            $("[name='SongCopyright_holder']").each(function () {
+                $('#musicForm').append("<input type='hidden' name='copyright_song' value='" + $(this).val() + "' />");
+            });
+        }
+
+        function AddParticipentData() {
+            $('#participents_table').find('tr').each(function (i, el) {
+                if (i > 0) {
+                    var $tds = $(this).find('td');
+                    $('#musicForm').append("<input type='hidden' name='PartName_New' value='" + $tds.eq(0).text() + "' />");
+                    $('#musicForm').append("<input type='hidden' name='PartType_New' value='" + $tds.eq(1).text() + "' />");
+                    $('#musicForm').append("<input type='hidden' name='PartRole_New' value='" + $tds.eq(2).text() + "' />");
+                    $('#musicForm').append("<input type='hidden' name='PartInstrument_New' value='" + $tds.eq(3).text() + "' />");
+                    $('#musicForm').append("<input type='hidden' name='PartIPICode_New' value='" + $tds.eq(4).text() + "' />");
+                    $('#musicForm').append("<input type='hidden' name='PartIPNCode_New' value='" + $tds.eq(5).text() + "' />");
+                }
+            });
+        }
+
+        function add_additional_song_participents() {
+            if ($('#participent_songs_check').is(":checked")) { }
+            else {
+                //var songs_count = $('#songs .song-row').length;
+                //alert(songs_count)
+                $('#songs > .song-row').each(function () {
+                    var $currentElement = $(this);
+                    song_part = ''
+                    $currentElement.find('.songs_participents_table').find('tr').each(function (j, el) {
+                        if (j > 0) {
+                            var $tds = $(this).find('td');
+                            song_part += $tds.eq(0).text() + '|' + $tds.eq(1).text() + '|' + $tds.eq(2).text() + '|' + $tds.eq(3).text() + '|' + $tds.eq(4).text() + '|' + $tds.eq(5).text() + '$';
+                        }
+                    });
+                    //alert(song_part)
+                    $('#musicForm').append("<input type='hidden' name='participent_song' value='" + song_part + "' />");
+                });
+            }
+        }
+
+        function add_part_fields(event) {
+            AddParticipentData();
+            add_additional_songs_fields();
+            add_additional_song_participents();
+        }
+
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#FileUpload").on("change", function () {
+                var files = !!this.files ? this.files : [];
+                if (!files.length || !window.FileReader) {
+                    $("#PreviewPicture").attr("src", "/assets/img/img-placeholder.jpg");
+                    return;
+                }// Check if File is selected, or no FileReader support
+                if (/^image/.test(files[0].type)) { //  Allow only image upload
+                    var ReaderObj = new FileReader(); // Create instance of the FileReader
+                    ReaderObj.readAsDataURL(files[0]); // read the file uploaded
+                    ReaderObj.onloadend = function () { // set uploaded image data as background of div
+                        $("#PreviewPicture").attr("src", this.result);
+                    }
+                } else {
+                    alert("Upload an image");
+                }
+            });
+        });
+    </script>
+}

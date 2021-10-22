@@ -1,0 +1,606 @@
+﻿@model List<TempoDigitalApex3.Models.Song>
+@{
+    ViewBag.Title = "Release Details";
+    Layout = "~/Views/Shared/_LayoutPage_Admin.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href="~/assets/audio/css/audioplayer.css" rel="stylesheet" />
+
+    <style>
+        #myImg {
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            #myImg:hover {
+                opacity: 0.7;
+            }
+
+        /* The Modal (background) */
+        .modalz {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+        }
+
+        /* Modal Content (image) */
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+        }
+
+        /* Caption of Modal Image */
+        #caption {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            height: 150px;
+        }
+
+        /* Add Animation */
+        .modal-content, #caption {
+            -webkit-animation-name: zoom;
+            -webkit-animation-duration: 0.6s;
+            animation-name: zoom;
+            animation-duration: 0.6s;
+        }
+
+        @@-webkit-keyframes zoom {
+            from {
+                -webkit-transform: scale(0)
+            }
+
+            to {
+                -webkit-transform: scale(1)
+            }
+        }
+
+        @@keyframes zoom {
+            from {
+                transform: scale(0)
+            }
+
+            to {
+                transform: scale(1)
+            }
+        }
+
+        /* The Close Button */
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* 100% Image Width on Smaller Screens */
+        @@media only screen and (max-width: 700px) {
+            .modal-content {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
+    <div class="wrapper">
+        <div class="main-panel">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div class="row match-height">
+                        <div class="col-xl-4 col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px">
+
+                                        <center>
+                                            @if (!ViewBag.APIStatus)
+                                            {
+                                                <img id="myImg" class="btn popup_image" src="@ViewBag.Release.CoverImage" style="border-radius: 15px 50px; width: 100%;  height: 100%;" />
+                                            }
+                                            else
+                                            {
+                                                <img id="myImg" class="btn popup_image" src="" style="border-radius: 15px 50px; width: 100%;  height: 100%;" />
+
+                                            }
+                                        </center>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-8 col-lg-12">
+                            <div class="card" style="padding:10px;">
+                                <div class="card-content">
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                        <div class="card-body">
+                                            <table class="table table-hover" style="" id="data_details">
+                                                <thead>
+                                                    <tr>
+                                                        <th id="release_name">@ViewBag.Release.ReleaseName</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Main Artist</td>
+                                                        <th id="release_main_artist">@ViewBag.Release.MainArtist</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Copyright Year</td>
+                                                        <th>@ViewBag.Release.CopyrightYear</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Label</td>
+                                                        <th id="release_label_name">@ViewBag.Release.LabelName</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>UPC Code</td>
+                                                        <th>@ViewBag.Release.UPCEAN</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Release Date</td>
+                                                        <th id="release_date">@ViewBag.Release.ReleaseDate</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Recording Location</td>
+                                                        <th>@ViewBag.Release.RecordingLocation</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Copyright Holder</td>
+                                                        <th id="copy_right_holder">@ViewBag.Release.CopyryghtHolder</th>
+                                                    </tr>
+                                                    @*<tr>
+                                                            <td>Copyright Year</td>
+                                                            <th>@ViewBag.Release.CopyrightYear</th>
+                                                        </tr>*@
+                                                    @*<tr>
+                                                            <td>Participants</td>
+                                                            <th>with two columns</th>
+                                                        </tr>*@
+                                                </thead>
+
+                                            </table>
+                                            <div class="row progress_status" style="float:left; padding-left:20px;">
+                                                @*<a href="@Url.Action("Edit", new { id = ViewBag.Release.MusicReleaseId })" style=" margin-right: 5px;" class="btn btn-danger">Edit Release</a>*@
+                                                <a href="@Url.Action("Delete", new { id =  ViewBag.Release.MusicReleaseId })" style=" margin-right: 5px;" class="btn btn-danger">Take Down</a>
+                                                <a href="@ViewBag.csv" style=" margin-right: 5px;" class="btn btn-danger" download="download">
+                                                    Download Metadata
+                                                </a>
+                                                <button id="part" type="button" style=" margin-right: 5px;" class="btn btn-danger">Participants</button>
+                                                @if (ViewBag.APIStatus)
+                                                {
+                                                    <a href="~/MusicReleases/Status?upc=@ViewBag.Release.UPCEAN" class="btn btn-danger">Status</a>
+                                                }
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row match-height">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body" style="padding:10px">
+
+                                        <div class="card-block">
+                                            <h6 class="card-title">Tracks list</h6>
+                                        </div>
+
+                                        <ul class="list-group songs_list">
+
+                                            <li class="list-group-item">
+                                                <span class=" float-right">SONG ISRC</span><p id="top1" style="float:left;">SONG TITLE </p>
+                                            </li>
+
+                                            @if (!ViewBag.APIStatus)
+                                            {
+
+                                                for (int i = 0; i < Model.Count; i++)
+                                                {
+                                                    <li class="list-group-item">
+                                                        <table style="width:100%;">
+                                                            <tr>
+                                                                <th style="text-align:left; width:25%;"><p id="top1">@Model[i].SongTitle </p></th>
+                                                                <th style="text-align:center; width:35%;">
+                                                                    @if (!ViewBag.APIStatus)
+                                                                    {
+                                                                        <audio id="song_src_@i" preload="auto" controls controlsList="nodownload" style="width:100%;">
+                                                                            <source src="@Model[i].SongPath">
+                                                                        </audio>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <audio id="song_src_@i" preload="auto" controls controlsList="nodownload" style="width:100%;">
+                                                                            <source src="">
+                                                                        </audio>
+                                                                    }
+                                                                </th>
+                                                                <th style="text-align:left; width:5%;">
+                                                                    <a target="_blank" download href="@Model[i].SongPath" style="float: right;"><i class="fa fa-downloadfa fa-download" style="font-size:24px"></i></a>
+                                                                </th>
+                                                                <th style="text-align:right; width:20%"><button data-toggle="modal" data-target="#@i" style="float:right;" class="btn btn-danger">Participants</button></th>
+                                                                <th style="text-align:right; width:15%"><span class="badge bg-dark float-right">@Model[i].isrc</span></th>
+
+                                                            </tr>
+                                                        </table>
+                                                    </li>
+                                                }
+                                            }
+
+                                        </ul>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modals_songs">
+
+    </div>
+
+    @if (!ViewBag.APIStatus)
+    {
+        for (int i = 0; i < Model.Count; i++)
+        {
+            <!-- Modal -->
+            <div class="modal fade" style="z-index: 100000;" id="@i" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content" style="width: 120%">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Song Participents list</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-hover" style="" id="song_part_@i">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Role</th>
+                                        <th>Instrument</th>
+
+                                        <th>IPI Code</th>
+                                        <th>IPN Code</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @if (!ViewBag.APIStatus)
+                                    {
+                                        foreach (var p in Model[i].SongParticipent)
+                                        {
+                                            <tr>
+                                                <td>@p.ParticipantName</td>
+                                                <td>@p.RoleType</td>
+                                                <td>@p.ParticipantRole</td>
+                                                <td>@p.Instrument</td>
+                                                <td>@p.IPICode</td>
+                                                <td>@p.IPNCode</td>
+                                            </tr>
+                                        }
+
+
+                                        if (Model[i].SongParticipent.Count == 0)
+                                        {
+                                            <tr>
+                                                <th colspan="6">
+                                                    <center>
+                                                        No Participent is in the Song List..!
+                                                    </center>
+                                                </th>
+                                            </tr>
+                                        }
+                                    }
+
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        }
+    }
+
+    <!-- The Modal -->
+    <div id="myModal" class="modalz" style="z-index: 999;">
+        <span class="close" id="closemodel">&times;</span>
+        <img class="modal-content" id="img01">
+        <div id="caption"></div>
+    </div>
+
+    <!-- The Modal -->
+    <div id="myModal1" class="modalz" style="z-index: 999;">
+        <span class="close" id="closemodel1">&times;</span>
+        <div class="row">
+            <div class="col-md-3">
+
+            </div>
+            <div class="col-md-6">
+                <div class="row match-height">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="card-body" style="padding:10px">
+
+                                    <div class="card-block">
+                                        <h6 class="card-title">Participents list</h6>
+                                    </div>
+
+                                    <table class="table table-hover" style="" id="release_part">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Type</th>
+                                                <th>Role</th>
+                                                <th>Instrument</th>
+
+                                                <th>IPI Code</th>
+                                                <th>IPN Code</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.Part != null && !ViewBag.APIStatus)
+                                            {
+                                                foreach (var p in ViewBag.Part)
+                                                {
+                                                    <tr>
+                                                        <td>@p.ParticipantName</td>
+                                                        <td>@p.RoleType</td>
+                                                        <td>@p.ParticipantRole</td>
+                                                        <td>@p.Instrument</td>
+                                                        <td>@p.IPICode</td>
+                                                        <td>@p.IPNCode</td>
+                                                    </tr>
+                                                }
+                                            }
+
+                                            @if (ViewBag.Part.Count == 0)
+                                            {
+                                                <tr>
+                                                    <th colspan="6">
+                                                        <center>
+                                                            No Participent is in the List..!
+                                                        </center>
+                                                    </th>
+                                                </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+
+            </div>
+        </div>
+    </div>
+
+    <script src="~/assets/audio/js/audioplayer.js"></script>
+    <script src="~/assets/audio/js/audioplayer.min.js"></script>
+    <script>$(function () { $('audio').audioPlayer(); });</script>
+    <script>
+
+        window.onload = function () {
+            var status = @Html.Raw(Json.Encode(ViewBag.APIStatus));
+            if (status == true) {
+                var data = @Html.Raw(Json.Encode(ViewBag.APIData));
+                //console.log(JSON.parse(data)[0]);
+                data = JSON.parse(data)[0];
+
+                $('#release_name').html(data['title']);
+                $('#release_main_artist').html(data['artist']);
+                $('#release_label_name').html(data['label']);
+                $('#release_date').html(data['originalReleaseDate']);
+                $('#copy_right_holder').html(data['right_holders']);
+                $('#myImg').attr('src', data['images'][0]['urlMedium']);
+
+                $('#release_part tbody').empty();
+                $.each(data['participants'], function (i, item) {
+                    $('#release_part tbody').append(
+                        `
+                            <tr>
+                                <td>${item.name}</td>
+                                <td>${item.role_type}</td>
+                                <td>${item.role}</td>
+                                <td>${item.instrument}</td>
+                                <td>null</td>
+                                <td>null</td>
+                            </tr>
+                        `
+                    );
+                });
+
+                //song_part_
+
+                $.each(data['tracks'], function (i, song) {
+
+                    //$('#song_src_' + i).attr('src', `https://api.audiosalad.com/clip.php?id=${song.id}&g_profile=tempodigital.audiosalad.com`);
+
+                    $('.songs_list').append(
+                        `
+                            <li class="list-group-item">
+                                <table style="width:100%;">
+                                    <tr>
+                                        <th style="text-align:left; width:25%;"><p id="top1">${song.title}</p></th>
+                                        <th style="text-align:center; width:35%;">
+
+                                            <audio preload="auto" controls controlsList="nodownload" style="width:100%;">
+                                                <source src="https://api.audiosalad.com/clip.php?id=${song.id}&g_profile=tempodigital.audiosalad.com">
+                                            </audio>
+
+                                        </th>
+                                        <th style="text-align:left; width:5%;">
+                                            <a target="_blank" download href="https://api.audiosalad.com/clip.php?id=${song.id}&g_profile=tempodigital.audiosalad.com" style="float: right;"><i class="fa fa-downloadfa fa-download" style="font-size:24px"></i></a>
+                                        </th>
+                                        <th style="text-align:right; width:20%"><button data-toggle="modal" data-target="#song_participants_${i}" style="float:right;" class="btn btn-danger">Participants</button></th>
+                                        <th style="text-align:right; width:15%"><span class="badge bg-dark float-right">${song.isrc}</span></th>
+
+                                    </tr>
+                                </table>
+                            </li>
+                        `
+                    );
+
+                    $('.modals_songs').append(
+
+                        `
+                            <div class="modal fade" style="z-index: 100000;" id="song_participants_${i}" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content" style="width: 120%">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Song Participents list</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="table table-hover" style="" id="song_part_table${i}">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Type</th>
+                                                        <th>Role</th>
+                                                        <th>Instrument</th>
+
+                                                        <th>IPI Code</th>
+                                                        <th>IPN Code</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    );
+
+
+                    $(`#song_part_table${i} tbody`).empty();
+                    $.each(song['participants'], function (j, item) {
+                        $(`#song_part_table${i} tbody`).append(
+                            `
+                            <tr>
+                                <td>${item.name}</td>
+                                <td>${item.role_type}</td>
+                                <td>${item.role}</td>
+                                <td>${item.instrument}</td>
+                                <td>null</td>
+                                <td>null</td>
+                            </tr>
+                        `
+                        );
+                    });
+
+
+                });
+
+            }
+        }
+
+        // Get the modal
+        var modal = document.getElementById("myModal");
+
+        // Get the image and insert it inside the modal - use its "alt" text as a caption
+        var img = document.getElementById("myImg");
+        var modalImg = document.getElementById("img01");
+        var captionText = document.getElementById("caption");
+        img.onclick = function () {
+            modal.style.display = "block";
+            modalImg.src = this.src;
+            captionText.innerHTML = this.alt;
+        }
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        var closemodal = document.getElementById("closemodel");
+        closemodal.onclick = function () {
+            modal.style.display = "none";
+        }
+
+
+        var modal1 = document.getElementById("myModal1");
+        var part = document.getElementById("part");
+        part.onclick = function () {
+            modal1.style.display = "block";
+        }
+
+
+        var closemodal1 = document.getElementById("closemodel1");
+        closemodal1.onclick = function () {
+            modal1.style.display = "none";
+        }
+
+
+        function show_song_part(sing_id) {
+            var modal1 = document.getElementById(sing_id);
+            modal1.style.display = "block";
+
+            var closemodal1 = document.getElementById("closemodel1");
+            closemodal1.onclick = function () {
+                modal1.style.display = "none";
+            }
+        }
+    </script>
+    </body>
+</html>

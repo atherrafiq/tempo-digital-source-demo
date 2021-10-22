@@ -1,0 +1,473 @@
+﻿
+@{
+    ViewBag.Title = "Admin-Music Analytics";
+}
+<!DOCTYPE html>
+<html>
+<head>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+
+    <title>@ViewBag.Title</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/NewTemplate/fonts/material-design-iconic-font/css/material-design-iconic-font.min.css" rel="stylesheet" />
+    <link href="~/Content/NewTemplate/css/style.css" rel="stylesheet" />
+
+
+    <style>
+        #customers {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+            #customers td, #customers th {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+
+            #customers tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            #customers tr:hover {
+                background-color: #ddd;
+            }
+
+            #customers th {
+                padding-top: 12px;
+                padding-bottom: 12px;
+                text-align: left;
+                background-color: #ff92a3;
+                color: white;
+            }
+
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border: 16px solid red;
+            padding-top: 10%;
+            width: 200px;
+            height: 200px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+    </style>
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+    <script>
+
+        googleApiClientReady = function () {
+            setInitialDates();
+            gapi.auth.init(function () {
+                window.setTimeout(checkAuth, 1);
+            });
+        }
+
+        function checkAuth() {
+            handleAuthResult();
+        }
+
+        function handleAuthResult() {
+            loadAPIClientInterfaces();
+        }
+
+        function loadAPIClientInterfaces() {
+            gapi.client.load("https://youtubeanalytics.googleapis.com/$discovery/rest?version=v2")
+                .then(function () { console.log("GAPI client loaded for API"); 
+                    handleAPILoaded(); },
+                    function (err) { console.error("Error loading GAPI client for API", err); });
+        }
+
+        var token = @Html.Raw(Json.Encode(ViewBag.Token));
+        function handleAPILoaded() {
+            //alert(token);
+            gapi.client.setToken({ access_token: token });
+            getDataFromAPI();
+        }
+
+         
+
+        function execute(startDate, endDate) {
+            return gapi.client.youtubeAnalytics.reports.query({
+                "currency": "USD",
+                "dimensions": "day",
+                "endDate": endDate,
+                "filters": "claimedStatus==claimed",
+                "ids": "contentOwner==PuL6c--O0J3ZkNaWtTV1RA",
+                "metrics": "estimatedRevenue,estimatedMinutesWatched,views,subscribersGained",
+                "startDate": startDate,
+                "startIndex": "1"
+            })
+                .then(function (response) {
+                    // Handle the results here (response.result has the parsed body).
+                    //console.log("Response", response.result);
+                    var date = [];
+                    var earnings = [];
+                    var watchedTime = [];
+                    var views = [];
+                    var subGained = [];
+                    $.each(response.result.rows, function (i, item) {
+                        date.push(item[0]);
+                        earnings.push(item[1]);
+                        watchedTime.push(item[2]);
+                        views.push(item[3]);
+                        subGained.push(item[4]);
+                    });
+                    estimatedEarningChart(date, earnings);
+                    estimatedMinutesChart(date, watchedTime);
+                    viewsChart(date, views);
+                    subGainedChart(date, subGained);
+                    execute1(startDate, endDate);
+                },
+                    function (err) { console.error("Execute error", err); });
+        }
+
+        function execute1(startDate, endDate) {
+            return gapi.client.youtubeAnalytics.reports.query({
+                "currency": "USD",
+                "dimensions": "video",
+                "endDate": endDate,
+                "filters": "claimedStatus==claimed",
+                "ids": "contentOwner==PuL6c--O0J3ZkNaWtTV1RA",
+                "metrics": "estimatedRevenue,views,estimatedAdRevenue,estimatedRedPartnerRevenue,grossRevenue,adImpressions,cpm,playbackBasedCpm,monetizedPlaybacks",
+                "startDate": startDate,
+                "sort": "-estimatedRevenue",
+                "maxResults": "30",
+                "startIndex": "1"
+            })
+                .then(function (response) {
+                    // Handle the results here (response.result has the parsed body).
+                    //console.log("Response", response.result);
+                    drawTable(response.result);
+                },
+                    function (err) { console.error("Execute error", err); });
+        }
+
+        gapi.load("client:auth2", function () {
+            gapi.auth2.init({ client_id: '293753691087-c133cb1q2u0goleft94qsud62v6bhhal.apps.googleusercontent.com' });
+        });
+        var startDate = null;
+        var endDate = null;
+        function getDataFromAPI() {
+            var start = new Date(document.getElementById("startDate").value);
+            var end = new Date(document.getElementById("endDate").value);
+            startDate = start.getFullYear() + "-" + ("0" + (start.getMonth() + 1)).slice(-2) + "-" + ("0" + start.getDate()).slice(-2);
+            endDate = end.getFullYear() + "-" + ("0" + (end.getMonth() + 1)).slice(-2) + "-" + ("0" + end.getDate()).slice(-2);
+            execute(startDate, endDate);
+        }
+
+        function estimatedEarningChart(dates, estimatedEarnings) {
+            var total = Math.round(estimatedEarnings.reduce((a, b) => a + b, 0) * 100) / 100;
+            $('#totalEarnings').text("$ " + total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#chartFirst').empty();
+            $('#chartFirst').append('<canvas id="myChartNEW" height="150"> </canvas>');
+            var ctx = $("#myChartNEW").get(0).getContext("2d");
+            var myNewChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: "Revenue",
+                            borderColor: "#c70007",
+                            backgroundColor: "#ff92a3",
+                            data: estimatedEarnings
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: { display: true, text: '' },
+                    legend: { position: 'bottom' },
+                    scales: {
+                        xAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }],
+                        yAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }]
+                    },
+                }
+            });
+        }
+
+        function estimatedMinutesChart(date, watchedTime) {
+            $('#totalTime').text("+ " + watchedTime.reduce((a, b) => a + b, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#chartFirst1').empty();
+            $('#chartFirst1').append('<canvas id="myChartNEW1" height="150"> </canvas>');
+            var ctx = $("#myChartNEW1").get(0).getContext("2d");
+            var myNewChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: date,
+                    datasets: [
+                        {
+                            label: "Watched Time",
+                            borderColor: "#c70007",
+                            backgroundColor: "#ff92a3",
+                            data: watchedTime
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: { display: true, text: '' },
+                    legend: { position: 'bottom' },
+                    scales: {
+                        xAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }],
+                        yAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }]
+                    },
+                }
+            });
+        }
+
+        function viewsChart(date, views) {
+            $('#totalViews').text("+ " + views.reduce((a, b) => a + b, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#chartFirst2').empty();
+            $('#chartFirst2').append('<canvas id="myChartNEW2" height="150"> </canvas>');
+            var ctx = $("#myChartNEW2").get(0).getContext("2d");
+            var myNewChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: date,
+                    datasets: [
+                        {
+                            label: "Views",
+                            borderColor: "#c70007",
+                            backgroundColor: "#ff92a3",
+                            data: views
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: { display: true, text: '' },
+                    legend: { position: 'bottom' },
+                    scales: {
+                        xAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }],
+                        yAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }]
+                    },
+                }
+            });
+        }
+
+        function subGainedChart(date, subGained) {
+            $('#subGained').text("+ " + subGained.reduce((a, b) => a + b, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#chartFirst3').empty();
+            $('#chartFirst3').append('<canvas id="myChartNEW3" height="150"> </canvas>');
+            var ctx = $("#myChartNEW3").get(0).getContext("2d");
+            var myNewChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: date,
+                    datasets: [
+                        {
+                            label: "Subcribers Gained",
+                            borderColor: "#c70007",
+                            backgroundColor: "#ff92a3",
+                            data: subGained
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: { display: true, text: '' },
+                    legend: { position: 'bottom' },
+                    scales: {
+                        xAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }],
+                        yAxes: [{ gridLines: { display: false }, display: true, scaleLabel: { display: false, labelString: '' } }]
+                    },
+                }
+            });
+        }
+
+       
+        function drawTable(result) {
+            var apikey = @Html.Raw(Json.Encode(ViewBag.Key));
+            $("#customers tbody").empty();
+            $.each(result.rows, function (i, item) {
+                var yt_api_key = apikey,
+                    yt_video_id = item[0],
+                    yt_snippet_endpoint = "https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + yt_video_id + "&key=" + yt_api_key;
+
+                var jqxhr = $.getJSON(yt_snippet_endpoint)
+                    .done(function (data) {
+                        $("#customers tbody").append(`
+                            <tr align="center">
+                                <td>${data.items[0].snippet.title}</td>
+                                <td>$${ parseFloat(Math.round(item[1] * 100) / 100).toFixed(2)}</td>
+                                <td>${ item[2]}</td>
+                                <td>$${ parseFloat(Math.round(item[3] * 100) / 100).toFixed(2)}</td>
+                                <td>$${ parseFloat(Math.round(item[4] * 100) / 100).toFixed(2)}</td>
+                                <td>$${ parseFloat(Math.round(item[5] * 100) / 100).toFixed(2)}</td>
+                                <td>${ item[6]}</td>
+                                <td>${ parseFloat(Math.round(item[7] * 100) / 100).toFixed(2)}</td>
+                                <td>${ parseFloat(Math.round(item[8] * 100) / 100).toFixed(2)}</td>
+                                <td>${ item[9]}</td>
+                            </tr>
+                        `);
+                    });
+                // do something with title here
+            })
+                .fail(function () {
+                    // console.log("error, see network tab for response details");
+                });
+        }
+    </script>
+
+    <script>
+        function setInitialDates() {
+            var now = new Date();
+            var day = ("0" + now.getDate()).slice(-2);
+            var month = ("0" + (now.getMonth() + 1)).slice(-2);
+            var today = now.getFullYear() + "-" + (month) + "-" + (day);
+            $('#endDate').val(today);
+
+            now.setDate(now.getDate() - 7);
+            day = ("0" + now.getDate()).slice(-2);
+            month = ("0" + (now.getMonth() + 1)).slice(-2);
+            today = now.getFullYear() + "-" + (month) + "-" + (day);
+            $('#startDate').val(today);
+
+            document.getElementById("startDate").setAttribute("max", new Date().toISOString().split("T")[0]);
+            document.getElementById("endDate").setAttribute("max", new Date().toISOString().split("T")[0]);
+            document.getElementById("endDate").setAttribute("min", today);
+        }
+        function setDates() {
+            document.getElementById("endDate").setAttribute("min", document.getElementById("startDate").value);
+        }
+    </script>
+
+    <script src="https://apis.google.com/js/client.js?onload=googleApiClientReady"></script>
+</head>
+
+<body>
+
+    <div class="main-panel">
+        <div class="main-content">
+            <div class="content-wrapper">
+                <div class="col-lg-12">
+                    <a style="float:right; margin-right:30px;" href="~/Admin/Logout"><button type="button">Logout</button></a>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="col-sm-4">
+                        </div>
+                        <div class="col-sm-2">
+                            <center>Start Date</center>
+                            <input id="startDate" onblur="setDates()" class="form-control" type='date' />
+                        </div>
+                        <div class="col-sm-2">
+                            <center>End Date</center>
+                            <input id="endDate" class="form-control" type='date' />
+                        </div>
+                        <div class="col-sm-4">
+
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <center>
+                            <button onclick="getDataFromAPI()" style="width:30%;" class="btn btn-danger">Get Data</button>
+                        </center>
+                    </div>
+                    <div class="col-lg-12" style="margin-top:50px;">
+                        <div class="col-sm-2">
+                        </div>
+                        <div class="col-sm-4">
+                            <center><label id="totalEarnings" style="font-family:'Century Gothic'; font-size:20px;" title="Total Earnings">Total Earnings</label></center>
+                            <div class="col-sm-12" id="chartFirst">
+                                <center><div class="loader" id="LoadingChartFirst">Loading Chart Data...</div></center>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <center><label id="totalTime" style="font-family:'Century Gothic'; font-size:20px;" title="Total Watched Views">Total Time</label></center>
+                            <div class="col-sm-12" style="height:220px;" id="chartFirst1">
+                                <center><div class="loader" id="LoadingChartFirst1">Loading Chart Data...</div></center>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                        </div>
+                    </div>
+                   
+                    <div class="col-lg-12" style="margin-top:20px;">
+                        <div class="col-sm-2">
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="col-sm-12">
+                                <center><label id="totalViews" style="font-family:'Century Gothic'; font-size:20px; " title="Total Views">Total Views</label></center>
+                            </div>
+                            
+                            <div class="col-sm-12" id="chartFirst2">
+                                <center><div class="loader" id="LoadingChartFirst2">Loading Chart Data...</div></center>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="col-sm-12">
+                                <center><label id="subGained" style="font-family:'Century Gothic'; font-size:20px;" title="Subcriber' Gained">Subcriber' Gained</label></center>
+                            </div>
+                            
+                            <div class="col-sm-12" id="chartFirst3">
+                                <center><div class="loader" id="LoadingChartFirst3">Loading Chart Data...</div></center>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12" style="margin-top: 50px;">
+                        <div class="row">
+                            <div class="col-lg-2">
+
+                            </div>
+                            <div class="col-lg-8" style="height:600px; overflow-y:scroll;">
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <table id="customers">
+                                            <thead>
+                                                <tr>
+                                                    <th>Video</th>
+                                                    <th>Revenue</th>
+                                                    <th>Views</th>
+                                                    <th>Ad Revenue</th>
+                                                    <th>Red Partner Revenue</th>
+                                                    <th>Gross Revenue</th>
+                                                    <th>Ad Impressions</th>
+                                                    <th>CPM</th>
+                                                    <th>Playback CPM</th>
+                                                    <th>Monetized Playbacks</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+                                            
+                                            
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+</body>
+</html>
