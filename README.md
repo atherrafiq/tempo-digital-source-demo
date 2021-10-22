@@ -9,8 +9,8 @@ This project is live at [app.tempodigital.org](https://app.tempodigital.org/), w
 <table align="center">
     <tr>
         <td align="center">
-            <a href="https://raw.githubusercontent.com/atherrafiq/tempo-digital-source-demo/tree/main/Screenshots/Dashboard/1_mian.png">
-                <img src="ScreenShot/Dashboard/1_mian.png" alt="Screenshot Home" />
+            <a href="https://raw.githubusercontent.com/atherrafiq/tempo-digital-source-demo/main/Screenshots/Dashboard/1_mian.png">
+                <img src="ScreenShot/Dashboard/1_main.png" alt="Screenshot Home" />
             </a>
         </td>
         <!-- <td align="center">
